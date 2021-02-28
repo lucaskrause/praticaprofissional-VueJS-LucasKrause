@@ -13,14 +13,11 @@
 import Nav from "@/components/parts/Nav";
 export default {
     name: "Home",
-    components: {Nav},
-    data: function () {
+    components: { Nav },
+    data () {
         return {
             
         }
     },
-    created() {
-        
-    }
 }
 </script>
