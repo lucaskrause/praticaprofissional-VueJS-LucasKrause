@@ -15,7 +15,10 @@
                     <div class="col-md-12 col-6 menu">
                         <ul>
                             <li v-for="(group) in groups" :key="group.id">
-                                <a href="#" @click.prevent="() => true" v-b-toggle="'accord-menu-'+group.id">
+                                <router-link :to="group.route">
+                                    {{group.label}}
+                                </router-link>
+                                <!-- <a href="#" @click.prevent="() => true" v-b-toggle="'accord-menu-'+group.id">
                                     {{ group.label }}
                                 </a>
                                 <b-collapse :id="'accord-menu-'+group.id" class="submenu">
@@ -26,7 +29,7 @@
                                             </router-link>
                                         </li>
                                     </ul>
-                                </b-collapse>
+                                </b-collapse> -->
                             </li>
                         </ul>
                     </div>
@@ -44,14 +47,14 @@ export default {
         return {
             NameCompany: "CLUBE SINCOFOZ",
             groups: [
-                {id: 1, label: "Países"},
-                {id: 2, label: "Estados"},
-                {id: 3, label: "Cidades"},
+                {id: 1, label: "Cidades",  route: {name: "CidadesList"}},
+                {id: 2, label: "Estados", route: {name: "EstadosList"}},
+                {id: 3, label: "Países", route: {name: "PaisesList"}},
             ],
-            itens: [
-                {id: 1, label: "Listar", route: "List"},
-                {id: 2, label: "Cadastrar", route: "Cad"},
-            ]
+            // itens: [
+            //     {id: 1, label: "Listar", route: "List"},
+            //     {id: 2, label: "Cadastrar", route: "Cad"},
+            // ]
         }
     },
     methods: {
