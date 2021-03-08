@@ -1,7 +1,7 @@
 <template>
     <div class="col-12">
         <div class="row">
-            <div class="col-6 text-left"><h1>Países</h1></div>
+            <div class="col-6 text-left"><h2>Países</h2></div>
             <div class="col-6 text-right pt-2">
                 <router-link :to="{name: 'PaisesCad'}" class="btn btn-success">Novo País</router-link>
             </div>
