@@ -6,7 +6,8 @@
                 <router-link :to="{name: 'PaisesCad'}" class="btn btn-success">Novo País</router-link>
             </div>
         </div>
-        <div class="row">
+
+        <div class="row mt-2">
             <div class="col-12">
                 <vue-good-table
                     compactMode

@@ -3,22 +3,24 @@
         <h2>Cadastro de País</h2>
 
         <div class="row">
-            <div class="col-6">
+            <div class="col-1">
+                <label>Código</label>
+                <input id="codigo" type="text" class="form-control" :v-model="entity.codigo" readonly/>
+            </div>
+
+            <div class="col-5">
                 <label>País</label>
-                <br/> 
-                <input id="pais" type="text" class="form-control" :v-model="pais"/>
+                <input id="pais" type="text" class="form-control" :v-model="entity.pais"/>
             </div>
 
-            <div class="col-3">
+            <div class="col-2">
                 <label>Sigla</label>
-                <br/>
-                <input id="sigla" type="text" class="form-control" :v-model="sigla"/>
+                <input id="sigla" type="text" class="form-control" :v-model="entity.sigla"/>
             </div>
 
-            <div class="col-3">
+            <div class="col-2">
                 <label>DDI</label>
-                <br/>
-                <input id="ddi" type="text" class="form-control" :v-model="ddi"/>
+                <input id="ddi" type="text" class="form-control" :v-model="entity.ddi"/>
             </div>
         </div>
 
@@ -33,9 +35,12 @@
 export default {
     data() {
         return {
-            pais: "",
-            sigla: "",
-            ddi: ""
+            entity: {
+                codigo: 0,
+                pais: "",
+                sigla: "",
+                ddi: ""
+            }
         }
     }
 }

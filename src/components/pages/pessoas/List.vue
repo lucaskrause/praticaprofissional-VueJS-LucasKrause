@@ -1,12 +1,12 @@
 <template>
     <div class="col-12">
         <div class="row">
-            <div class="col-6 text-left"><h2>Estados</h2></div>
+            <div class="col-6 text-left"><h2>Pessoas</h2></div>
             <div class="col-6 text-right pt-2">
-                <router-link :to="{name: 'EstadosCad'}" class="btn btn-success">Novo Estado</router-link>
+                <router-link :to="{name: 'PessoasCad'}" class="btn btn-success">Nova Pessoa</router-link>
             </div>
         </div>
-        
+
         <div class="row mt-2">
             <div class="col-12">
                 <vue-good-table
@@ -27,7 +27,7 @@ import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table';
 
 export default {
-    name: "EstadosList",
+    name: "PessoasList",
     components: { VueGoodTable },
     data () {
         return {
@@ -38,17 +38,21 @@ export default {
                     type: 'number'
                 },
                 {
-                    label: "Estado",
-                    field: "estado"
+                    label: "Nome",
+                    field: "nome"
                 },
                 {
-                    label: "UF",
-                    field: "uf"
+                    label: "CPF / CNPJ",
+                    field: "cpf_cnpj"
                 },
                 {
-                    label: "País",
-                    field: "pais"
+                    label: "Telefone",
+                    field: "telefone"
                 },
+                {
+                    label: "Tipo",
+                    field: "tipo"
+                }
             ],
             rows: [],
             page: 1,

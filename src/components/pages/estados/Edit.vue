@@ -3,24 +3,24 @@
         <h2>Cadastro de Estado</h2>
 
         <div class="row">
-            <div class="col-6">
-                <label>Estado</label>
-                <br/> 
-                <input id="estado" type="text" class="form-control" :v-model="estado"/>
+            <div class="col-1">
+                <label>Código</label> 
+                <input id="codigo" type="text" class="form-control" :v-model="entity.codigo" readonly/>
             </div>
 
-            <div class="col-3">
+            <div class="col-5">
+                <label>Estado</label> 
+                <input id="estado" type="text" class="form-control" :v-model="entity.estado"/>
+            </div>
+
+            <div class="col-2">
                 <label>UF</label>
-                <br/>
-                <input id="uf" type="text" class="form-control" :v-model="uf"/>
+                <input id="uf" type="text" class="form-control" :v-model="entity.uf"/>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-3">
+            <div class="col-4">
                 <label>País</label>
-                <br/>
-                <select id="pais" class="form-control" :v-model="pais">
+                <select id="pais" class="form-control" :v-model="entity.codigoPais">
                     <option value="" selected>Selecione um País...</option>
                     <option v-for="item in paises" :value="item.id" :if="pais == item.id ? selected : null" :key="item.id">{{ item.pais }}</option>
                 </select>
@@ -38,9 +38,12 @@
 export default {
     data() {
         return {
-            estado: "",
-            uf: "",
-            pais: "",
+            entity: {
+                codigo: 0,
+                estado: "",
+                uf: "",
+                codigoPais: 0
+            },
             paises: []
         }
     }

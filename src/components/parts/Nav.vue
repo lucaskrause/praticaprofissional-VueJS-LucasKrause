@@ -18,18 +18,6 @@
                                 <router-link :to="group.route">
                                     {{group.label}}
                                 </router-link>
-                                <!-- <a href="#" @click.prevent="() => true" v-b-toggle="'accord-menu-'+group.id">
-                                    {{ group.label }}
-                                </a>
-                                <b-collapse :id="'accord-menu-'+group.id" class="submenu">
-                                    <ul>
-                                        <li v-for="(item) in itens" :key="item.id">
-                                            <router-link :to="mountRoute(group.label, item.route)">
-                                                {{item.label}}
-                                            </router-link>
-                                        </li>
-                                    </ul>
-                                </b-collapse> -->
                             </li>
                         </ul>
                     </div>
@@ -50,34 +38,12 @@ export default {
                 {id: 1, label: "Cidades",  route: {name: "CidadesList"}},
                 {id: 2, label: "Estados", route: {name: "EstadosList"}},
                 {id: 3, label: "Países", route: {name: "PaisesList"}},
+                {id: 4, label: "Pessoas", route: {name: "PessoasList"}},
             ],
-            // itens: [
-            //     {id: 1, label: "Listar", route: "List"},
-            //     {id: 2, label: "Cadastrar", route: "Cad"},
-            // ]
         }
     },
     methods: {
-        retiraAcentos(str) {
-            var comAcento = "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝŔÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿŕ";
-            var semAcento = "AAAAAAACEEEEIIIIDNOOOOOOUUUUYRsBaaaaaaaceeeeiiiionoooooouuuuybyr";
-            
-            for(let i=0; i<str.length; i++) {
-                if(comAcento.includes(str[i])) {
-                    for (let j=0; j < comAcento.length; j++) {
-                        if(comAcento[j] == str[i]) {
-                            str = str.replace(comAcento[j], semAcento[j]);
-                        }
-                    }
-                }
-            }
-            return str;
-        },     
-        mountRoute(component, route) {
-            var rota = this.retiraAcentos(component) + route;
-            var nameRota = {name: rota}
-            return nameRota;
-        }
+        
     }
 }
 </script>

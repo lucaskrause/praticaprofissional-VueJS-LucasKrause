@@ -12,6 +12,9 @@ const EstadoEdit = () => import("@/components/pages/estados/Edit");
 const PaisesList = () => import("@/components/pages/paises/List");
 const PaisesEdit = () => import("@/components/pages/paises/Edit");
 
+const PessoasList = () => import("@/components/pages/pessoas/List");
+const PessoasEdit = () => import("@/components/pages/pessoas/Edit");
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -69,6 +72,22 @@ const routes = [
                 component: PaisesEdit,
                 meta: {
                     label: "Cadastro de País"
+                },
+            },
+            {
+                path: 'pessoas',
+                name: 'PessoasList',
+                component: PessoasList,
+                meta: {
+                    label: "Lista de Pessoas"
+                },
+            },
+            {
+                path: 'pessoas/cadastrar',
+                name: 'PessoasCad',
+                component: PessoasEdit,
+                meta: {
+                    label: "Cadastro de Pessoas"
                 },
             },
         ]
