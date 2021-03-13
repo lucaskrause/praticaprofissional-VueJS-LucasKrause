@@ -3,8 +3,8 @@ import ApiService from './api.service'
 export class Service {
     endpoint = '';
     api = null;
-    constructor(modulo = false) {
-        if(!modulo) modulo = this.constructor.name.replace("Service", "");
+    constructor() {
+        module = this.constructor.name.replace("Service", "");
         this.endpoint = module;
         this.api = ApiService;
     }
