@@ -3,14 +3,14 @@ import VueRouter from 'vue-router';
 
 const Home = () => import("@/components/Home");
 
-const CidadeList = () => import("@/components/pages/cidades/List");
-const CidadeEdit = () => import("@/components/pages/cidades/Edit");
+const PaisesList = () => import("@/components/pages/paises/List");
+const PaisesEdit = () => import("@/components/pages/paises/Edit");
 
 const EstadoList = () => import("@/components/pages/estados/List");
 const EstadoEdit = () => import("@/components/pages/estados/Edit");
 
-const PaisesList = () => import("@/components/pages/paises/List");
-const PaisesEdit = () => import("@/components/pages/paises/Edit");
+const CidadeList = () => import("@/components/pages/cidades/List");
+const CidadeEdit = () => import("@/components/pages/cidades/Edit");
 
 const PessoasList = () => import("@/components/pages/pessoas/List");
 const PessoasEdit = () => import("@/components/pages/pessoas/Edit");
@@ -26,22 +26,33 @@ const routes = [
             label: "Home"
         },
         children: [
+            // PAÍSES
             {
-                path: 'cidades',
-                name: 'CidadesList',
-                component: CidadeList,
+                path: 'paises',
+                name: 'PaisesList',
+                component: PaisesList,
                 meta: {
-                    label: "Lista de Cidades"
+                    label: "Lista de Paises"
                 },
             },
             {
-                path: 'cidades/cadastrar',
-                name: 'CidadesCad',
-                component: CidadeEdit,
+                path: 'paises/cadastrar',
+                name: 'PaisesCad',
+                component: PaisesEdit,
                 meta: {
-                    label: "Cadastro de Cidade"
+                    label: "Cadastro de País"
                 },
             },
+            {
+                path: 'paises/editar/:codigo',
+                name: 'PaisesEdit',
+                component: PaisesEdit,
+                meta: {
+                    label: "Cadastro de País"
+                },
+            },
+            
+            // ESTADOS
             {
                 path: 'estados',
                 name: 'EstadosList',
@@ -59,21 +70,41 @@ const routes = [
                 },
             },
             {
-                path: 'paises',
-                name: 'PaisesList',
-                component: PaisesList,
-                meta: {
-                    label: "Lista de Paises"
-                },
-            },
-            {
-                path: 'paises/cadastrar',
-                name: 'PaisesCad',
-                component: PaisesEdit,
+                path: 'estados/editar/:codigo',
+                name: 'EstadosEdit',
+                component: EstadoEdit,
                 meta: {
                     label: "Cadastro de País"
                 },
             },
+            
+            // CIDADES
+            {
+                path: 'cidades',
+                name: 'CidadesList',
+                component: CidadeList,
+                meta: {
+                    label: "Lista de Cidades"
+                },
+            },
+            {
+                path: 'cidades/cadastrar',
+                name: 'CidadesCad',
+                component: CidadeEdit,
+                meta: {
+                    label: "Cadastro de Cidade"
+                },
+            },
+            {
+                path: 'cidades/editar/:codigo',
+                name: 'CidadesEdit',
+                component: CidadeEdit,
+                meta: {
+                    label: "Cadastro de País"
+                },
+            },
+
+            // PESSOAS
             {
                 path: 'pessoas',
                 name: 'PessoasList',

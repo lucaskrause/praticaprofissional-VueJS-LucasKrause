@@ -16,6 +16,12 @@
                     :search-options="{enabled: false}"
                     :pagination-options="{perPage: 5, enabled: true}"
                 >
+                    <template slot="table-row" slot-scope="props">
+                        <span v-if="props.column.field == 'btn'">
+                            <router-link :to="{name: 'CidadesEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Editar</router-link>
+                            <a @click.prevent="remove(props.row.codigo)" class="btn btn-sm btn-danger" href="#">Excluir</a>
+                        </span>
+                    </template>
                 </vue-good-table>
             </div>
         </div>
@@ -23,8 +29,13 @@
 </template>
 
 <script>
+import {CidadesService} from '@/services/cidades.service'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table';
+import {Notyf} from 'notyf';
+import 'notyf/notyf.min.css';
+
+const notyf = new Notyf();
 
 export default {
     name: "CidadesList",
@@ -42,8 +53,18 @@ export default {
                     field: "cidade"
                 },
                 {
-                    label: "Estado",
-                    field: "estado"
+                    label: "DDD",
+                    field: "ddd"
+                },
+                // {
+                //     label: "Estado",
+                //     field: "estado"
+                // },
+                {
+                    label: "Ações",
+                    sortable: false,
+                    field: 'btn',
+                    html: true
                 },
             ],
             rows: [],
@@ -51,5 +72,31 @@ export default {
             totalRecords: 0
         }
     },
+    created() {
+        this.loadData();
+    },
+    methods: {
+        loadData() {
+            const vm = this;
+            CidadesService.getAll().then(function (data) {
+                vm.totalRecords = data.data.count;
+                vm.rows = data.data;
+            });
+        },
+        remove(codigo) {
+            const vm = this;
+            var remove = confirm("Deseja realmente excluir?");
+            if(remove) {
+                CidadesService.delete(codigo).then(function (response) {
+                    if(response.data){
+                        notyf.success("Cidade excluida com sucesso");
+                        vm.loadData();
+                    } else {
+                        notyf.error("Não foi possivel excluir a cidade");
+                    }
+                });
+            }
+        }
+    }
 }
 </script>

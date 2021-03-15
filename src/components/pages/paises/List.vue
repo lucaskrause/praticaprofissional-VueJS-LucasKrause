@@ -9,13 +9,19 @@
 
         <div class="row mt-2">
             <div class="col-12">
-                <vue-good-table
-                    compactMode
+                <vue-good-table compactMode mode="remote"
+                    :totalRows="totalRecords"
                     :columns="columns"
                     :rows="rows"
-                    :search-options="{enabled: false}"
+                    :search-options="{enabled: true, placeholder: 'Busque por nome'}"
                     :pagination-options="{perPage: 5, enabled: true}"
                 >
+                    <template slot="table-row" slot-scope="props">
+                        <span v-if="props.column.field == 'btn'">
+                            <router-link :to="{name: 'PaisesEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Editar</router-link>
+                            <a @click.prevent="remove(props.row.codigo)" class="btn btn-sm btn-danger" href="#">Excluir</a>
+                        </span>
+                    </template>
                 </vue-good-table>
             </div>
         </div>
@@ -23,8 +29,13 @@
 </template>
 
 <script>
+import {PaisesService} from '@/services/paises.service'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table';
+import {Notyf} from 'notyf';
+import 'notyf/notyf.min.css';
+
+const notyf = new Notyf();
 
 export default {
     name: "PaisesList",
@@ -45,11 +56,56 @@ export default {
                     label: "Sigla",
                     field: "sigla"
                 },
+                {
+                    label: "DDI",
+                    field: "ddi",
+                    type: 'number'
+                },
+                // {
+                //     label: "Data Criação",
+                //     field: "dtCadastro",
+                // },
+                // {
+                //     label: "Data Alteração",
+                //     field: "dtAlteracao"
+                // },
+                {
+                    label:"Ação",
+                    sortable: false,
+                    field: 'btn',
+                    html: true
+                },
             ],
-            rows: [],
             page: 1,
+            rows: [],
             totalRecords: 0
         }
     },
+    created() {
+        this.loadData();
+    },
+    methods: {
+        loadData() {
+            const vm = this;
+            PaisesService.getAll().then(function (data) {
+                vm.totalRecords = data.data.count;
+                vm.rows = data.data;
+            });
+        },
+        remove(codigo) {
+            var vm = this;
+            var remove = confirm("Deseja realmente excluir?");
+            if(remove){
+                PaisesService.delete(codigo).then(function (data) {
+                    if(data.data){
+                        notyf.success("País excluído com sucesso");
+                        vm.loadData();
+                    } else {
+                        notyf.error("Não foi possível excluir o pais");
+                    }
+                });
+            }
+        }
+    }
 }
 </script>

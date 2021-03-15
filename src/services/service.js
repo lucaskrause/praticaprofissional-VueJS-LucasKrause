@@ -3,29 +3,30 @@ import ApiService from './api.service'
 export class Service {
     endpoint = '';
     api = null;
+    modulo = '';
     constructor() {
-        module = this.constructor.name.replace("Service", "");
-        this.endpoint = module;
+        this.modulo = this.constructor.name.replace("Service", "");
+        this.endpoint = this.modulo;
         this.api = ApiService;
     }
 
     getAll() {
-        return this.api.post(this.endpoint);
+        return this.api.get(this.endpoint);
     }
 
-    getById(id) {
-        return this.api.get(this.endpoint + "/" + id);
+    getById(codigo) {
+        return this.api.get(this.endpoint + "/" + codigo);
     }
 
     save(entity) {
-        if(entity.id) {
-            return this.api.put(this.endpoint, entity);
+        if(entity.codigo) {
+            return this.api.put(this.endpoint + "/editar", entity);
         } else {
-            return this.api.post(this.endpoint, entity);
+            return this.api.post(this.endpoint + "/inserir", entity);
         }
     }
 
-    delete(id) {
-        return this.api.delete(this.endpoint + "/" + id);
+    delete(codigo) {
+        return this.api.delete(this.endpoint + "/excluir/" + codigo);
     }
 }

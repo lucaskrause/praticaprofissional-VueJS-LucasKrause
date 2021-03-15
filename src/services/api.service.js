@@ -1,6 +1,15 @@
 import axios from 'axios'
 
 const ApiService = {
+
+    init(url) {
+        axios.defaults.baseURL = url;
+
+        axios.interceptors.response.use(response => {
+            return response
+        })
+    },
+
     get(resource) {
         return axios.get(resource)
     },
