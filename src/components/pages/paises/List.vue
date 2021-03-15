@@ -30,8 +30,8 @@
 
 <script>
 import {PaisesService} from '@/services/paises.service'
-import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table';
+import 'vue-good-table/dist/vue-good-table.css'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
