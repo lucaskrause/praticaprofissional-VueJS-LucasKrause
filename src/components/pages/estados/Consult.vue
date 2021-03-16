@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         <div class="col-12 text-right">
-            <b-button v-b-modal.modal-new-pais class="btn btn-success ml-1">Novo País</b-button>
+            <b-button v-b-modal.modal-new-estado class="btn btn-success ml-1">Novo Estado</b-button>
         </div>
         
         <div class="col-12 mt-2">
@@ -14,7 +14,7 @@
             >
                 <template slot="table-row" slot-scope="props">
                     <span v-if="props.column.field == 'btn'">
-                        <a @click.prevent="selectPais(props.row)" class="btn btn-sm btn-primary" href="#">Selecionar</a>
+                        <a @click.prevent="selectEstado(props.row)" class="btn btn-sm btn-primary" href="#">Selecionar</a>
                     </span>
                 </template>
             </vue-good-table>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import {PaisesService} from '@/services/paises.service'
+import {EstadosService} from '@/services/estados.service'
 import {VueGoodTable} from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
 
@@ -38,18 +38,17 @@ export default {
                     type: 'number'
                 },
                 {
-                    label: "País",
-                    field: "pais"
+                    label: "Estado",
+                    field: "estado"
                 },
                 {
-                    label: "Sigla",
-                    field: "sigla"
+                    label: "UF",
+                    field: "uf"
                 },
-                {
-                    label: "DDI",
-                    field: "ddi",
-                    type: 'number'
-                },
+                // {
+                //     label: "País",
+                //     field: "pais"
+                // },
                 {
                     label:"Ação",
                     sortable: false,
@@ -64,14 +63,14 @@ export default {
     },
     created() {
         const vm = this;
-        PaisesService.getAll().then(function (data) {
+        EstadosService.getAll().then(function (data) {
             vm.totalRecords = data.data.count;
             vm.rows = data.data; 
         });
     },
     methods: {
-        selectPais(entity) {
-            this.$emit('emit-pais', entity);
+        selectEstado(entity) {
+            this.$emit('emit-estado', entity);
         }
     }
 }

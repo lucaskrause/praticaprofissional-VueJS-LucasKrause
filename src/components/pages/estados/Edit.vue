@@ -34,18 +34,19 @@
             <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
         </div>
 
-        <b-modal id="modal-consulta-pais" size="xl" title="Consultar País" hide-footer hide-header>
-            <ConsultaPais />
+        <b-modal id="modal-consulta-pais" size="xl" title="Consultar País" hide-footer>
+            <ConsultaPais @emit-pais="selectPais" />
         </b-modal>
         
-        <b-modal id="modal-new-pais" size="xl" title="Cadastrar País" hide-footer hide-header>
-            <NovoPais />
+        <b-modal id="modal-new-pais" size="xl" title="Cadastrar País" hide-footer>
+            <NovoPais  @emit-pais="selectPais" :isModal="true" />
         </b-modal>
     </div>
 
 </template>
 
 <script>
+import {PaisesService} from '@/services/paises.service'
 import {EstadosService} from '@/services/estados.service'
 import ConsultaPais from '@/components/pages/paises/Consult.vue'
 import NovoPais from '@/components/pages/paises/Edit.vue'
@@ -64,7 +65,7 @@ export default {
                 uf: "",
                 codigoPais: 0
             },
-            paisSelecionado: "Brasil",
+            paisSelecionado: "",
             paises: [],
             isSubmiting: false
         }
@@ -75,13 +76,32 @@ export default {
         if(this.entity.codigo) {
             EstadosService.getById(this.entity.codigo).then(function (data) {
                 vm.entity = data.data;
-                notyf.success("carregado com sucesso");
+                
+                PaisesService.getById(vm.entity.codigoPais).then(function (data) {
+                    vm.paisSelecionado = data.data["pais"];
+                });
             });
+            
         }
     },
     methods: {
+        selectPais(entity) {
+            this.paisSelecionado = entity.pais;
+            this.entity.codigoPais = entity.codigo;
+            this.$bvModal.hide("modal-new-pais");
+            this.$bvModal.hide("modal-consulta-pais");
+        },
         save() {
-            
+            if (this.isSubmiting) return;
+            this.isSubmiting = true;
+            const vm = this;
+            let service = EstadosService.save(this.entity);
+            service.then(function () {
+                const msg = vm.entity.codigo ? "editado" : 'criado';
+                notyf.success("Estado " + msg + " com sucesso");
+                vm.$router.push('/estados');
+            }).then(() => vm.isSubmiting = false);
+            // .catch((errors) => Helper.saveErrorCallBack(errors.response))
         }
     }
 }

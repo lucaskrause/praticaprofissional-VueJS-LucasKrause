@@ -1,6 +1,6 @@
 <template>
     <div class="col-12">
-        <h2>Cadastro de País</h2>
+        <h2 v-if="!isModal">Cadastro de País</h2>
 
         <div class="row">
             <div class="col-1">
@@ -25,8 +25,7 @@
         </div>
 
         <div class="text-right mt-4">
-            <router-link v-if="modalPais" :to="{name: 'PaisesList'}" class="btn btn-danger mr-3">Cancelar</router-link>
-            <router-link v-if="modalPais" :to="{name: 'PaisesList'}" class="btn btn-danger mr-3">Voltar</router-link>
+            <router-link v-if="!isModal" :to="{name: 'PaisesList'}" class="btn btn-danger mr-3">Voltar</router-link>
             <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
         </div>
     </div>
@@ -40,6 +39,12 @@ import 'notyf/notyf.min.css';
 const notyf = new Notyf();
 
 export default {
+    props: {
+        isModal: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             entity: {
@@ -66,10 +71,14 @@ export default {
             this.isSubmiting = true;
             const vm = this;
             let service = PaisesService.save(this.entity);
-            service.then(function () {
+            service.then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("País " + msg + " com sucesso");
-                vm.$router.push('/paises');
+                if(vm.isModal){
+                    vm.$emit('emit-pais', response.data);
+                } else {
+                    vm.$router.push('/paises');
+                }
             }).then(() => vm.isSubmiting = false);
             // .catch((errors) => Helper.saveErrorCallBack(errors.response))
             
