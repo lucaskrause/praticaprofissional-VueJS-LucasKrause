@@ -75,7 +75,8 @@ export default {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("País " + msg + " com sucesso");
                 if(vm.isModal){
-                    vm.$emit('emit-pais', response.data);
+                    vm.entity.codigo = response.data.codigo;
+                    vm.$emit('emit-pais', vm.entity);
                 } else {
                     vm.$router.push('/paises');
                 }

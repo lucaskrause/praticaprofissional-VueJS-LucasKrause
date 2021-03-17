@@ -1,6 +1,6 @@
 <template>
     <div class="col-12">
-        <h2>Cadastro de Estado</h2>
+        <h2 v-if="!isModal">Cadastro de Estado</h2>
 
         <div class="row">
             <div class="col-1">
@@ -21,7 +21,7 @@
             <div class="col-4">
                 <label>País</label>
                 <div class="input-group">
-                    <input id="pais" type="text" class="form-control" v-model="paisSelecionado"/>
+                    <input id="pais" type="text" class="form-control" v-model="paisSelecionado" readonly/>
                     <span class="input-group-btn">
                         <b-button v-b-modal.modal-consulta-pais class="btn btn-info ml-1">Buscar</b-button>
                     </span>
@@ -57,6 +57,12 @@ const notyf = new Notyf();
 
 export default {
     components: { ConsultaPais, NovoPais },
+    props: {
+        isModal: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             entity: {
@@ -95,11 +101,15 @@ export default {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
-            let service = EstadosService.save(this.entity);
-            service.then(function () {
+            EstadosService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Estado " + msg + " com sucesso");
-                vm.$router.push('/estados');
+                if(vm.isModal) {
+                    vm.entity.codigo = response.data.codigo;
+                    vm.$emit('emit-estado', vm.entity);
+                } else {
+                    vm.$router.push('/estados');
+                }
             }).then(() => vm.isSubmiting = false);
             // .catch((errors) => Helper.saveErrorCallBack(errors.response))
         }
