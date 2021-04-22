@@ -38,9 +38,9 @@
             <ConsultaPais @emit-pais="selectPais" />
         </b-modal>
         
-        <b-modal id="modal-new-pais" size="xl" title="Cadastrar País" hide-footer>
+        <!-- <b-modal id="modal-new-pais" size="xl" title="Cadastrar País" hide-footer>
             <NovoPais  @emit-pais="selectPais" :isModal="true" />
-        </b-modal>
+        </b-modal> -->
     </div>
 
 </template>
@@ -49,14 +49,14 @@
 import {PaisesService} from '@/services/paises.service'
 import {EstadosService} from '@/services/estados.service'
 import ConsultaPais from '@/components/pages/paises/Consult.vue'
-import NovoPais from '@/components/pages/paises/Edit.vue'
+// import NovoPais from '@/components/pages/paises/Edit.vue'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
 const notyf = new Notyf();
 
 export default {
-    components: { ConsultaPais, NovoPais },
+    components: { ConsultaPais }, //, NovoPais 
     props: {
         isModal: {
             type: Boolean,

@@ -19,16 +19,21 @@
                 </template>
             </vue-good-table>
         </div>
+        
+        <b-modal id="modal-new-cidade" size="xl" title="Cadastrar Cidade" hide-footer>
+            <NovaCidade  @emit-cidade="selectCidade" :isModal="true" />
+        </b-modal>
     </div>
 </template>
 
 <script>
 import {CidadesService} from '@/services/cidades.service'
+import NovaCidade from '@/components/pages/cidades/Edit.vue'
 import {VueGoodTable} from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
 
 export default {
-    components: { VueGoodTable },
+    components: { VueGoodTable, NovaCidade },
     data() {
         return {
             columns: [

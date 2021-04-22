@@ -153,9 +153,9 @@
             <ConsultaCidade @emit-cidade="selectCidade" />
         </b-modal>
         
-        <b-modal id="modal-new-cidade" size="xl" title="Cadastrar Cidade" hide-footer>
+        <!-- <b-modal id="modal-new-cidade" size="xl" title="Cadastrar Cidade" hide-footer>
             <NovaCidade  @emit-cidade="selectCidade" :isModal="true" />
-        </b-modal>
+        </b-modal> -->
         
         <!-- <b-modal id="modal-consulta-estado" size="xl" title="Consultar Estado" hide-footer>
             <ConsultaEstado @emit-estado="selectEstado" />
@@ -187,7 +187,7 @@ import {CidadesService} from '@/services/cidades.service'
 // import ConsultaEstado from '@/components/pages/estados/Consult.vue'
 // import NovoEstado from '@/components/pages/estados/Edit.vue'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
-import NovaCidade from '@/components/pages/cidades/Edit.vue'
+// import NovaCidade from '@/components/pages/cidades/Edit.vue'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -195,8 +195,8 @@ const notyf = new Notyf();
 
 export default {
     components: { 
-        VueGoodTable, ConsultaCidade, NovaCidade
-    },// ConsultaEstado, NovoEstado, ConsultaPais, NovoPais },
+        VueGoodTable, ConsultaCidade
+    },// ConsultaEstado, NovoEstado, ConsultaPais, NovoPais, NovaCidade },
     data() {
         return {
             entity: {

@@ -38,9 +38,9 @@
             <ConsultaEstado @emit-estado="selectEstado" />
         </b-modal>
         
-        <b-modal id="modal-new-estado" size="xl" title="Cadastrar Estado" hide-footer>
+        <!-- <b-modal id="modal-new-estado" size="xl" title="Cadastrar Estado" hide-footer>
             <NovoEstado  @emit-estado="selectEstado" :isModal="true" />
-        </b-modal>
+        </b-modal> -->
 
         <!-- <b-modal id="modal-consulta-pais" size="xl" title="Consultar País" hide-footer>
             <ConsultaPais @emit-pais="selectPais" />
@@ -58,7 +58,7 @@ import {CidadesService} from '@/services/cidades.service'
 // import ConsultaPais from '@/components/pages/paises/Consult.vue'
 // import NovoPais from '@/components/pages/paises/Edit.vue'
 import ConsultaEstado from '@/components/pages/estados/Consult.vue'
-import NovoEstado from '@/components/pages/estados/Edit.vue'
+// import NovoEstado from '@/components/pages/estados/Edit.vue'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -66,8 +66,8 @@ const notyf = new Notyf();
 
 export default {
     components: { 
-        ConsultaEstado, NovoEstado
-    }, // ConsultaPais, NovoPais, 
+        ConsultaEstado
+    }, //, NovoEstado, ConsultaPais, NovoPais
     props: {
         isModal: {
             type: Boolean,

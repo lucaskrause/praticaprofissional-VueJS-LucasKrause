@@ -19,16 +19,21 @@
                 </template>
             </vue-good-table>
         </div>
+        
+        <b-modal id="modal-new-pais" size="xl" title="Cadastrar País" hide-footer>
+            <NovoPais  @emit-pais="selectPais" :isModal="true" />
+        </b-modal>
     </div>
 </template>
 
 <script>
 import {PaisesService} from '@/services/paises.service'
+import NovoPais from '@/components/pages/paises/Edit.vue'
 import {VueGoodTable} from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
 
 export default {
-    components: { VueGoodTable },
+    components: { VueGoodTable, NovoPais },
     data() {
         return {
             columns: [
