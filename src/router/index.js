@@ -12,8 +12,8 @@ const EstadoEdit = () => import("@/components/pages/estados/Edit");
 const CidadeList = () => import("@/components/pages/cidades/List");
 const CidadeEdit = () => import("@/components/pages/cidades/Edit");
 
-const PessoasList = () => import("@/components/pages/pessoas/List");
-const PessoasEdit = () => import("@/components/pages/pessoas/Edit");
+const ClienteList = () => import("@/components/pages/clientes/List");
+const ClienteEdit = () => import("@/components/pages/clientes/Edit");
 
 Vue.use(VueRouter)
 
@@ -104,21 +104,21 @@ const routes = [
                 },
             },
 
-            // PESSOAS
+            // CLIENTES
             {
-                path: 'pessoas',
-                name: 'PessoasList',
-                component: PessoasList,
+                path: 'clientes',
+                name: 'ClientesList',
+                component: ClienteList,
                 meta: {
-                    label: "Lista de Pessoas"
+                    label: "Lista de Clientes"
                 },
             },
             {
-                path: 'pessoas/cadastrar',
-                name: 'PessoasCad',
-                component: PessoasEdit,
+                path: 'clientes/cadastrar',
+                name: 'ClientesCad',
+                component: ClienteEdit,
                 meta: {
-                    label: "Cadastro de Pessoas"
+                    label: "Cadastro de Clientes"
                 },
             },
         ]

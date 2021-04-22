@@ -1,9 +1,9 @@
 <template>
     <div class="col-12">
         <div class="row">
-            <div class="col-6 text-left"><h2>Pessoas</h2></div>
+            <div class="col-6 text-left"><h2>Clientes</h2></div>
             <div class="col-6 text-right pt-2">
-                <router-link :to="{name: 'PessoasCad'}" class="btn btn-success">Nova Pessoa</router-link>
+                <router-link :to="{name: 'ClientesCad'}" class="btn btn-success">Novo Cliente</router-link>
             </div>
         </div>
 
@@ -27,7 +27,7 @@ import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table';
 
 export default {
-    name: "PessoasList",
+    name: "ClientesList",
     components: { VueGoodTable },
     data () {
         return {

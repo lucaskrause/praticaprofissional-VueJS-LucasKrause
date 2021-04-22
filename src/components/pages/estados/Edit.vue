@@ -30,7 +30,7 @@
         </div>
 
         <div class="text-right mt-4">
-            <router-link :to="{name: 'EstadosList'}" class="btn btn-danger mr-3">Voltar</router-link>
+            <router-link v-if="!isModal" :to="{name: 'EstadosList'}" class="btn btn-danger mr-3">Voltar</router-link>
             <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
         </div>
 
