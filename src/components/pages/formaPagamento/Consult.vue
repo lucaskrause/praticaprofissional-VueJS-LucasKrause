@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         <div class="col-12 text-right">
-            <b-button v-b-modal.modal-new-estado class="btn btn-success ml-1">Novo Estado</b-button>
+            <b-button v-b-modal.modal-new-pais class="btn btn-success ml-1">Nova Forma de Pagamento</b-button>
         </div>
         
         <div class="col-12 mt-2">
@@ -14,28 +14,26 @@
             >
                 <template slot="table-row" slot-scope="props">
                     <span v-if="props.column.field == 'btn'">
-                        <a @click.prevent="selectEstado(props.row)" class="btn btn-sm btn-primary" href="#">Selecionar</a>
+                        <a @click.prevent="selectForma(props.row)" class="btn btn-sm btn-primary" href="#">Selecionar</a>
                     </span>
                 </template>
             </vue-good-table>
         </div>
-
-        <b-modal id="modal-new-estado" size="xl" title="Cadastrar Estado" hide-footer>
-            <NovoEstado  @emit-estado="selectEstado" :isModal="true" />
+        
+        <b-modal id="modal-new-forma" size="xl" title="Cadastrar Forma de Pagamento" hide-footer>
+            <NovaFormaPagamento  @emit-pais="selectForma" :isModal="true" />
         </b-modal>
     </div>
 </template>
 
 <script>
-import {EstadosService} from '@/services/estados.service'
-import NovoEstado from '@/components/pages/estados/Edit.vue'
+import {FormaPagamentoService} from '@/services/formaPagamento.service'
+import NovaFormaPagamento from '@/components/pages/formaPagamento/Edit.vue'
 import {VueGoodTable} from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
 
 export default {
-    components: {
-        VueGoodTable, NovoEstado
-    },
+    components: { VueGoodTable, NovaFormaPagamento },
     data() {
         return {
             columns: [
@@ -45,16 +43,8 @@ export default {
                     type: 'number'
                 },
                 {
-                    label: "Estado",
-                    field: "estado"
-                },
-                {
-                    label: "UF",
-                    field: "uf"
-                },
-                {
-                    label: "País",
-                    field: "pais.pais"
+                    label: "Forma de Pagamento",
+                    field: "descricao"
                 },
                 {
                     label:"Ação",
@@ -70,14 +60,14 @@ export default {
     },
     created() {
         const vm = this;
-        EstadosService.getAll().then(function (data) {
+        FormaPagamentoService.getAll().then(function (data) {
             vm.totalRecords = data.data.count;
             vm.rows = data.data; 
         });
     },
     methods: {
-        selectEstado(entity) {
-            this.$emit('emit-estado', entity);
+        selectForma(entity) {
+            this.$emit('emit-forma', entity);
         }
     }
 }

@@ -1,6 +1,6 @@
 <template>
     <div class="col-12">
-        <h2 v-if="!isModal">Cadastro de País</h2>
+        <h2 v-if="!isModal">Cadastro de Forma de Pagamento</h2>
 
         <div class="row">
             <div class="col-1">
@@ -9,18 +9,8 @@
             </div>
 
             <div class="col-5">
-                <label>País</label>
-                <input id="pais" type="text" class="form-control" v-model="entity.pais"/>
-            </div>
-
-            <div class="col-2">
-                <label>Sigla</label>
-                <input id="sigla" type="text" class="form-control" v-model="entity.sigla"/>
-            </div>
-
-            <div class="col-2">
-                <label>DDI</label>
-                <input id="ddi" type="text" class="form-control" v-model="entity.ddi"/>
+                <label>Forma de Pagamento</label>
+                <input id="descricao" type="text" class="form-control" v-model="entity.descricao"/>
             </div>
         </div>
 
@@ -32,7 +22,7 @@
 </template>
 
 <script>
-import {PaisesService} from '@/services/paises.service'
+import {FormaPagamentoService} from '@/services/formaPagamento.service'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -49,9 +39,7 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                pais: "",
-                sigla: "",
-                ddi: ""
+                descricao: ""
             },
             isSubmiting: false
         }
@@ -60,7 +48,7 @@ export default {
         const vm = this;
         this.entity.codigo = this.$route.params.codigo;
         if (this.entity.codigo) {
-            PaisesService.getById(this.entity.codigo).then(function (response) {
+            FormaPagamentoService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
             });
         }
@@ -70,14 +58,14 @@ export default {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
-            PaisesService.save(this.entity).then(function (response) {
+            FormaPagamentoService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
-                notyf.success("País " + msg + " com sucesso");
+                notyf.success("Forma de Pagamento " + msg + " com sucesso");
                 if(vm.isModal){
                     vm.entity.codigo = response.data.codigo;
-                    vm.$emit('emit-pais', vm.entity);
+                    vm.$emit('emit-forma', vm.entity);
                 } else {
-                    vm.$router.push('/paises');
+                    vm.$router.push('/formaPagamento');
                 }
             }).then(() => vm.isSubmiting = false);
             // .catch((errors) => Helper.saveErrorCallBack(errors.response))

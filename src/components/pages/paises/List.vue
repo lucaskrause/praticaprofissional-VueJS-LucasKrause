@@ -61,14 +61,6 @@ export default {
                     field: "ddi",
                     type: 'number'
                 },
-                // {
-                //     label: "Data Criação",
-                //     field: "dtCadastro",
-                // },
-                // {
-                //     label: "Data Alteração",
-                //     field: "dtAlteracao"
-                // },
                 {
                     label:"Ação",
                     sortable: false,

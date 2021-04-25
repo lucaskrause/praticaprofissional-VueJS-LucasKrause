@@ -152,42 +152,15 @@
         <b-modal id="modal-consulta-cidade" size="xl" title="Consultar Cidade" hide-footer>
             <ConsultaCidade @emit-cidade="selectCidade" />
         </b-modal>
-        
-        <!-- <b-modal id="modal-new-cidade" size="xl" title="Cadastrar Cidade" hide-footer>
-            <NovaCidade  @emit-cidade="selectCidade" :isModal="true" />
-        </b-modal> -->
-        
-        <!-- <b-modal id="modal-consulta-estado" size="xl" title="Consultar Estado" hide-footer>
-            <ConsultaEstado @emit-estado="selectEstado" />
-        </b-modal>
-        
-        <b-modal id="modal-new-estado" size="xl" title="Cadastrar Estado" hide-footer>
-            <NovoEstado  @emit-estado="selectEstado" :isModal="true" />
-        </b-modal>
-
-        <b-modal id="modal-consulta-pais" size="xl" title="Consultar País" hide-footer>
-            <ConsultaPais @emit-pais="selectPais" />
-        </b-modal>
-        
-        <b-modal id="modal-new-pais" size="xl" title="Cadastrar País" hide-footer>
-            <NovoPais  @emit-pais="selectPais" :isModal="true" />
-        </b-modal> -->
     </div>
 </template>
 
 <script>
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table';
-
 import {ClientesService} from '@/services/clientes.service'
-// import {EstadosService} from '@/services/estados.service'
 import {CidadesService} from '@/services/cidades.service'
-// import ConsultaPais from '@/components/pages/paises/Consult.vue'
-// import NovoPais from '@/components/pages/paises/Edit.vue'
-// import ConsultaEstado from '@/components/pages/estados/Consult.vue'
-// import NovoEstado from '@/components/pages/estados/Edit.vue'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
-// import NovaCidade from '@/components/pages/cidades/Edit.vue'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -196,7 +169,7 @@ const notyf = new Notyf();
 export default {
     components: { 
         VueGoodTable, ConsultaCidade
-    },// ConsultaEstado, NovoEstado, ConsultaPais, NovoPais, NovaCidade },
+    },
     data() {
         return {
             entity: {
@@ -215,7 +188,7 @@ export default {
                 rg_ie: "",
                 dataNasc: "",
                 tipoCliente: "",
-                codigoForma: 0,
+                codigoFormaPagamento: 0,
                 dataCadastro: "",
                 dataAlteracao: ""
             },
@@ -261,11 +234,11 @@ export default {
             ClientesService.getById(this.entity.codigo).then(function (data) {
                 vm.entity = data.data;
 
-                CidadesService.getById(vm.entity.codigoEstado).then(function (data) {
+                CidadesService.getById(vm.entity.codigoCidade).then(function (data) {
                     vm.cidadeSelecionada = data.data["cidade"];
                 });
 
-                // CidadesService.getById(vm.entity.codigoEstado).then(function (data) {
+                // FormasService.getById(vm.entity.codigoFormaPagamento).then(function (data) {
                 //     vm.formaSelecionada = data.data["formaPagamento"];
                 // });
             });

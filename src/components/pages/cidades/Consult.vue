@@ -14,7 +14,7 @@
             >
                 <template slot="table-row" slot-scope="props">
                     <span v-if="props.column.field == 'btn'">
-                        <a @click.prevent="selectEstado(props.row)" class="btn btn-sm btn-primary" href="#">Selecionar</a>
+                        <a @click.prevent="selectCidade(props.row)" class="btn btn-sm btn-primary" href="#">Selecionar</a>
                     </span>
                 </template>
             </vue-good-table>
@@ -50,10 +50,10 @@ export default {
                     label: "DDD",
                     field: "ddd"
                 },
-                // {
-                //     label: "UF",
-                //     field: "uf"
-                // },
+                {
+                    label: "UF",
+                    field: "estado.uf"
+                },
                 {
                     label:"Ação",
                     sortable: false,

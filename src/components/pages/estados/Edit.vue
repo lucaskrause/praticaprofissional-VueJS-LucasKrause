@@ -23,7 +23,7 @@
                 <div class="input-group">
                     <input id="pais" type="text" class="form-control" v-model="paisSelecionado" readonly/>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consulta-pais class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consult-pais class="btn btn-info ml-1">Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -34,13 +34,9 @@
             <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
         </div>
 
-        <b-modal id="modal-consulta-pais" size="xl" title="Consultar País" hide-footer>
+        <b-modal id="modal-consult-pais" size="xl" title="Consultar País" hide-footer>
             <ConsultaPais @emit-pais="selectPais" />
         </b-modal>
-        
-        <!-- <b-modal id="modal-new-pais" size="xl" title="Cadastrar País" hide-footer>
-            <NovoPais  @emit-pais="selectPais" :isModal="true" />
-        </b-modal> -->
     </div>
 
 </template>
@@ -49,14 +45,15 @@
 import {PaisesService} from '@/services/paises.service'
 import {EstadosService} from '@/services/estados.service'
 import ConsultaPais from '@/components/pages/paises/Consult.vue'
-// import NovoPais from '@/components/pages/paises/Edit.vue'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
 const notyf = new Notyf();
 
 export default {
-    components: { ConsultaPais }, //, NovoPais 
+    components: {
+        ConsultaPais
+    },
     props: {
         isModal: {
             type: Boolean,
@@ -95,7 +92,7 @@ export default {
             this.paisSelecionado = entity.pais;
             this.entity.codigoPais = entity.codigo;
             this.$bvModal.hide("modal-new-pais");
-            this.$bvModal.hide("modal-consulta-pais");
+            this.$bvModal.hide("modal-consult-pais");
         },
         save() {
             if (this.isSubmiting) return;

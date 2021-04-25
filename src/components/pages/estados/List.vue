@@ -56,10 +56,10 @@ export default {
                     label: "UF",
                     field: "uf"
                 },
-                // {
-                //     label: "País",
-                //     field: "pais"
-                // },
+                {
+                    label: "País",
+                    field: "pais.pais"
+                },
                 {
                     label:"Ação",
                     sortable: false,
