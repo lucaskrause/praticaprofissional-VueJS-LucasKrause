@@ -99,14 +99,14 @@ export default {
             CidadesService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Cidade " + msg + " com sucesso");
+                vm.isSubmiting = false;
                 if(vm.isModal){
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit("emit-cidade", vm.entity);
                 } else {
                     vm.$router.push('/cidades');
                 }
-            }).then(() => vm.isSubmiting = false);
-            // .catch((errors) => Helper.saveErrorCallBack(errors.response))
+            }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }
     }
 }

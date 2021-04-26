@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import {FormaPagamentoService} from '@/services/formaPagamento.service'
+import {FormasPagamentoService} from '@/services/formasPagamento.service'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -48,7 +48,7 @@ export default {
         const vm = this;
         this.entity.codigo = this.$route.params.codigo;
         if (this.entity.codigo) {
-            FormaPagamentoService.getById(this.entity.codigo).then(function (response) {
+            FormasPagamentoService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
             });
         }
@@ -58,17 +58,17 @@ export default {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
-            FormaPagamentoService.save(this.entity).then(function (response) {
+            FormasPagamentoService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Forma de Pagamento " + msg + " com sucesso");
+                vm.isSubmiting = false;
                 if(vm.isModal){
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit('emit-forma', vm.entity);
                 } else {
-                    vm.$router.push('/formaPagamento');
+                    vm.$router.push('/formasPagamento');
                 }
-            }).then(() => vm.isSubmiting = false);
-            // .catch((errors) => Helper.saveErrorCallBack(errors.response))
+            }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
             
         }
     }

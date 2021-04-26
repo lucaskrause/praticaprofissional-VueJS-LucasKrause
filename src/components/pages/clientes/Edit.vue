@@ -16,15 +16,15 @@
             <div class="col-3">
                 <label>Sexo</label>
                 <br/>
-                <label class="radio-inline mr-2"><input type="radio" value="Feminino"> Feminino</label>
-                <label class="radio-inline"><input type="radio" value="Masculino"> Masculino</label>
+                <label class="radio-inline mr-2"><input type="radio" value="Feminino" v-model="entity.sexo"> Feminino</label>
+                <label class="radio-inline"><input type="radio" value="Masculino" v-model="entity.sexo"> Masculino</label>
             </div>
             
             <div class="col-3">
                 <label>Tipo Pessoa</label>
                 <br/>
-                <label class="radio-inline mr-2"><input type="radio" value="Feminino"> Física</label>
-                <label class="radio-inline"><input type="radio" value="Masculino"> Jurídica</label>
+                <label class="radio-inline mr-2"><input type="radio" value="Feminino" v-model="entity.tipo"> Física</label>
+                <label class="radio-inline"><input type="radio" value="Masculino" v-model="entity.tipo"> Jurídica</label>
             </div>
         </div>
 
@@ -103,7 +103,7 @@
                 <div class="input-group">
                     <input id="formaPagamento" type="text" class="form-control" v-model="formaSelecionada" readonly/>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consulta-forma class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consulta-formaPagamento class="btn btn-info ml-1">Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -149,8 +149,13 @@
                 </div>
             </div>
         </div>
+        
         <b-modal id="modal-consulta-cidade" size="xl" title="Consultar Cidade" hide-footer>
             <ConsultaCidade @emit-cidade="selectCidade" />
+        </b-modal>
+        
+        <b-modal id="modal-consulta-formaPagamento" size="xl" title="Consultar Forma de Pagamento" hide-footer>
+            <ConsultaFormaPagamento @emit-forma="selectForma" />
         </b-modal>
     </div>
 </template>
@@ -160,7 +165,9 @@ import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table';
 import {ClientesService} from '@/services/clientes.service'
 import {CidadesService} from '@/services/cidades.service'
+import {FormasPagamentoService} from '@/services/formasPagamento.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
+import ConsultaFormaPagamento from '@/components/pages/formasPagamento/Consult.vue'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -168,7 +175,7 @@ const notyf = new Notyf();
 
 export default {
     components: { 
-        VueGoodTable, ConsultaCidade
+        VueGoodTable, ConsultaCidade, ConsultaFormaPagamento
     },
     data() {
         return {
@@ -238,46 +245,40 @@ export default {
                     vm.cidadeSelecionada = data.data["cidade"];
                 });
 
-                // FormasService.getById(vm.entity.codigoFormaPagamento).then(function (data) {
-                //     vm.formaSelecionada = data.data["formaPagamento"];
-                // });
+                FormasPagamentoService.getById(vm.entity.codigoFormaPagamento).then(function (data) {
+                    vm.formaSelecionada = data.data["formaPagamento"];
+                });
             });
         }
     },
     methods: {
-        selectPais(entity) {
-            this.paisSelecionado = entity.pais;
-            this.entity.codigoPais = entity.codigo;
-            this.$bvModal.hide("modal-new-pais");
-            this.$bvModal.hide("modal-consulta-pais");
-        },
-        selectEstado(entity) {
-            this.estadoSelecionado = entity.estado;
-            this.entity.codigoEstado = entity.codigo;
-            this.$bvModal.hide("modal-new-estado");
-            this.$bvModal.hide("modal-consulta-estado");
-        },
         selectCidade(entity) {
-            this.paisSelecionado = entity.cidade;
-            this.entity.codigoPais = entity.codigo;
+            this.cidadeSelecionada = entity.cidade;
+            this.entity.codigoCidade = entity.codigo;
             this.$bvModal.hide("modal-new-cidade");
             this.$bvModal.hide("modal-consulta-cidade");
+        },
+        selectForma(entity) {
+            this.formaSelecionada = entity.descricao;
+            this.entity.codigoFormaPagamento = entity.codigo;
+            this.$bvModal.hide("modal-new-formaPagamento");
+            this.$bvModal.hide("modal-consulta-formaPagamento");
         },
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
-            CidadesService.save(this.entity).then(function (response) {
+            ClientesService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
-                notyf.success("Cidade " + msg + " com sucesso");
+                notyf.success("Cliente " + msg + " com sucesso");
+                vm.isSubmiting = false;
                 if(vm.isModal){
                     vm.entity.codigo = response.data.codigo;
-                    vm.$emit("emit-cidade", vm.entity);
+                    vm.$emit("emit-cliente", vm.entity);
                 } else {
-                    vm.$router.push('/cidades');
+                    vm.$router.push('/clientes');
                 }
-            }).then(() => vm.isSubmiting = false);
-            // .catch((errors) => Helper.saveErrorCallBack(errors.response))
+            }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }
     }
 }

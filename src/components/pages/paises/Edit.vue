@@ -73,15 +73,14 @@ export default {
             PaisesService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("País " + msg + " com sucesso");
+                vm.isSubmiting = false;
                 if(vm.isModal){
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit('emit-pais', vm.entity);
                 } else {
                     vm.$router.push('/paises');
                 }
-            }).then(() => vm.isSubmiting = false);
-            // .catch((errors) => Helper.saveErrorCallBack(errors.response))
-            
+            }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }
     }
 }

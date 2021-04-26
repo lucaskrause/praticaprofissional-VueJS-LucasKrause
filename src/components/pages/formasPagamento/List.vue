@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-6 text-left"><h2>Formas de Pagamentos</h2></div>
             <div class="col-6 text-right pt-2">
-                <router-link :to="{name: 'FormaPagamentoCad'}" class="btn btn-success">Nova Forma de Pagamento</router-link>
+                <router-link :to="{name: 'FormasPagamentoCad'}" class="btn btn-success">Nova Forma de Pagamento</router-link>
             </div>
         </div>
 
@@ -18,7 +18,7 @@
                 >
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'btn'">
-                            <router-link :to="{name: 'FormaPagamentoEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Editar</router-link>
+                            <router-link :to="{name: 'FormasPagamentoEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Editar</router-link>
                             <a @click.prevent="remove(props.row.codigo)" class="btn btn-sm btn-danger" href="#">Excluir</a>
                         </span>
                     </template>
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-//import {FormaPagamentoService} from '@/services/formaPagamento.service'
+import {FormasPagamentoService} from '@/services/formasPagamento.service'
 import {VueGoodTable} from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
 import {Notyf} from 'notyf';
@@ -70,23 +70,23 @@ export default {
     methods: {
         loadData() {
             const vm = this;
-            // FormaPagamentoService.getAll().then(function (data) {
-            //     vm.totalRecords = data.data.count;
-            //     vm.rows = data.data;
-            // });
+            FormasPagamentoService.getAll().then(function (data) {
+                vm.totalRecords = data.data.count;
+                vm.rows = data.data;
+            });
         },
         remove(codigo) {
             var vm = this;
             var remove = confirm("Deseja realmente excluir?");
             if(remove){
-                // FormaPagamentoService.delete(codigo).then(function (data) {
-                //     if(data.data){
-                //         notyf.success("Forma de Pagamento excluída com sucesso");
-                //         vm.loadData();
-                //     } else {
-                //         notyf.error("Não foi possível excluir a Forma de Pagamento");
-                //     }
-                // });
+                FormasPagamentoService.delete(codigo).then(function (data) {
+                    if(data.data){
+                        notyf.success("Forma de Pagamento excluída com sucesso");
+                        vm.loadData();
+                    } else {
+                        notyf.error("Não foi possível excluir a Forma de Pagamento");
+                    }
+                });
             }
         }
     }

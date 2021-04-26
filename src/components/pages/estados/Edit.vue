@@ -101,14 +101,14 @@ export default {
             EstadosService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Estado " + msg + " com sucesso");
+                vm.isSubmiting = false;
                 if(vm.isModal) {
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit('emit-estado', vm.entity);
                 } else {
                     vm.$router.push('/estados');
                 }
-            }).then(() => vm.isSubmiting = false);
-            // .catch((errors) => Helper.saveErrorCallBack(errors.response))
+            }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }
     }
 }

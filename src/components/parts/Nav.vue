@@ -38,7 +38,8 @@ export default {
                 {id: 1, label: "Cidades",  route: {name: "CidadesList"}},
                 {id: 2, label: "Estados", route: {name: "EstadosList"}},
                 {id: 3, label: "Países", route: {name: "PaisesList"}},
-                {id: 4, label: "Clientes", route: {name: "ClientesList"}},
+                {id: 4, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
+                {id: 5, label: "Clientes", route: {name: "ClientesList"}},
             ],
         }
     },

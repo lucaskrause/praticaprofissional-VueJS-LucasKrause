@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         <div class="col-12 text-right">
-            <b-button v-b-modal.modal-new-pais class="btn btn-success ml-1">Nova Forma de Pagamento</b-button>
+            <b-button v-b-modal.modal-new-formaPagamento class="btn btn-success ml-1">Nova Forma de Pagamento</b-button>
         </div>
         
         <div class="col-12 mt-2">
@@ -20,15 +20,15 @@
             </vue-good-table>
         </div>
         
-        <b-modal id="modal-new-forma" size="xl" title="Cadastrar Forma de Pagamento" hide-footer>
-            <NovaFormaPagamento  @emit-pais="selectForma" :isModal="true" />
+        <b-modal id="modal-new-formaPagamento" size="xl" title="Cadastrar Forma de Pagamento" hide-footer>
+            <NovaFormaPagamento  @emit-forma="selectForma" :isModal="true" />
         </b-modal>
     </div>
 </template>
 
 <script>
-import {FormaPagamentoService} from '@/services/formaPagamento.service'
-import NovaFormaPagamento from '@/components/pages/formaPagamento/Edit.vue'
+import {FormasPagamentoService} from '@/services/formasPagamento.service'
+import NovaFormaPagamento from '@/components/pages/formasPagamento/Edit.vue'
 import {VueGoodTable} from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
 
@@ -60,7 +60,7 @@ export default {
     },
     created() {
         const vm = this;
-        FormaPagamentoService.getAll().then(function (data) {
+        FormasPagamentoService.getAll().then(function (data) {
             vm.totalRecords = data.data.count;
             vm.rows = data.data; 
         });

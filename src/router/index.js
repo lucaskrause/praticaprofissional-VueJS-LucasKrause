@@ -12,6 +12,9 @@ const EstadoEdit = () => import("@/components/pages/estados/Edit");
 const CidadeList = () => import("@/components/pages/cidades/List");
 const CidadeEdit = () => import("@/components/pages/cidades/Edit");
 
+const FormaPagamentoList = () => import("@/components/pages/formasPagamento/List");
+const FormaPagamentoEdit = () => import("@/components/pages/formasPagamento/Edit");
+
 const ClienteList = () => import("@/components/pages/clientes/List");
 const ClienteEdit = () => import("@/components/pages/clientes/Edit");
 
@@ -48,7 +51,7 @@ const routes = [
                 name: 'PaisesEdit',
                 component: PaisesEdit,
                 meta: {
-                    label: "Cadastro de País"
+                    label: "Editar País"
                 },
             },
             
@@ -66,7 +69,7 @@ const routes = [
                 name: 'EstadosCad',
                 component: EstadoEdit,
                 meta: {
-                    label: "Cadastro de Cidade"
+                    label: "Cadastro de Estado"
                 },
             },
             {
@@ -74,7 +77,7 @@ const routes = [
                 name: 'EstadosEdit',
                 component: EstadoEdit,
                 meta: {
-                    label: "Cadastro de País"
+                    label: "Editar Estado"
                 },
             },
             
@@ -100,7 +103,33 @@ const routes = [
                 name: 'CidadesEdit',
                 component: CidadeEdit,
                 meta: {
-                    label: "Cadastro de País"
+                    label: "Editar Cidade"
+                },
+            },
+            
+            // FORMAS DE PAGAMENTO
+            {
+                path: 'formasPagamento',
+                name: 'FormasPagamentoList',
+                component: FormaPagamentoList,
+                meta: {
+                    label: "Lista de Formas de Pagamento"
+                },
+            },
+            {
+                path: 'formasPagamento/cadastrar',
+                name: 'FormasPagamentoCad',
+                component: FormaPagamentoEdit,
+                meta: {
+                    label: "Cadastro de Formas de Pagamento"
+                },
+            },
+            {
+                path: 'formasPagamento/editar/:codigo',
+                name: 'FormasPagamentoEdit',
+                component: FormaPagamentoEdit,
+                meta: {
+                    label: "Editar Forma de Pagamento"
                 },
             },
 
@@ -118,7 +147,15 @@ const routes = [
                 name: 'ClientesCad',
                 component: ClienteEdit,
                 meta: {
-                    label: "Cadastro de Clientes"
+                    label: "Cadastro de Cliente"
+                },
+            },
+            {
+                path: 'clientes/editar/:codigo',
+                name: 'ClientesEdit',
+                component: ClienteEdit,
+                meta: {
+                    label: "Editar Cliente"
                 },
             },
         ]
