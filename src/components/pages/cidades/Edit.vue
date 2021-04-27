@@ -29,9 +29,23 @@
             </div>
         </div>
 
-        <div class="text-right mt-4">
-            <router-link v-if="!isModal" :to="{name: 'CidadesList'}" class="btn btn-danger mr-3">Voltar</router-link>
-            <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
+        <div class="row form-group align-items-end mt-5">
+            <div class="col-2">
+                <label>Data de Cadastro</label>
+                <input id="dataCadastro" type="text" class="form-control" v-model="entity.dtCadastro" readonly/>
+            </div>
+            
+            <div class="col-2">
+                <label>Data de Alteração</label>
+                <input id="dataAlteracao" type="text" class="form-control" v-model="entity.dtAlteracao" readonly/>
+            </div>
+
+            <div class="col-8">
+                <div class="text-right">
+                    <router-link v-if="!isModal" :to="{name: 'CidadesList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
+                </div>
+            </div>
         </div>
 
         <b-modal id="modal-consulta-estado" size="xl" title="Consultar Estado" hide-footer>
@@ -41,7 +55,6 @@
 </template>
 
 <script>
-import {EstadosService} from '@/services/estados.service'
 import {CidadesService} from '@/services/cidades.service'
 import ConsultaEstado from '@/components/pages/estados/Consult.vue'
 import {Notyf} from 'notyf';
@@ -68,7 +81,6 @@ export default {
                 codigoEstado: 0
             },
             estadoSelecionado: "",
-            estados: [],
             isSubmiting: false
         }
     },
@@ -78,10 +90,8 @@ export default {
         if(this.entity.codigo){
             CidadesService.getById(this.entity.codigo).then(function (data) {
                 vm.entity = data.data;
-
-                EstadosService.getById(vm.entity.codigoEstado).then(function (data) {
-                    vm.estadoSelecionado = data.data["estado"];
-                });
+                vm.estadoSelecionado = data.data.estado.estado;
+                vm.$delete(vm.entity, 'estado');
             });
         }
     },

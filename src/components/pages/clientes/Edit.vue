@@ -23,8 +23,8 @@
             <div class="col-3">
                 <label>Tipo Pessoa</label>
                 <br/>
-                <label class="radio-inline mr-2"><input type="radio" value="Feminino" v-model="entity.tipo"> Física</label>
-                <label class="radio-inline"><input type="radio" value="Masculino" v-model="entity.tipo"> Jurídica</label>
+                <label class="radio-inline mr-2"><input type="radio" value="Física" v-model="entity.tipoPessoa"> Física</label>
+                <label class="radio-inline"><input type="radio" value="Jurídica" v-model="entity.tipoPessoa"> Jurídica</label>
             </div>
         </div>
 
@@ -74,17 +74,17 @@
         <div class="row form-group">
             <div class="col-3">
                 <label>CPF / CNPJ</label>
-                <input id="cpf_cnpj" type="text" class="form-control" v-model="entity.cpf_cnpj"/>
+                <input id="cpfCnpj" type="text" class="form-control" v-model="entity.cpfCnpj"/>
             </div>
 
             <div class="col-3">
                 <label>RG / IE</label>
-                <input id="rg_ie" type="text" class="form-control" v-model="entity.rg_ie"/>
+                <input id="rgIe" type="text" class="form-control" v-model="entity.rgIe"/>
             </div>
 
             <div class="col-3">
                 <label>Data de Nascimento / Fundação</label>
-                <input id="dataNasc" type="date" class="form-control" v-model="entity.dataNasc"/>
+                <input id="dtNascFundacao" type="date" class="form-control" v-model="entity.dtNascFundacao"/>
             </div>
         </div>
 
@@ -134,12 +134,12 @@
         <div class="row form-group align-items-end mt-5">
             <div class="col-2">
                 <label>Data de Cadastro</label>
-                <input id="dataCadastro" type="text" class="form-control" v-model="entity.dataCadastro" readonly/>
+                <input id="dataCadastro" type="text" class="form-control" v-model="entity.dtCadastro" readonly/>
             </div>
             
             <div class="col-2">
                 <label>Data de Alteração</label>
-                <input id="dataAlteracao" type="text" class="form-control" v-model="entity.dataAlteracao" readonly/>
+                <input id="dataAlteracao" type="text" class="form-control" v-model="entity.dtAlteracao" readonly/>
             </div>
 
             <div class="col-8">
@@ -164,8 +164,6 @@
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table';
 import {ClientesService} from '@/services/clientes.service'
-import {CidadesService} from '@/services/cidades.service'
-import {FormasPagamentoService} from '@/services/formasPagamento.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
 import ConsultaFormaPagamento from '@/components/pages/formasPagamento/Consult.vue'
 import {Notyf} from 'notyf';
@@ -183,7 +181,7 @@ export default {
                 codigo: 0,
                 nome: "",
                 sexo: "",
-                tipo: "",
+                tipoPessoa: "",
                 logradouro: "",
                 complemento: "",
                 bairro: "",
@@ -191,18 +189,16 @@ export default {
                 codigoCidade: 0,
                 telefone: "",
                 email: "",
-                cpf_cnpj: "",
-                rg_ie: "",
-                dataNasc: "",
+                cpfCnpj: "",
+                rgIe: "",
+                dtNascFundacao: "",
                 tipoCliente: "",
                 codigoFormaPagamento: 0,
-                dataCadastro: "",
-                dataAlteracao: ""
+                dtCadastro: "",
+                dtAlteracao: ""
             },
             cidadeSelecionada: "",
-            cidades: [],
             formaSelecionada: "",
-            formas: [],
             dependentes: {
                 columns: [
                     {
@@ -216,7 +212,7 @@ export default {
                     },
                     {
                         label: "CPF / CNPJ",
-                        field: "cpf_cnpj"
+                        field: "cpfCnpj"
                     },
                     {
                         label: "Telefone",
@@ -240,14 +236,10 @@ export default {
         if(this.entity.codigo){
             ClientesService.getById(this.entity.codigo).then(function (data) {
                 vm.entity = data.data;
-
-                CidadesService.getById(vm.entity.codigoCidade).then(function (data) {
-                    vm.cidadeSelecionada = data.data["cidade"];
-                });
-
-                FormasPagamentoService.getById(vm.entity.codigoFormaPagamento).then(function (data) {
-                    vm.formaSelecionada = data.data["formaPagamento"];
-                });
+                vm.cidadeSelecionada = data.data.cidade.cidade;
+                vm.formaSelecionada = data.data.formaPagamento.descricao;
+                vm.$delete(vm.entity, 'cidade');
+                vm.$delete(vm.entity, 'formaPagamento');
             });
         }
     },
@@ -278,7 +270,7 @@ export default {
                 } else {
                     vm.$router.push('/clientes');
                 }
-            }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
+            }); //.catch(function (errors) {Helper.saveErrorCallBack(errors.response)});
         }
     }
 }

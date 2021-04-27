@@ -24,9 +24,23 @@
             </div>
         </div>
 
-        <div class="text-right mt-4">
-            <router-link v-if="!isModal" :to="{name: 'PaisesList'}" class="btn btn-danger mr-3">Voltar</router-link>
-            <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
+        <div class="row form-group align-items-end mt-5">
+            <div class="col-2">
+                <label>Data de Cadastro</label>
+                <input id="dataCadastro" type="text" class="form-control" v-model="entity.dtCadastro" readonly/>
+            </div>
+            
+            <div class="col-2">
+                <label>Data de Alteração</label>
+                <input id="dataAlteracao" type="text" class="form-control" v-model="entity.dtAlteracao" readonly/>
+            </div>
+
+            <div class="col-8">
+                <div class="text-right">
+                    <router-link v-if="!isModal" :to="{name: 'PaisesList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
+                </div>
+            </div>
         </div>
     </div>
 </template>

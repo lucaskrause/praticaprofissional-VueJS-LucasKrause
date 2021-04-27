@@ -29,9 +29,23 @@
             </div>
         </div>
 
-        <div class="text-right mt-4">
-            <router-link v-if="!isModal" :to="{name: 'EstadosList'}" class="btn btn-danger mr-3">Voltar</router-link>
-            <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
+        <div class="row form-group align-items-end mt-5">
+            <div class="col-2">
+                <label>Data de Cadastro</label>
+                <input id="dataCadastro" type="text" class="form-control" v-model="entity.dtCadastro" readonly/>
+            </div>
+            
+            <div class="col-2">
+                <label>Data de Alteração</label>
+                <input id="dataAlteracao" type="text" class="form-control" v-model="entity.dtAlteracao" readonly/>
+            </div>
+
+            <div class="col-8">
+                <div class="text-right">
+                    <router-link v-if="!isModal" :to="{name: 'EstadosList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
+                </div>
+            </div>
         </div>
 
         <b-modal id="modal-consult-pais" size="xl" title="Consultar País" hide-footer>
@@ -42,7 +56,6 @@
 </template>
 
 <script>
-import {PaisesService} from '@/services/paises.service'
 import {EstadosService} from '@/services/estados.service'
 import ConsultaPais from '@/components/pages/paises/Consult.vue'
 import {Notyf} from 'notyf';
@@ -69,7 +82,6 @@ export default {
                 codigoPais: 0
             },
             paisSelecionado: "",
-            paises: [],
             isSubmiting: false
         }
     },
@@ -79,10 +91,8 @@ export default {
         if(this.entity.codigo) {
             EstadosService.getById(this.entity.codigo).then(function (data) {
                 vm.entity = data.data;
-                
-                PaisesService.getById(vm.entity.codigoPais).then(function (data) {
-                    vm.paisSelecionado = data.data["pais"];
-                });
+                vm.paisSelecionado = data.data.pais.pais;
+                vm.$delete(vm.entity, 'pais');
             });
             
         }

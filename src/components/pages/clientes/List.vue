@@ -16,6 +16,12 @@
                     :search-options="{enabled: false}"
                     :pagination-options="{perPage: 5, enabled: true}"
                 >
+                    <template slot="table-row" slot-scope="props">
+                        <span v-if="props.column.field == 'btn'">
+                            <router-link :to="{name: 'ClientesEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Editar</router-link>
+                            <a @click.prevent="remove(props.row.codigo)" class="btn btn-sm btn-danger" href="#">Excluir</a>
+                        </span>
+                    </template>
                 </vue-good-table>
             </div>
         </div>
@@ -23,8 +29,13 @@
 </template>
 
 <script>
-import 'vue-good-table/dist/vue-good-table.css'
+import {ClientesService} from '@/services/clientes.service';
+import 'vue-good-table/dist/vue-good-table.css';
 import {VueGoodTable} from 'vue-good-table';
+import {Notyf} from 'notyf';
+import 'notyf/notyf.min.css';
+
+const notyf = new Notyf();
 
 export default {
     name: "ClientesList",
@@ -43,7 +54,7 @@ export default {
                 },
                 {
                     label: "CPF / CNPJ",
-                    field: "cpf_cnpj"
+                    field: "cpfCnpj"
                 },
                 {
                     label: "Telefone",
@@ -51,7 +62,11 @@ export default {
                 },
                 {
                     label: "Tipo",
-                    field: "tipo"
+                    field: "tipoPessoa"
+                },
+                {
+                    label: "Ação",
+                    field: "btn"
                 }
             ],
             rows: [],
@@ -59,5 +74,31 @@ export default {
             totalRecords: 0
         }
     },
+    created() {
+        this.loadData();
+    },
+    methods: {
+        loadData() {
+            const vm = this;
+            ClientesService.getAll().then(function (data) {
+                vm.totalRecords = data.data.count;
+                vm.rows = data.data;
+            });
+        },
+        remove(codigo) {
+            const vm = this;
+            var remove = confirm("Deseja realmente excluir?");
+            if(remove){
+                ClientesService.delete(codigo).then(function (response) {
+                    if(response.data){
+                        notyf.success("Estado excluido com sucesso");
+                        vm.loadData();
+                    } else {
+                        notyf.error("Não foi possivel excluir o estado");
+                    }
+                });
+            }
+        }
+    }
 }
 </script>
