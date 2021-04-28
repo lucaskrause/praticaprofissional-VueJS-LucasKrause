@@ -161,20 +161,19 @@
 </template>
 
 <script>
-import 'vue-good-table/dist/vue-good-table.css'
-import {VueGoodTable} from 'vue-good-table';
 import {ClientesService} from '@/services/clientes.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
 import ConsultaFormaPagamento from '@/components/pages/formasPagamento/Consult.vue'
+import 'vue-good-table/dist/vue-good-table.css'
+import {VueGoodTable} from 'vue-good-table';
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
 const notyf = new Notyf();
 
 export default {
-    components: { 
-        VueGoodTable, ConsultaCidade, ConsultaFormaPagamento
-    },
+    name: "ClientesEdit",
+    components: { VueGoodTable, ConsultaCidade, ConsultaFormaPagamento },
     data() {
         return {
             entity: {

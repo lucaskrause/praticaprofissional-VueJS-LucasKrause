@@ -15,8 +15,14 @@ const CidadeEdit = () => import("@/components/pages/cidades/Edit");
 const FormaPagamentoList = () => import("@/components/pages/formasPagamento/List");
 const FormaPagamentoEdit = () => import("@/components/pages/formasPagamento/Edit");
 
+const CondicaoPagamentoList = () => import("@/components/pages/condicoesPagamento/List");
+const CondicaoPagamentoEdit = () => import("@/components/pages/condicoesPagamento/Edit");
+
 const ClienteList = () => import("@/components/pages/clientes/List");
 const ClienteEdit = () => import("@/components/pages/clientes/Edit");
+
+const PrecoList = () => import("@/components/pages/precificacoes/List");
+const PrecoEdit = () => import("@/components/pages/precificacoes/Edit");
 
 Vue.use(VueRouter)
 
@@ -132,6 +138,32 @@ const routes = [
                     label: "Editar Forma de Pagamento"
                 },
             },
+            
+            // CONDIÇÕES DE PAGAMENTO
+            {
+                path: 'condicoesPagamento',
+                name: 'CondicoesPagamentoList',
+                component: CondicaoPagamentoList,
+                meta: {
+                    label: "Lista de Condicoes de Pagamento"
+                },
+            },
+            {
+                path: 'condicoesPagamento/cadastrar',
+                name: 'CondicoesPagamentoCad',
+                component: CondicaoPagamentoEdit,
+                meta: {
+                    label: "Cadastro de Condicoes de Pagamento"
+                },
+            },
+            {
+                path: 'condicoesPagamento/editar/:codigo',
+                name: 'CondicoesPagamentoEdit',
+                component: CondicaoPagamentoEdit,
+                meta: {
+                    label: "Editar Condição de Pagamento"
+                },
+            },
 
             // CLIENTES
             {
@@ -156,6 +188,32 @@ const routes = [
                 component: ClienteEdit,
                 meta: {
                     label: "Editar Cliente"
+                },
+            },
+            
+            // PRECIFICAÇÕES
+            {
+                path: 'precificacoes',
+                name: 'PrecificacoesList',
+                component: PrecoList,
+                meta: {
+                    label: "Lista de Preços"
+                },
+            },
+            {
+                path: 'precificacoes/cadastrar',
+                name: 'PrecificacoesCad',
+                component: PrecoEdit,
+                meta: {
+                    label: "Cadastro de Preço"
+                },
+            },
+            {
+                path: 'precificacoes/editar/:codigo',
+                name: 'PrecificacoesEdit',
+                component: PrecoEdit,
+                meta: {
+                    label: "Editar Preço"
                 },
             },
         ]

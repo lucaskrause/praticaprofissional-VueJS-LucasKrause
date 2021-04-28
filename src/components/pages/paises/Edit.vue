@@ -53,6 +53,7 @@ import 'notyf/notyf.min.css';
 const notyf = new Notyf();
 
 export default {
+    name: "PaisesEdit",
     props: {
         isModal: {
             type: Boolean,
