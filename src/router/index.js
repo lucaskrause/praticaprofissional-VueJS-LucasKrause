@@ -3,14 +3,20 @@ import VueRouter from 'vue-router';
 
 const Home = () => import("@/components/Home");
 
-const PaisesList = () => import("@/components/pages/paises/List");
-const PaisesEdit = () => import("@/components/pages/paises/Edit");
+const PaisList = () => import("@/components/pages/paises/List");
+const PaisEdit = () => import("@/components/pages/paises/Edit");
 
 const EstadoList = () => import("@/components/pages/estados/List");
 const EstadoEdit = () => import("@/components/pages/estados/Edit");
 
 const CidadeList = () => import("@/components/pages/cidades/List");
 const CidadeEdit = () => import("@/components/pages/cidades/Edit");
+
+const CotaList = () => import("@/components/pages/cotas/List");
+const CotaEdit = () => import("@/components/pages/cotas/Edit");
+
+const ReservaList = () => import("@/components/pages/reservas/List");
+const ReservaEdit = () => import("@/components/pages/reservas/Edit");
 
 const FormaPagamentoList = () => import("@/components/pages/formasPagamento/List");
 const FormaPagamentoEdit = () => import("@/components/pages/formasPagamento/Edit");
@@ -39,7 +45,7 @@ const routes = [
             {
                 path: 'paises',
                 name: 'PaisesList',
-                component: PaisesList,
+                component: PaisList,
                 meta: {
                     label: "Lista de Paises"
                 },
@@ -47,7 +53,7 @@ const routes = [
             {
                 path: 'paises/cadastrar',
                 name: 'PaisesCad',
-                component: PaisesEdit,
+                component: PaisEdit,
                 meta: {
                     label: "Cadastro de País"
                 },
@@ -55,7 +61,7 @@ const routes = [
             {
                 path: 'paises/editar/:codigo',
                 name: 'PaisesEdit',
-                component: PaisesEdit,
+                component: PaisEdit,
                 meta: {
                     label: "Editar País"
                 },
@@ -162,6 +168,58 @@ const routes = [
                 component: CondicaoPagamentoEdit,
                 meta: {
                     label: "Editar Condição de Pagamento"
+                },
+            },
+            
+            // COTAS
+            {
+                path: 'cotas',
+                name: 'CotasList',
+                component: CotaList,
+                meta: {
+                    label: "Lista de Cotas"
+                },
+            },
+            {
+                path: 'cotas/cadastrar',
+                name: 'CotasCad',
+                component: CotaEdit,
+                meta: {
+                    label: "Cadastro de Cotas"
+                },
+            },
+            {
+                path: 'cotas/editar/:codigo',
+                name: 'CotasEdit',
+                component: CotaEdit,
+                meta: {
+                    label: "Editar Cota"
+                },
+            },
+            
+            // RESERVAS
+            {
+                path: 'reservas',
+                name: 'ReservasList',
+                component: ReservaList,
+                meta: {
+                    label: "Lista de Reservas"
+                },
+            },
+            {
+                path: 'reservas/cadastrar',
+                name: 'ReservasCad',
+                component: ReservaEdit,
+                meta: {
+                    label: "Reservar"
+                },
+            },
+            {
+                path: 'reservas/editar/:codigo',
+                name: 'ReservasEdit',
+                component: CotaEdit,
+                meta: {
+                    label: "Editar Reserva"
                 },
             },
 

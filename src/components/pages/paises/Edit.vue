@@ -2,10 +2,10 @@
     <div class="col-12">
         <h2 v-if="!isModal">Cadastro de País</h2>
 
-        <div class="row">
+        <div class="row form-group">
             <div class="col-1">
                 <label>Código</label>
-                <input id="codigo" type="text" class="form-control" v-model="entity.codigo" readonly/>
+                <input id="codigo" type="number" class="form-control" v-model="entity.codigo" readonly/>
             </div>
 
             <div class="col-5">

@@ -43,7 +43,7 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: 'number'
+                    type: "number"
                 },
                 {
                     label: "Estado",

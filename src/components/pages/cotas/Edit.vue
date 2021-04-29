@@ -1,6 +1,6 @@
 <template>
     <div class="col-12">
-        <h2 v-if="!isModal">Cadastro de Condição de Pagamento</h2>
+        <h2 v-if="!isModal">Cadastro de Cota</h2>
 
         <div class="row form-group">
             <div class="col-1">
@@ -8,24 +8,31 @@
                 <input id="codigo" type="number" class="form-control" v-model="entity.codigo" readonly/>
             </div>
 
+            <div class="col-4">
+                <label>Cliente</label>
+                <div class="input-group">
+                    <input id="cliente" type="text" class="form-control" v-model="clienteSelecionado" readonly/>
+                    <span class="input-group-btn">
+                        <b-button v-b-modal.modal-consult-cliente class="btn btn-info ml-1">Buscar</b-button>
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-2 form-group">
+                <label>Valor</label>
+                <input id="valor" type="number" class="form-control" v-model="entity.valor"/>
+            </div>
+        </div>
+
+        <div class="row form-group">
             <div class="col-3">
-                <label>Condição de Pagamento</label>
-                <input id="valor" type="text" class="form-control" v-model="entity.descricao"/>
+                <label>Data de Início</label>
+                <input id="dtInicio" type="date" class="form-control" v-model="entity.dtInicio"/>
             </div>
 
-            <div class="col-2">
-                <label>Juros (%)</label>
-                <input id="juros" type="number" class="form-control" v-model="entity.juros"/>
-            </div>
-
-            <div class="col-2">
-                <label>Multa (%)</label>
-                <input id="multa" type="number" class="form-control" v-model="entity.multa"/>
-            </div>
-
-            <div class="col-2">
-                <label>Desconto (%)</label>
-                <input id="desconto" type="number" class="form-control" v-model="entity.desconto"/>
+            <div class="col-3">
+                <label>Data de Término</label>
+                <input id="dtTermino" type="date" class="form-control" v-model="entity.dtTermino"/>
             </div>
         </div>
 
@@ -42,7 +49,7 @@
 
             <div class="col-8">
                 <div class="text-right">
-                    <router-link v-if="!isModal" :to="{name: 'PrecificacoesList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <router-link v-if="!isModal" :to="{name: 'CotasList'}" class="btn btn-danger mr-3">Voltar</router-link>
                     <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
                 </div>
             </div>
@@ -51,14 +58,14 @@
 </template>
 
 <script>
-import {PrecificacoesService} from '@/services/precificacoes.service'
+import {CotasService} from '@/services/cotas.service'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
 const notyf = new Notyf();
 
 export default {
-    name: "CondicoesPagamentosEdit",
+    name: "CotasEdit",
     props: {
         isModal: {
             type: Boolean,
@@ -69,13 +76,14 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                descricao: "",
-                multa: "",
-                juros: "",
-                desconto: "",
+                codigoCliente: "",
+                valor: "",
+                dtInicio: "",
+                dtTermino: "",
                 dtCadastro: "",
                 dtAlteracao: ""
             },
+            clienteSelecionada: "",
             isSubmiting: false
         }
     },
@@ -83,7 +91,7 @@ export default {
         const vm = this;
         this.entity.codigo = this.$route.params.codigo;
         if (this.entity.codigo) {
-            PrecificacoesService.getById(this.entity.codigo).then(function (response) {
+            CotasService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
             });
         }
@@ -93,15 +101,15 @@ export default {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
-            PrecificacoesService.save(this.entity).then(function (response) {
+            CotasService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
-                notyf.success("Preço " + msg + " com sucesso");
+                notyf.success("País " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 if(vm.isModal){
                     vm.entity.codigo = response.data.codigo;
-                    vm.$emit('emit-preco', vm.entity);
+                    vm.$emit('emit-pais', vm.entity);
                 } else {
-                    vm.$router.push('/precificacoes');
+                    vm.$router.push('/cotas');
                 }
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }

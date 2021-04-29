@@ -46,6 +46,8 @@ export default {
                 {id: 5, label: "Clientes", route: {name: "ClientesList"}},
                 {id: 6, label: "Precificações", route: {name: "PrecificacoesList"}},
                 {id: 7, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
+                {id: 8, label: "Cotas", route: {name: "CotasList"}},
+                {id: 9, label: "Reservas", route: {name: "ReservasList"}},
             ],
             // subGroups: [
             //     {id:, group: 1, label: "Empresa", route: {name: "EmpresasList"}}

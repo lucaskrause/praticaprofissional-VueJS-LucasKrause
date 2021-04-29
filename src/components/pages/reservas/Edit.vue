@@ -1,6 +1,6 @@
 <template>
     <div class="col-12">
-        <h2 v-if="!isModal">Cadastro de Preço</h2>
+        <h2>Reservar</h2>
 
         <div class="row form-group">
             <div class="col-1">
@@ -8,23 +8,35 @@
                 <input id="codigo" type="number" class="form-control" v-model="entity.codigo" readonly/>
             </div>
 
-            <div class="col-2">
-                <label>Valor</label>
-                <input id="valor" type="number" class="form-control" v-model="entity.valor"/>
+            <div class="col-4">
+                <label>Cliente</label>
+                <div class="input-group">
+                    <input id="cliente" type="text" class="form-control" v-model="clienteSelecionado" readonly/>
+                    <span class="input-group-btn">
+                        <b-button v-b-modal.modal-consult-cliente class="btn btn-info ml-1">Buscar</b-button>
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-3 form-group">
+                <label>Quantidade de Pessoas</label>
+                <input id="qtdePessoas" type="number" class="form-control" v-model="entity.qtdePessoas"/>
             </div>
 
             <div class="col-3">
-                <label>Quantidade de Pessoas</label>
-                <input id="sigla" type="number" class="form-control" v-model="entity.qtdePessoas"/>
+                <label>Data da Reserva</label>
+                <input id="dtReserva" type="date" class="form-control" v-model="entity.dtReserva"/>
             </div>
+        </div>
 
+        <div class="row form-group">
             <div class="col-3">
                 <label>Tipo</label>
-                <select id="tipo" class="form-control" v-model="entity.tipo">
+                <select class="form-control" v-model="entity.tipo">
                     <option selected>Selecione...</option>
                     <option value="Campo">Campo</option>
                     <option value="Sede Social">Sede Social</option>
-                    <option value="Sede Social e Campo">Sede Social e Campo</option>
+                    <option value="Sede Social + Campo">Sede Social + Campo</option>
                 </select>
             </div>
         </div>
@@ -42,7 +54,7 @@
 
             <div class="col-8">
                 <div class="text-right">
-                    <router-link v-if="!isModal" :to="{name: 'PrecificacoesList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <router-link :to="{name: 'ReservasList'}" class="btn btn-danger mr-3">Voltar</router-link>
                     <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
                 </div>
             </div>
@@ -51,28 +63,26 @@
 </template>
 
 <script>
-import {PrecificacoesService} from '@/services/precificacoes.service'
+import {ReservasService} from '@/services/reservas.service'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
 const notyf = new Notyf();
 
 export default {
-    name: "PrecificacoesEdit",
-    props: {
-        isModal: {
-            type: Boolean,
-            default: false
-        }
-    },
+    name: "CotasEdit",
     data() {
         return {
             entity: {
                 codigo: 0,
-                valor: "",
+                codigoCliente: "",
                 qtdePessoas: "",
-                tipo: ""
+                dtReserva: "",
+                tipo: "",
+                dtCadastro: "",
+                dtAlteracao: ""
             },
+            clienteSelecionada: "",
             isSubmiting: false
         }
     },
@@ -80,7 +90,7 @@ export default {
         const vm = this;
         this.entity.codigo = this.$route.params.codigo;
         if (this.entity.codigo) {
-            PrecificacoesService.getById(this.entity.codigo).then(function (response) {
+            ReservasService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
             });
         }
@@ -90,16 +100,11 @@ export default {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
-            PrecificacoesService.save(this.entity).then(function (response) {
-                const msg = vm.entity.codigo ? "editado" : 'criado';
-                notyf.success("Preço " + msg + " com sucesso");
+            ReservasService.save(this.entity).then(function () {
+                const msg = vm.entity.codigo ? "editada" : 'criada';
+                notyf.success("Reserva " + msg + " com sucesso");
                 vm.isSubmiting = false;
-                if(vm.isModal){
-                    vm.entity.codigo = response.data.codigo;
-                    vm.$emit('emit-preco', vm.entity);
-                } else {
-                    vm.$router.push('/precificacoes');
-                }
+                vm.$router.push('/reservas');
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }
     }

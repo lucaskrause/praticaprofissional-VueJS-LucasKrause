@@ -46,7 +46,7 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: 'number'
+                    type: "number"
                 },
                 {
                     label: "Condição de Pagamento",

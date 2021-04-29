@@ -1,9 +1,9 @@
 <template>
     <div class="col-12">
         <div class="row">
-            <div class="col-6 text-left"><h2>Países</h2></div>
+            <div class="col-6 text-left"><h2>Reservas</h2></div>
             <div class="col-6 text-right pt-2">
-                <router-link :to="{name: 'PaisesCad'}" class="btn btn-success">Novo País</router-link>
+                <router-link :to="{name: 'ReservasCad'}" class="btn btn-success">Nova Reserva</router-link>
             </div>
         </div>
 
@@ -18,7 +18,7 @@
                 >
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'btn'">
-                            <router-link :to="{name: 'PaisesEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Editar</router-link>
+                            <router-link :to="{name: 'ReservasEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Editar</router-link>
                             <a @click.prevent="remove(props.row.codigo)" class="btn btn-sm btn-danger" href="#">Excluir</a>
                         </span>
                     </template>
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import {PaisesService} from '@/services/paises.service'
+import {ReservasService} from '@/services/reservas.service'
 import {VueGoodTable} from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
 import {Notyf} from 'notyf';
@@ -38,7 +38,7 @@ import 'notyf/notyf.min.css';
 const notyf = new Notyf();
 
 export default {
-    name: "PaisesList",
+    name: "CotasList",
     components: { VueGoodTable },
     data () {
         return {
@@ -49,17 +49,17 @@ export default {
                     type: "number"
                 },
                 {
-                    label: "País",
-                    field: "pais"
+                    label: "Cliente",
+                    field: "cliente.nome"
                 },
                 {
-                    label: "Sigla",
-                    field: "sigla"
-                },
-                {
-                    label: "DDI",
-                    field: "ddi",
+                    label: "Quantidade de Pessoas",
+                    field: "qtdePessoas",
                     type: "number"
+                },
+                {
+                    label: "Data da Reserva",
+                    field: "dtReserva"
                 },
                 {
                     label:"Ação",
@@ -79,7 +79,7 @@ export default {
     methods: {
         loadData() {
             const vm = this;
-            PaisesService.getAll().then(function (data) {
+            ReservasService.getAll().then(function (data) {
                 vm.totalRecords = data.data.count;
                 vm.rows = data.data;
             });
@@ -88,12 +88,12 @@ export default {
             var vm = this;
             var remove = confirm("Deseja realmente excluir?");
             if(remove){
-                PaisesService.delete(codigo).then(function (data) {
+                ReservasService.delete(codigo).then(function (data) {
                     if(data.data){
-                        notyf.success("País excluído com sucesso");
+                        notyf.success("Cota excluída com sucesso");
                         vm.loadData();
                     } else {
-                        notyf.error("Não foi possível excluir o pais");
+                        notyf.error("Não foi possível excluir a cota");
                     }
                 });
             }

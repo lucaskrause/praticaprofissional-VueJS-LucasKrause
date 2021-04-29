@@ -41,7 +41,7 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: 'number'
+                    type: "number"
                 },
                 {
                     label: "País",
@@ -54,7 +54,7 @@ export default {
                 {
                     label: "DDI",
                     field: "ddi",
-                    type: 'number'
+                    type: "number"
                 },
                 {
                     label:"Ação",
