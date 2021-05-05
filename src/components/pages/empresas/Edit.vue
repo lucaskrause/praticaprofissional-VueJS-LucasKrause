@@ -1,7 +1,7 @@
 <template>
     <div class="col-12">
-        <h2 v-if="!isModal">Cadastro de Clientes</h2>
-        <hr v-if="!isModal"/>
+        <h2>Cadastro de Empresa</h2>
+        <hr />
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label>
@@ -9,22 +9,13 @@
             </div>
 
             <div class="col-5">
-                <label>Nome Completo</label>
-                <input id="nome" type="text" class="form-control" v-model="entity.nome"/>
+                <label>Razão Social</label>
+                <input id="razaoSocial" type="text" class="form-control" v-model="entity.razaoSocial"/>
             </div>
 
-            <div class="col-3">
-                <label>Sexo</label>
-                <br/>
-                <label class="radio-inline mr-2"><input type="radio" value="Feminino" v-model="entity.sexo"> Feminino</label>
-                <label class="radio-inline"><input type="radio" value="Masculino" v-model="entity.sexo"> Masculino</label>
-            </div>
-            
-            <div class="col-3">
-                <label>Tipo Pessoa</label>
-                <br/>
-                <label class="radio-inline mr-2"><input type="radio" value="Física" v-model="entity.tipoPessoa"> Física</label>
-                <label class="radio-inline"><input type="radio" value="Jurídica" v-model="entity.tipoPessoa"> Jurídica</label>
+            <div class="col-5">
+                <label>Nome Fantasia</label>
+                <input id="nomeFantasia" type="text" class="form-control" v-model="entity.nomeFantasia"/>
             </div>
         </div>
 
@@ -73,57 +64,36 @@
 
         <div class="row form-group">
             <div class="col-3">
-                <label>CPF / CNPJ</label>
-                <input id="cpfCnpj" type="text" class="form-control" v-model="entity.cpfCnpj"/>
+                <label>CNPJ</label>
+                <input id="cnpj" type="text" class="form-control" v-model="entity.cnpj"/>
             </div>
 
             <div class="col-3">
-                <label>RG / IE</label>
-                <input id="rgIe" type="text" class="form-control" v-model="entity.rgIe"/>
+                <label>IE</label>
+                <input id="ie" type="text" class="form-control" v-model="entity.ie"/>
             </div>
 
             <div class="col-3">
-                <label>Data de Nascimento / Fundação</label>
-                <input id="dtNascFundacao" type="date" class="form-control" v-model="entity.dtNascFundacao"/>
+                <label>Data de Fundação</label>
+                <input id="dtFundacao" type="date" class="form-control" v-model="entity.dtFundacao"/>
             </div>
         </div>
 
-        <div class="row form-group">
-            <div class="col-3">  
-                <label>Tipo Cliente</label>
-                <select class="form-control" v-model="entity.tipoCliente">
-                    <option selected>Selecione...</option>
-                    <option value="Cliente">Cliente</option>
-                    <option value="Sócio">Sócio</option>
-                </select>
-            </div>
-            
-            <div class="col-4">
-                <label>Forma de Pagamento</label>
-                <div class="input-group">
-                    <input id="formaPagamento" type="text" class="form-control" v-model="formaSelecionada" readonly/>
-                    <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consulta-formaPagamento class="btn btn-info ml-1">Buscar</b-button>
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <div v-if="entity.tipoCliente == 'Sócio' && !isModal" class="row">
+        <div class="row">
             <div class="col-3">
-                <label>Dependentes</label>
+                <label>Contas Bancarias</label>
             </div>
 
             <div class="col-9 text-right">
-                <b-button v-b-modal.modal-consulta-cidade class="btn btn-success btn-sm">Cadastrar Dependente</b-button>
+                <b-button v-b-modal.modal-new-contaBancaria class="btn btn-success btn-sm">Cadastrar Conta Bancaria</b-button>
             </div>
         </div>
-        <div v-if="entity.tipoCliente == 'Sócio' && !isModal" class="row mt-1">
+        <div class="row mt-1">
             <div class="col-12">
                 <vue-good-table
                     compactMode
-                    :columns="dependentes.columns"
-                    :rows="dependentes.rows"
+                    :columns="contasBancarias.columns"
+                    :rows="contasBancarias.rows"
                     :search-options="{enabled: false}"
                     :pagination-options="{perPage: 5, enabled: true}"
                 >
@@ -144,7 +114,7 @@
 
             <div class="col-8">
                 <div class="text-right">
-                    <router-link v-if="!isModal" :to="{name: 'ClientesList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <router-link :to="{name: 'EmpresasList'}" class="btn btn-danger mr-3">Voltar</router-link>
                     <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
                 </div>
             </div>
@@ -153,17 +123,12 @@
         <b-modal id="modal-consulta-cidade" size="xl" title="Consultar Cidade" hide-footer>
             <ConsultaCidade @emit-cidade="selectCidade" />
         </b-modal>
-        
-        <b-modal id="modal-consulta-formaPagamento" size="xl" title="Consultar Forma de Pagamento" hide-footer>
-            <ConsultaFormaPagamento @emit-forma="selectForma" />
-        </b-modal>
     </div>
 </template>
 
 <script>
-import {ClientesService} from '@/services/clientes.service'
+import {EmpresasService} from '@/services/empresas.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
-import ConsultaFormaPagamento from '@/components/pages/formasPagamento/Consult.vue'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table';
 import {Notyf} from 'notyf';
@@ -172,21 +137,14 @@ import 'notyf/notyf.min.css';
 const notyf = new Notyf();
 
 export default {
-    name: "ClientesEdit",
-    components: { VueGoodTable, ConsultaCidade, ConsultaFormaPagamento },
-    props: {
-        isModal: {
-            type: Boolean,
-            default: false
-        }
-    },
+    name: "EmpresasEdit",
+    components: { VueGoodTable, ConsultaCidade },
     data() {
         return {
             entity: {
                 codigo: 0,
-                nome: "",
-                sexo: "",
-                tipoPessoa: "",
+                razaoSocial: "",
+                nomeFantasia: "",
                 logradouro: "",
                 complemento: "",
                 bairro: "",
@@ -194,17 +152,14 @@ export default {
                 codigoCidade: 0,
                 telefone: "",
                 email: "",
-                cpfCnpj: "",
-                rgIe: "",
-                dtNascFundacao: "",
-                tipoCliente: "",
-                codigoFormaPagamento: 0,
+                cnpj: "",
+                ie: "",
+                dtFundacao: "",
                 dtCadastro: "",
                 dtAlteracao: ""
             },
             cidadeSelecionada: "",
-            formaSelecionada: "",
-            dependentes: {
+            contasBancarias: {
                 columns: [
                     {
                         label: "Código",
@@ -212,20 +167,24 @@ export default {
                         type: "number"
                     },
                     {
-                        label: "Nome",
-                        field: "nome"
+                        label: "Banco",
+                        field: "banco"
                     },
                     {
-                        label: "CPF / CNPJ",
-                        field: "cpfCnpj"
+                        label: "Número da Conta",
+                        field: "numeroConta"
                     },
                     {
-                        label: "Telefone",
-                        field: "telefone"
+                        label: "Agência",
+                        field: "agencia"
                     },
                     {
                         label: "Tipo",
                         field: "tipo"
+                    },
+                    {
+                        label: "Ação",
+                        field: "btn"
                     }
                 ],
                 rows: [],
@@ -239,12 +198,10 @@ export default {
         const vm = this;
         this.entity.codigo = this.$route.params.codigo;
         if(this.entity.codigo){
-            ClientesService.getById(this.entity.codigo).then(function (response) {
+            EmpresasService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
                 vm.cidadeSelecionada = response.data.cidade.cidade;
-                vm.formaSelecionada = response.data.formaPagamento.descricao;
                 vm.$delete(vm.entity, 'cidade');
-                vm.$delete(vm.entity, 'formaPagamento');
             });
         }
     },
@@ -255,26 +212,15 @@ export default {
             this.$bvModal.hide("modal-new-cidade");
             this.$bvModal.hide("modal-consulta-cidade");
         },
-        selectForma(entity) {
-            this.formaSelecionada = entity.descricao;
-            this.entity.codigoFormaPagamento = entity.codigo;
-            this.$bvModal.hide("modal-new-formaPagamento");
-            this.$bvModal.hide("modal-consulta-formaPagamento");
-        },
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
-            ClientesService.save(this.entity).then(function (response) {
+            EmpresasService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
-                notyf.success("Cliente " + msg + " com sucesso");
+                notyf.success("Empresa " + msg + " com sucesso");
                 vm.isSubmiting = false;
-                if(vm.isModal){
-                    vm.entity.codigo = response.data.codigo;
-                    vm.$emit("emit-cliente", vm.entity);
-                } else {
-                    vm.$router.push('/clientes');
-                }
+                vm.$router.push('/empresas');
             }); //.catch(function (errors) {Helper.saveErrorCallBack(errors.response)});
         }
     }

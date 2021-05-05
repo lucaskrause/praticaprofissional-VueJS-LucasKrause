@@ -61,9 +61,9 @@ export default {
     },
     created() {
         const vm = this;
-        FormasPagamentoService.getAll().then(function (data) {
-            vm.totalRecords = data.data.count;
-            vm.rows = data.data; 
+        FormasPagamentoService.getAll().then(function (response) {
+            vm.totalRecords = response.data.count;
+            vm.rows = response.data; 
         });
     },
     methods: {

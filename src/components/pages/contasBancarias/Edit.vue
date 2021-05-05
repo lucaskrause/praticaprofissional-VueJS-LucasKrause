@@ -1,7 +1,7 @@
 <template>
     <div class="col-12">
-        <h2>Cadastro de Cota</h2>
-        <hr/>
+        <h2 v-if="!isModal">Cadastro de Conta Bancaria</h2>
+        <hr v-if="!isModal"/>
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label>
@@ -9,30 +9,23 @@
             </div>
 
             <div class="col-4">
-                <label>Cliente</label>
-                <div class="input-group">
-                    <input id="cliente" type="text" class="form-control" v-model="clienteSelecionado" readonly/>
-                    <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-cliente class="btn btn-info ml-1">Buscar</b-button>
-                    </span>
-                </div>
+                <label>Banco</label>
+                <input id="banco" type="text" class="form-control" v-model="entity.banco"/>
             </div>
 
-            <div class="col-2 form-group">
-                <label>Valor</label>
-                <input id="valor" type="number" class="form-control" v-model="entity.valor"/>
+            <div class="col-2">
+                <label>Agência</label>
+                <input id="agencia" type="text" class="form-control" v-model="entity.agencia"/>
             </div>
-        </div>
 
-        <div class="row form-group">
-            <div class="col-3">
-                <label>Data de Início</label>
-                <input id="dtInicio" type="date" class="form-control" v-model="entity.dtInicio"/>
+            <div class="col-2">
+                <label>Conta</label>
+                <input id="conta" type="text" class="form-control" v-model="entity.conta"/>
             </div>
 
             <div class="col-3">
-                <label>Data de Término</label>
-                <input id="dtTermino" type="date" class="form-control" v-model="entity.dtTermino"/>
+                <label>Número da Conta</label>
+                <input id="numeroBanco" type="text" class="form-control" v-model="entity.numeroBanco"/>
             </div>
         </div>
 
@@ -49,7 +42,7 @@
 
             <div class="col-8">
                 <div class="text-right">
-                    <router-link :to="{name: 'CotasList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <router-link v-if="!isModal" :to="{name: 'ContasBancariasList'}" class="btn btn-danger mr-3">Voltar</router-link>
                     <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
                 </div>
             </div>
@@ -58,26 +51,31 @@
 </template>
 
 <script>
-import {CotasService} from '@/services/cotas.service'
+import {ContasBancariasService} from '@/services/contasBancarias.service'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
 const notyf = new Notyf();
 
 export default {
-    name: "CotasEdit",
+    name: "ContasBancariasEdit",
+    props: {
+        isModal: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             entity: {
                 codigo: 0,
-                codigoCliente: "",
-                valor: "",
-                dtInicio: "",
-                dtTermino: "",
+                banco: "",
+                agencia: "",
+                conta: "",
+                numeroBanco: "",
                 dtCadastro: "",
-                dtAlteracao: ""
+                dtAlteracap: "",
             },
-            clienteSelecionada: "",
             isSubmiting: false
         }
     },
@@ -85,7 +83,7 @@ export default {
         const vm = this;
         this.entity.codigo = this.$route.params.codigo;
         if (this.entity.codigo) {
-            CotasService.getById(this.entity.codigo).then(function (response) {
+            ContasBancariasService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
             });
         }
@@ -95,15 +93,15 @@ export default {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
-            CotasService.save(this.entity).then(function (response) {
+            ContasBancariasService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("País " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 if(vm.isModal){
                     vm.entity.codigo = response.data.codigo;
-                    vm.$emit('emit-pais', vm.entity);
+                    vm.$emit('emit-banco', vm.entity);
                 } else {
-                    vm.$router.push('/cotas');
+                    vm.$router.push('/bancoes');
                 }
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }

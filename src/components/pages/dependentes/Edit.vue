@@ -1,6 +1,6 @@
 <template>
     <div class="col-12">
-        <h2 v-if="!isModal">Cadastro de Clientes</h2>
+        <h2 v-if="!isModal">Cadastro de Dependentes</h2>
         <hr v-if="!isModal"/>
         <div class="row form-group">
             <div class="col-1">
@@ -18,13 +18,6 @@
                 <br/>
                 <label class="radio-inline mr-2"><input type="radio" value="Feminino" v-model="entity.sexo"> Feminino</label>
                 <label class="radio-inline"><input type="radio" value="Masculino" v-model="entity.sexo"> Masculino</label>
-            </div>
-            
-            <div class="col-3">
-                <label>Tipo Pessoa</label>
-                <br/>
-                <label class="radio-inline mr-2"><input type="radio" value="Física" v-model="entity.tipoPessoa"> Física</label>
-                <label class="radio-inline"><input type="radio" value="Jurídica" v-model="entity.tipoPessoa"> Jurídica</label>
             </div>
         </div>
 
@@ -73,61 +66,30 @@
 
         <div class="row form-group">
             <div class="col-3">
-                <label>CPF / CNPJ</label>
-                <input id="cpfCnpj" type="text" class="form-control" v-model="entity.cpfCnpj"/>
+                <label>CPF</label>
+                <input id="cpf" type="text" class="form-control" v-model="entity.cpf"/>
             </div>
 
             <div class="col-3">
-                <label>RG / IE</label>
-                <input id="rgIe" type="text" class="form-control" v-model="entity.rgIe"/>
+                <label>RG</label>
+                <input id="rg" type="text" class="form-control" v-model="entity.rg"/>
             </div>
 
             <div class="col-3">
-                <label>Data de Nascimento / Fundação</label>
-                <input id="dtNascFundacao" type="date" class="form-control" v-model="entity.dtNascFundacao"/>
+                <label>Data de Nascimento</label>
+                <input id="dtNascimento" type="date" class="form-control" v-model="entity.dtNascimento"/>
             </div>
         </div>
 
-        <div class="row form-group">
-            <div class="col-3">  
-                <label>Tipo Cliente</label>
-                <select class="form-control" v-model="entity.tipoCliente">
-                    <option selected>Selecione...</option>
-                    <option value="Cliente">Cliente</option>
-                    <option value="Sócio">Sócio</option>
-                </select>
-            </div>
-            
+        <div v-if="!isModal" class="row form-group">            
             <div class="col-4">
-                <label>Forma de Pagamento</label>
+                <label>Sócio</label>
                 <div class="input-group">
-                    <input id="formaPagamento" type="text" class="form-control" v-model="formaSelecionada" readonly/>
+                    <input id="cidade" type="text" class="form-control" v-model="socioSelecionado" readonly/>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consulta-formaPagamento class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consulta-cidade class="btn btn-info ml-1">Buscar</b-button>
                     </span>
                 </div>
-            </div>
-        </div>
-
-        <div v-if="entity.tipoCliente == 'Sócio' && !isModal" class="row">
-            <div class="col-3">
-                <label>Dependentes</label>
-            </div>
-
-            <div class="col-9 text-right">
-                <b-button v-b-modal.modal-consulta-cidade class="btn btn-success btn-sm">Cadastrar Dependente</b-button>
-            </div>
-        </div>
-        <div v-if="entity.tipoCliente == 'Sócio' && !isModal" class="row mt-1">
-            <div class="col-12">
-                <vue-good-table
-                    compactMode
-                    :columns="dependentes.columns"
-                    :rows="dependentes.rows"
-                    :search-options="{enabled: false}"
-                    :pagination-options="{perPage: 5, enabled: true}"
-                >
-                </vue-good-table>
             </div>
         </div>
 
@@ -144,49 +106,40 @@
 
             <div class="col-8">
                 <div class="text-right">
-                    <router-link v-if="!isModal" :to="{name: 'ClientesList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <router-link :to="{name: 'DependentesList'}" class="btn btn-danger mr-3">Voltar</router-link>
                     <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
                 </div>
             </div>
         </div>
         
-        <b-modal id="modal-consulta-cidade" size="xl" title="Consultar Cidade" hide-footer>
+        <b-modal v-if="!isModal" id="modal-consulta-cidade" size="xl" title="Consultar Cidade" hide-footer>
             <ConsultaCidade @emit-cidade="selectCidade" />
         </b-modal>
-        
-        <b-modal id="modal-consulta-formaPagamento" size="xl" title="Consultar Forma de Pagamento" hide-footer>
-            <ConsultaFormaPagamento @emit-forma="selectForma" />
+
+        <b-modal id="modal-consulta-cidade" size="xl" title="Consultar Cliente" hide-footer>
+            <ConsultaCliente @emit-cidade="selectCliente" />
         </b-modal>
     </div>
 </template>
 
 <script>
-import {ClientesService} from '@/services/clientes.service'
+import {DependentesService} from '@/services/dependentes.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
-import ConsultaFormaPagamento from '@/components/pages/formasPagamento/Consult.vue'
-import 'vue-good-table/dist/vue-good-table.css'
-import {VueGoodTable} from 'vue-good-table';
+import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
 const notyf = new Notyf();
 
 export default {
-    name: "ClientesEdit",
-    components: { VueGoodTable, ConsultaCidade, ConsultaFormaPagamento },
-    props: {
-        isModal: {
-            type: Boolean,
-            default: false
-        }
-    },
+    name: "DependentesEdit",
+    components: { ConsultaCidade, ConsultaCliente },
     data() {
         return {
             entity: {
                 codigo: 0,
                 nome: "",
                 sexo: "",
-                tipoPessoa: "",
                 logradouro: "",
                 complemento: "",
                 bairro: "",
@@ -194,44 +147,15 @@ export default {
                 codigoCidade: 0,
                 telefone: "",
                 email: "",
-                cpfCnpj: "",
-                rgIe: "",
-                dtNascFundacao: "",
-                tipoCliente: "",
-                codigoFormaPagamento: 0,
+                cpf: "",
+                rg: "",
+                dtNascimento: "",
+                codigoCliente: 0,
                 dtCadastro: "",
                 dtAlteracao: ""
             },
             cidadeSelecionada: "",
-            formaSelecionada: "",
-            dependentes: {
-                columns: [
-                    {
-                        label: "Código",
-                        field: "codigo",
-                        type: "number"
-                    },
-                    {
-                        label: "Nome",
-                        field: "nome"
-                    },
-                    {
-                        label: "CPF / CNPJ",
-                        field: "cpfCnpj"
-                    },
-                    {
-                        label: "Telefone",
-                        field: "telefone"
-                    },
-                    {
-                        label: "Tipo",
-                        field: "tipo"
-                    }
-                ],
-                rows: [],
-                page: 1,
-                totalRecords: 0
-            },
+            socioSelecionado: "",
             isSubmiting: false
         }
     },
@@ -239,12 +163,12 @@ export default {
         const vm = this;
         this.entity.codigo = this.$route.params.codigo;
         if(this.entity.codigo){
-            ClientesService.getById(this.entity.codigo).then(function (response) {
+            DependentesService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
                 vm.cidadeSelecionada = response.data.cidade.cidade;
-                vm.formaSelecionada = response.data.formaPagamento.descricao;
+                vm.socioSelecionado = response.data.cliente.nome;
                 vm.$delete(vm.entity, 'cidade');
-                vm.$delete(vm.entity, 'formaPagamento');
+                vm.$delete(vm.entity, 'cliente');
             });
         }
     },
@@ -255,25 +179,25 @@ export default {
             this.$bvModal.hide("modal-new-cidade");
             this.$bvModal.hide("modal-consulta-cidade");
         },
-        selectForma(entity) {
-            this.formaSelecionada = entity.descricao;
-            this.entity.codigoFormaPagamento = entity.codigo;
-            this.$bvModal.hide("modal-new-formaPagamento");
-            this.$bvModal.hide("modal-consulta-formaPagamento");
+        selectCliente(entity) {
+            this.clienteSelecionado = entity.nome;
+            this.entity.codigoCliente = entity.codigo;
+            this.$bvModal.hide("modal-new-cliente");
+            this.$bvModal.hide("modal-consulta-cliente");
         },
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
-            ClientesService.save(this.entity).then(function (response) {
+            DependentesService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
-                notyf.success("Cliente " + msg + " com sucesso");
+                notyf.success("Dependente " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 if(vm.isModal){
                     vm.entity.codigo = response.data.codigo;
-                    vm.$emit("emit-cliente", vm.entity);
+                    vm.$emit("emit-dependente", vm.entity);
                 } else {
-                    vm.$router.push('/clientes');
+                    vm.$router.push('/dependentes');
                 }
             }); //.catch(function (errors) {Helper.saveErrorCallBack(errors.response)});
         }

@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         <div class="col-12 text-right">
-            <b-button v-b-modal.modal-new-cidade class="btn btn-success ml-1">Nova Cidade</b-button>
+            <b-button v-b-modal.modal-new-cliente class="btn btn-success ml-1">Novo Cliente</b-button>
         </div>
         
         <div class="col-12 mt-2">
@@ -14,53 +14,55 @@
             >
                 <template slot="table-row" slot-scope="props">
                     <span v-if="props.column.field == 'btn'">
-                        <a @click.prevent="selectCidade(props.row)" class="btn btn-sm btn-primary" href="#">Selecionar</a>
+                        <a @click.prevent="selectCliente(props.row)" class="btn btn-sm btn-primary" href="#">Selecionar</a>
                     </span>
                 </template>
             </vue-good-table>
         </div>
         
-        <b-modal id="modal-new-cidade" size="xl" title="Cadastrar Cidade" hide-footer>
-            <NovaCidade  @emit-cidade="selectCidade" :isModal="true" />
+        <b-modal id="modal-new-cliente" size="xl" title="Cadastrar Cliente" hide-footer>
+            <NovaCliente  @emit-cliente="selectCliente" :isModal="true" />
         </b-modal>
     </div>
 </template>
 
 <script>
-import {CidadesService} from '@/services/cidades.service'
-import NovaCidade from '@/components/pages/cidades/Edit.vue'
+import {ClientesService} from '@/services/clientes.service'
+import NovaCliente from '@/components/pages/clientes/Edit.vue'
 import {VueGoodTable} from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
 
 export default {
-    name: "CidadesConsult",
-    components: { VueGoodTable, NovaCidade },
+    name: "ClientesConsult",
+    components: { VueGoodTable, NovaCliente },
     data() {
         return {
-            columns: [
+             columns: [
                 {
                     label: "Código",
                     field: "codigo",
                     type: "number"
                 },
                 {
-                    label: "Cidade",
-                    field: "cidade"
+                    label: "Nome",
+                    field: "nome"
                 },
                 {
-                    label: "DDD",
-                    field: "ddd"
+                    label: "CPF / CNPJ",
+                    field: "cpfCnpj"
                 },
                 {
-                    label: "UF",
-                    field: "estado.uf"
+                    label: "Telefone",
+                    field: "telefone"
                 },
                 {
-                    label:"Ação",
-                    sortable: false,
-                    field: 'btn',
-                    html: true
+                    label: "Tipo",
+                    field: "tipoPessoa"
                 },
+                {
+                    label: "Ação",
+                    field: "btn"
+                }
             ],
             page: 1,
             rows: [],
@@ -69,14 +71,14 @@ export default {
     },
     created() {
         const vm = this;
-        CidadesService.getAll().then(function (response) {
+        ClientesService.getAll().then(function (response) {
             vm.totalRecords = response.data.count;
             vm.rows = response.data; 
         });
     },
     methods: {
-        selectCidade(entity) {
-            this.$emit('emit-cidade', entity);
+        selectCliente(entity) {
+            this.$emit('emit-cliente', entity);
         }
     }
 }

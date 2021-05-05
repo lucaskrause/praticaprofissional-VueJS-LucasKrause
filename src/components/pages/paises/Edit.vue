@@ -1,7 +1,7 @@
 <template>
     <div class="col-12">
         <h2 v-if="!isModal">Cadastro de País</h2>
-
+        <hr v-if="!isModal"/>
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label>

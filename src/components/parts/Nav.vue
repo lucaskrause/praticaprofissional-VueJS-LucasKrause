@@ -14,7 +14,7 @@
                 <div class="row">
                     <div class="col-md-12 col-6 menu">
                         <ul>
-                            <li v-for="(group) in groups" :key="group.id">
+                            <li v-for="group in groups" :key="group.id">
                                 <router-link :to="group.route">
                                     {{group.label}}
                                 </router-link>
@@ -39,15 +39,19 @@ export default {
                 // {id: 2, label: "Regiões", route: null},
                 // {id: 3, label: "Pagamentos", route: null},
                 // {id: 4, label: "Geral", route: null},
-                {id: 1, label: "Cidades",  route: {name: "CidadesList"}},
-                {id: 2, label: "Estados", route: {name: "EstadosList"}},
-                {id: 3, label: "Países", route: {name: "PaisesList"}},
-                {id: 4, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
+                {id: 1, label: "Empresas", route: {name: "EmpresasList"}},
+                {id: 2, label: "Contas Bancarias", route: {name: "ContasBancariasList"}},
+                {id: 3, label: "Funcionários", route: {name: "FuncionariosList"}},
+                {id: 4, label: "Cotas", route: {name: "CotasList"}},
                 {id: 5, label: "Clientes", route: {name: "ClientesList"}},
-                {id: 6, label: "Precificações", route: {name: "PrecificacoesList"}},
-                {id: 7, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
-                {id: 8, label: "Cotas", route: {name: "CotasList"}},
-                {id: 9, label: "Reservas", route: {name: "ReservasList"}},
+                {id: 6, label: "Dependentes", route: {name: "DependentesList"}},
+                {id: 7, label: "Reservas", route: {name: "ReservasList"}},
+                {id: 8, label: "Precificações", route: {name: "PrecificacoesList"}},
+                {id: 9, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
+                {id: 10, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
+                {id: 11, label: "Países", route: {name: "PaisesList"}},
+                {id: 12, label: "Estados", route: {name: "EstadosList"}},
+                {id: 13, label: "Cidades",  route: {name: "CidadesList"}},
             ],
             // subGroups: [
             //     {id:, group: 1, label: "Empresa", route: {name: "EmpresasList"}}

@@ -80,9 +80,9 @@ export default {
     methods: {
         loadData() {
             const vm = this;
-            ClientesService.getAll().then(function (data) {
-                vm.totalRecords = data.data.count;
-                vm.rows = data.data;
+            ClientesService.getAll().then(function (response) {
+                vm.totalRecords = response.data.count;
+                vm.rows = response.data;
             });
         },
         remove(codigo) {

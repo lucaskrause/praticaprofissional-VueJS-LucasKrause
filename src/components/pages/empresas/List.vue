@@ -1,12 +1,12 @@
 <template>
     <div class="col-12">
         <div class="row">
-            <div class="col-6 text-left"><h2>Cidades</h2></div>
+            <div class="col-6 text-left"><h2>Empresas</h2></div>
             <div class="col-6 text-right pt-2">
-                <router-link :to="{name: 'CidadesCad'}" class="btn btn-success">Nova Cidade</router-link>
+                <router-link :to="{name: 'EmpresasCad'}" class="btn btn-success">Nova Empresa</router-link>
             </div>
         </div>
-        
+
         <div class="row mt-2">
             <div class="col-12">
                 <vue-good-table
@@ -18,7 +18,7 @@
                 >
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'btn'">
-                            <router-link :to="{name: 'CidadesEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Editar</router-link>
+                            <router-link :to="{name: 'EmpresasEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Editar</router-link>
                             <a @click.prevent="remove(props.row.codigo)" class="btn btn-sm btn-danger" href="#">Excluir</a>
                         </span>
                     </template>
@@ -29,8 +29,8 @@
 </template>
 
 <script>
-import {CidadesService} from '@/services/cidades.service'
-import 'vue-good-table/dist/vue-good-table.css'
+import {EmpresasService} from '@/services/empresas.service';
+import 'vue-good-table/dist/vue-good-table.css';
 import {VueGoodTable} from 'vue-good-table';
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
@@ -38,7 +38,7 @@ import 'notyf/notyf.min.css';
 const notyf = new Notyf();
 
 export default {
-    name: "CidadesList",
+    name: "EmpresasList",
     components: { VueGoodTable },
     data () {
         return {
@@ -49,23 +49,25 @@ export default {
                     type: "number"
                 },
                 {
-                    label: "Cidade",
-                    field: "cidade"
+                    label: "Razão Social",
+                    field: "razaoSocial"
                 },
                 {
-                    label: "DDD",
-                    field: "ddd"
+                    label: "CNPJ",
+                    field: "cnpj"
                 },
                 {
-                    label: "Estado",
-                    field: "estado.estado"
+                    label: "Telefone",
+                    field: "telefone"
                 },
                 {
-                    label: "Ações",
-                    sortable: false,
-                    field: 'btn',
-                    html: true
+                    label: "Email",
+                    field: "email"
                 },
+                {
+                    label: "Ação",
+                    field: "btn"
+                }
             ],
             rows: [],
             page: 1,
@@ -78,7 +80,7 @@ export default {
     methods: {
         loadData() {
             const vm = this;
-            CidadesService.getAll().then(function (response) {
+            EmpresasService.getAll().then(function (response) {
                 vm.totalRecords = response.data.count;
                 vm.rows = response.data;
             });
@@ -86,13 +88,13 @@ export default {
         remove(codigo) {
             const vm = this;
             var remove = confirm("Deseja realmente excluir?");
-            if(remove) {
-                CidadesService.delete(codigo).then(function (response) {
+            if(remove){
+                EmpresasService.delete(codigo).then(function (response) {
                     if(response.data){
-                        notyf.success("Cidade excluida com sucesso");
+                        notyf.success("Empresa excluida com sucesso");
                         vm.loadData();
                     } else {
-                        notyf.error("Não foi possivel excluir a cidade");
+                        notyf.error("Não foi possivel excluir a empresa");
                     }
                 });
             }

@@ -1,7 +1,7 @@
 <template>
     <div class="col-12">
         <h2 v-if="!isModal">Cadastro de Estado</h2>
-
+        <hr v-if="!isModal"/>
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label> 
@@ -90,9 +90,9 @@ export default {
         const vm = this;
         this.entity.codigo = this.$route.params.codigo;
         if(this.entity.codigo) {
-            EstadosService.getById(this.entity.codigo).then(function (data) {
-                vm.entity = data.data;
-                vm.paisSelecionado = data.data.pais.pais;
+            EstadosService.getById(this.entity.codigo).then(function (response) {
+                vm.entity = response.data;
+                vm.paisSelecionado = response.data.pais.pais;
                 vm.$delete(vm.entity, 'pais');
             });
             

@@ -3,6 +3,12 @@ import VueRouter from 'vue-router';
 
 const Home = () => import("@/components/Home");
 
+const EmpresaList = () => import("@/components/pages/empresas/List");
+const EmpresaEdit = () => import("@/components/pages/empresas/Edit");
+
+const ContaBancariaList = () => import("@/components/pages/contasBancarias/List");
+const ContaBancariaEdit = () => import("@/components/pages/contasBancarias/Edit");
+
 const PaisList = () => import("@/components/pages/paises/List");
 const PaisEdit = () => import("@/components/pages/paises/Edit");
 
@@ -27,8 +33,14 @@ const CondicaoPagamentoEdit = () => import("@/components/pages/condicoesPagament
 const ClienteList = () => import("@/components/pages/clientes/List");
 const ClienteEdit = () => import("@/components/pages/clientes/Edit");
 
+const DependenteList = () => import("@/components/pages/dependentes/List");
+const DependenteEdit = () => import("@/components/pages/dependentes/Edit");
+
 const PrecoList = () => import("@/components/pages/precificacoes/List");
 const PrecoEdit = () => import("@/components/pages/precificacoes/Edit");
+
+const FuncionarioList = () => import("@/components/pages/funcionarios/List");
+const FuncionarioEdit = () => import("@/components/pages/funcionarios/Edit");
 
 Vue.use(VueRouter)
 
@@ -41,81 +53,55 @@ const routes = [
             label: "Home"
         },
         children: [
-            // PAÍSES
+            // EMPRESAS
             {
-                path: 'paises',
-                name: 'PaisesList',
-                component: PaisList,
+                path: 'empresas',
+                name: 'EmpresasList',
+                component: EmpresaList,
                 meta: {
-                    label: "Lista de Paises"
+                    label: "Lista de Empresas"
                 },
             },
             {
-                path: 'paises/cadastrar',
-                name: 'PaisesCad',
-                component: PaisEdit,
+                path: 'empresas/cadastrar',
+                name: 'EmpresasCad',
+                component: EmpresaEdit,
                 meta: {
-                    label: "Cadastro de País"
+                    label: "Cadastro de Empresa"
                 },
             },
             {
-                path: 'paises/editar/:codigo',
-                name: 'PaisesEdit',
-                component: PaisEdit,
+                path: 'empresas/editar/:codigo',
+                name: 'EmpresasEdit',
+                component: EmpresaEdit,
                 meta: {
-                    label: "Editar País"
+                    label: "Editar Empresa"
                 },
             },
-            
-            // ESTADOS
+
+            // CONTAS BANCARIAS
             {
-                path: 'estados',
-                name: 'EstadosList',
-                component: EstadoList,
+                path: 'contasBancarias',
+                name: 'ContasBancariasList',
+                component: ContaBancariaList,
                 meta: {
-                    label: "Lista de Estados"
-                },
-            },
-            {
-                path: 'estados/cadastrar',
-                name: 'EstadosCad',
-                component: EstadoEdit,
-                meta: {
-                    label: "Cadastro de Estado"
+                    label: "Lista de Contas Bancarias"
                 },
             },
             {
-                path: 'estados/editar/:codigo',
-                name: 'EstadosEdit',
-                component: EstadoEdit,
+                path: 'contasBancarias/cadastrar',
+                name: 'ContasBancariasCad',
+                component: ContaBancariaEdit,
                 meta: {
-                    label: "Editar Estado"
-                },
-            },
-            
-            // CIDADES
-            {
-                path: 'cidades',
-                name: 'CidadesList',
-                component: CidadeList,
-                meta: {
-                    label: "Lista de Cidades"
+                    label: "Cadastro de Contas Bancarias"
                 },
             },
             {
-                path: 'cidades/cadastrar',
-                name: 'CidadesCad',
-                component: CidadeEdit,
+                path: 'contasBancarias/editar/:codigo',
+                name: 'ContasBancariasEdit',
+                component: ContaBancariaEdit,
                 meta: {
-                    label: "Cadastro de Cidade"
-                },
-            },
-            {
-                path: 'cidades/editar/:codigo',
-                name: 'CidadesEdit',
-                component: CidadeEdit,
-                meta: {
-                    label: "Editar Cidade"
+                    label: "Editar Conta Bancaria"
                 },
             },
             
@@ -248,6 +234,32 @@ const routes = [
                     label: "Editar Cliente"
                 },
             },
+
+            // DEPENDENTES
+            {
+                path: 'dependentes',
+                name: 'DependentesList',
+                component: DependenteList,
+                meta: {
+                    label: "Lista de Dependentes"
+                },
+            },
+            {
+                path: 'dependentes/cadastrar',
+                name: 'DependentesCad',
+                component: DependenteEdit,
+                meta: {
+                    label: "Cadastro de Dependente"
+                },
+            },
+            {
+                path: 'dependentes/editar/:codigo',
+                name: 'DependentesEdit',
+                component: DependenteEdit,
+                meta: {
+                    label: "Editar Cliente"
+                },
+            },
             
             // PRECIFICAÇÕES
             {
@@ -272,6 +284,110 @@ const routes = [
                 component: PrecoEdit,
                 meta: {
                     label: "Editar Preço"
+                },
+            },
+
+            // FUNCIONÁRIOS
+            {
+                path: 'funcionarios',
+                name: 'FuncionariosList',
+                component: FuncionarioList,
+                meta: {
+                    label: "Lista de Funcionarios"
+                },
+            },
+            {
+                path: 'funcionarios/cadastrar',
+                name: 'FuncionariosCad',
+                component: FuncionarioEdit,
+                meta: {
+                    label: "Cadastro de Funcionario"
+                },
+            },
+            {
+                path: 'funcionarios/editar/:codigo',
+                name: 'FuncionariosEdit',
+                component: FuncionarioEdit,
+                meta: {
+                    label: "Editar Cliente"
+                },
+            },
+            
+            // PAÍSES
+            {
+                path: 'paises',
+                name: 'PaisesList',
+                component: PaisList,
+                meta: {
+                    label: "Lista de Paises"
+                },
+            },
+            {
+                path: 'paises/cadastrar',
+                name: 'PaisesCad',
+                component: PaisEdit,
+                meta: {
+                    label: "Cadastro de País"
+                },
+            },
+            {
+                path: 'paises/editar/:codigo',
+                name: 'PaisesEdit',
+                component: PaisEdit,
+                meta: {
+                    label: "Editar País"
+                },
+            },
+            
+            // ESTADOS
+            {
+                path: 'estados',
+                name: 'EstadosList',
+                component: EstadoList,
+                meta: {
+                    label: "Lista de Estados"
+                },
+            },
+            {
+                path: 'estados/cadastrar',
+                name: 'EstadosCad',
+                component: EstadoEdit,
+                meta: {
+                    label: "Cadastro de Estado"
+                },
+            },
+            {
+                path: 'estados/editar/:codigo',
+                name: 'EstadosEdit',
+                component: EstadoEdit,
+                meta: {
+                    label: "Editar Estado"
+                },
+            },
+            
+            // CIDADES
+            {
+                path: 'cidades',
+                name: 'CidadesList',
+                component: CidadeList,
+                meta: {
+                    label: "Lista de Cidades"
+                },
+            },
+            {
+                path: 'cidades/cadastrar',
+                name: 'CidadesCad',
+                component: CidadeEdit,
+                meta: {
+                    label: "Cadastro de Cidade"
+                },
+            },
+            {
+                path: 'cidades/editar/:codigo',
+                name: 'CidadesEdit',
+                component: CidadeEdit,
+                meta: {
+                    label: "Editar Cidade"
                 },
             },
         ]

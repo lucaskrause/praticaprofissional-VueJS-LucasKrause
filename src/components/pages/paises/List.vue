@@ -79,17 +79,17 @@ export default {
     methods: {
         loadData() {
             const vm = this;
-            PaisesService.getAll().then(function (data) {
-                vm.totalRecords = data.data.count;
-                vm.rows = data.data;
+            PaisesService.getAll().then(function (response) {
+                vm.totalRecords = response.data.count;
+                vm.rows = response.data;
             });
         },
         remove(codigo) {
             var vm = this;
             var remove = confirm("Deseja realmente excluir?");
             if(remove){
-                PaisesService.delete(codigo).then(function (data) {
-                    if(data.data){
+                PaisesService.delete(codigo).then(function (response) {
+                    if(response.data){
                         notyf.success("País excluído com sucesso");
                         vm.loadData();
                     } else {

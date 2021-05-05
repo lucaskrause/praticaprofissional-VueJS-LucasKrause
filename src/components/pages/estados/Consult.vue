@@ -71,9 +71,9 @@ export default {
     },
     created() {
         const vm = this;
-        EstadosService.getAll().then(function (data) {
-            vm.totalRecords = data.data.count;
-            vm.rows = data.data; 
+        EstadosService.getAll().then(function (response) {
+            vm.totalRecords = response.data.count;
+            vm.rows = response.data; 
         });
     },
     methods: {

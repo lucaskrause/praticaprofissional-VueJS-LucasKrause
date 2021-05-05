@@ -82,17 +82,17 @@ export default {
     methods: {
         loadData() {
             const vm = this;
-            CotasService.getAll().then(function (data) {
-                vm.totalRecords = data.data.count;
-                vm.rows = data.data;
+            CotasService.getAll().then(function (response) {
+                vm.totalRecords = response.data.count;
+                vm.rows = response.data;
             });
         },
         remove(codigo) {
             var vm = this;
             var remove = confirm("Deseja realmente excluir?");
             if(remove){
-                CotasService.delete(codigo).then(function (data) {
-                    if(data.data){
+                CotasService.delete(codigo).then(function (response) {
+                    if(response.data){
                         notyf.success("Cota excluída com sucesso");
                         vm.loadData();
                     } else {

@@ -70,17 +70,17 @@ export default {
     methods: {
         loadData() {
             const vm = this;
-            FormasPagamentoService.getAll().then(function (data) {
-                vm.totalRecords = data.data.count;
-                vm.rows = data.data;
+            FormasPagamentoService.getAll().then(function (response) {
+                vm.totalRecords = response.data.count;
+                vm.rows = response.data;
             });
         },
         remove(codigo) {
             var vm = this;
             var remove = confirm("Deseja realmente excluir?");
             if(remove){
-                FormasPagamentoService.delete(codigo).then(function (data) {
-                    if(data.data){
+                FormasPagamentoService.delete(codigo).then(function (response) {
+                    if(response.data){
                         notyf.success("Forma de Pagamento excluída com sucesso");
                         vm.loadData();
                     } else {

@@ -82,17 +82,17 @@ export default {
     methods: {
         loadData() {
             const vm = this;
-            CondicoesPagamentoService.getAll().then(function (data) {
-                vm.totalRecords = data.data.count;
-                vm.rows = data.data;
+            CondicoesPagamentoService.getAll().then(function (response) {
+                vm.totalRecords = response.data.count;
+                vm.rows = response.data;
             });
         },
         remove(codigo) {
             var vm = this;
             var remove = confirm("Deseja realmente excluir?");
             if(remove){
-                CondicoesPagamentoService.delete(codigo).then(function (data) {
-                    if(data.data){
+                CondicoesPagamentoService.delete(codigo).then(function (response) {
+                    if(response.data){
                         notyf.success("PReço excluído com sucesso");
                         vm.loadData();
                     } else {

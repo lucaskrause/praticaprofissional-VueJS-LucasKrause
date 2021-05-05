@@ -70,9 +70,9 @@ export default {
     },
     created() {
         const vm = this;
-        PaisesService.getAll().then(function (data) {
-            vm.totalRecords = data.data.count;
-            vm.rows = data.data; 
+        PaisesService.getAll().then(function (response) {
+            vm.totalRecords = response.data.count;
+            vm.rows = response.data; 
         });
     },
     methods: {

@@ -79,17 +79,17 @@ export default {
     methods: {
         loadData() {
             const vm = this;
-            ReservasService.getAll().then(function (data) {
-                vm.totalRecords = data.data.count;
-                vm.rows = data.data;
+            ReservasService.getAll().then(function (response) {
+                vm.totalRecords = response.data.count;
+                vm.rows = response.data;
             });
         },
         remove(codigo) {
             var vm = this;
             var remove = confirm("Deseja realmente excluir?");
             if(remove){
-                ReservasService.delete(codigo).then(function (data) {
-                    if(data.data){
+                ReservasService.delete(codigo).then(function (response) {
+                    if(response.data){
                         notyf.success("Cota excluída com sucesso");
                         vm.loadData();
                     } else {
