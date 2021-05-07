@@ -162,11 +162,6 @@ export default {
             contasBancarias: {
                 columns: [
                     {
-                        label: "Código",
-                        field: "codigo",
-                        type: "number"
-                    },
-                    {
                         label: "Banco",
                         field: "banco"
                     },

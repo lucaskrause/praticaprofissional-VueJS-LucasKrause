@@ -36,9 +36,9 @@ export default {
             NameCompany: "CLUBE SINCOFOZ",
             groups: [
                 // {id: 1, label: "Empresa",  route: null},
-                // {id: 2, label: "Regiões", route: null},
+                // {id: 2, label: "Geral", route: null},
                 // {id: 3, label: "Pagamentos", route: null},
-                // {id: 4, label: "Geral", route: null},
+                // {id: 4, label: "Regiões", route: null},
                 {id: 1, label: "Empresas", route: {name: "EmpresasList"}},
                 {id: 2, label: "Contas Bancarias", route: {name: "ContasBancariasList"}},
                 {id: 3, label: "Funcionários", route: {name: "FuncionariosList"}},
@@ -54,23 +54,23 @@ export default {
                 {id: 13, label: "Cidades",  route: {name: "CidadesList"}},
             ],
             // subGroups: [
-            //     {id:, group: 1, label: "Empresa", route: {name: "EmpresasList"}}
-            //     {id:, group: 1, label: "Conta Bancaria", route: {name: "ContaBancariaList"}}
-            //     {id:, group: 1, label: "Funcionários", route: {name: "FuncionáriosList"}}
-            //     {id:, group: 1, label: "Cotas", route: {name: "CotasList"}}
-            //     {id:, group: 1, label: "Clientes", route: {name: "ClientesList"}}
-            //     {id:, group: 1, label: "Dependentes", route: {name: "DependentesList"}}
-            //     {id:, group: 1, label: "Reservas", route: {name: "ReservasList"}},
-            //     {id:, group: 2, label: "Cidades",  route: {name: "CidadesList"}},
-            //     {id:, group: 2, label: "Estados", route: {name: "EstadosList"}},
-            //     {id:, group: 2, label: "Países", route: {name: "PaisesList"}},
-            //     {id:, group: 3, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
-            //     {id:, group: 3, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
-            //     {id:, group: 3, label: "Preços para Reserva", route: {name: "PrecificacaoList"}}
-            //     {id:, group: 4, label: "Fornecedores", route: {name: "FornecedoresList"}}
-            //     {id:, group: 4, label: "Produtos", route: {name: "ProdutosList"}}
-            //     {id:, group: 4, label: "Serviços", route: {name: "ServiçosList"}}
-            //     {id:, group: 4, label: "Compras", route: {name: "ComprasList"}}
+            //     {id: 1, group: 1, label: "Empresa", route: {name: "EmpresasList"}}
+            //     {id: 2, group: 1, label: "Conta Bancaria", route: {name: "ContaBancariaList"}}
+            //     {id: 3, group: 1, label: "Funcionários", route: {name: "FuncionáriosList"}}
+            //     {id: 4, group: 1, label: "Cotas", route: {name: "CotasList"}}
+            //     {id: 5, group: 1, label: "Clientes", route: {name: "ClientesList"}}
+            //     {id: 6, group: 1, label: "Dependentes", route: {name: "DependentesList"}}
+            //     {id: 7, group: 1, label: "Reservas", route: {name: "ReservasList"}},
+            //     {id: 8, group: 2, label: "Fornecedores", route: {name: "FornecedoresList"}}
+            //     {id: 9, group: 2, label: "Produtos", route: {name: "ProdutosList"}}
+            //     {id: 10, group: 2, label: "Serviços", route: {name: "ServiçosList"}}
+            //     {id: 11, group: 2, label: "Compras", route: {name: "ComprasList"}}
+            //     {id: 12, group: 3, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
+            //     {id: 13, group: 3, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
+            //     {id: 14, group: 3, label: "Preços para Reserva", route: {name: "PrecificacaoList"}},
+            //     {id: 15, group: 4, label: "Cidades",  route: {name: "CidadesList"}},
+            //     {id: 16, group: 4, label: "Estados", route: {name: "EstadosList"}},
+            //     {id: 17, group: 4, label: "Países", route: {name: "PaisesList"}},
             // ]
         }
     },

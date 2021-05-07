@@ -29,6 +29,29 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-3">
+                <label>Parcelas</label>
+            </div>
+
+            <div class="col-9 text-right">
+                <b-button v-b-modal.modal-consulta-cidade class="btn btn-success btn-sm">Nova Parcela</b-button>
+            </div>
+        </div>
+
+        <div class="row mt-1">
+            <div class="col-12">
+                <vue-good-table
+                    compactMode
+                    :columns="parcelas.columns"
+                    :rows="parcelas.rows"
+                    :search-options="{enabled: false}"
+                    :pagination-options="{perPage: 5, enabled: true}"
+                >
+                </vue-good-table>
+            </div>
+        </div>
+
         <div class="row form-group align-items-end mt-5">
             <div class="col-2">
                 <label>Data de Cadastro</label>
@@ -42,7 +65,7 @@
 
             <div class="col-8">
                 <div class="text-right">
-                    <router-link v-if="!isModal" :to="{name: 'PrecificacoesList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <router-link v-if="!isModal" :to="{name: 'CondicoesPagamentoList'}" class="btn btn-danger mr-3">Voltar</router-link>
                     <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
                 </div>
             </div>
@@ -51,7 +74,9 @@
 </template>
 
 <script>
-import {PrecificacoesService} from '@/services/precificacoes.service'
+import {CondicoesPagamentoService} from '@/services/condicoesPagamento.service'
+import 'vue-good-table/dist/vue-good-table.css'
+import {VueGoodTable} from 'vue-good-table';
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -65,6 +90,7 @@ export default {
             default: false
         }
     },
+    components: { VueGoodTable },
     data() {
         return {
             entity: {
@@ -76,6 +102,29 @@ export default {
                 dtCadastro: "",
                 dtAlteracao: ""
             },
+            parcelas: {
+                columns: [
+                    {
+                        label: "Dia",
+                        field: "dia"
+                    },
+                    {
+                        label: "Porcentagem (%)",
+                        field: "porcentagem"
+                    },
+                    {
+                        label: "Forma de Pagamento",
+                        field: "formaPagamento"
+                    },
+                    {
+                        label: "Ações",
+                        field: "btn"
+                    }
+                ],
+                rows: [],
+                page: 1,
+                totalRecords: 0
+            },
             isSubmiting: false
         }
     },
@@ -83,7 +132,7 @@ export default {
         const vm = this;
         this.entity.codigo = this.$route.params.codigo;
         if (this.entity.codigo) {
-            PrecificacoesService.getById(this.entity.codigo).then(function (response) {
+            CondicoesPagamentoService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
             });
         }
@@ -93,7 +142,7 @@ export default {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
-            PrecificacoesService.save(this.entity).then(function (response) {
+            CondicoesPagamentoService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Preço " + msg + " com sucesso");
                 vm.isSubmiting = false;
@@ -101,7 +150,7 @@ export default {
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit('emit-preco', vm.entity);
                 } else {
-                    vm.$router.push('/precificacoes');
+                    vm.$router.push('/condicoesPagamento');
                 }
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }

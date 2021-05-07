@@ -207,11 +207,6 @@ export default {
             dependentes: {
                 columns: [
                     {
-                        label: "Código",
-                        field: "codigo",
-                        type: "number"
-                    },
-                    {
                         label: "Nome",
                         field: "nome"
                     },
@@ -226,6 +221,10 @@ export default {
                     {
                         label: "Tipo",
                         field: "tipo"
+                    },
+                    {
+                        label: "Ações",
+                        field: "btn"
                     }
                 ],
                 rows: [],
