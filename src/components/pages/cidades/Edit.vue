@@ -64,9 +64,7 @@ const notyf = new Notyf();
 
 export default {
     name: "CidadesEdit",
-    components: { 
-        ConsultaEstado
-    },
+    components: { ConsultaEstado },
     props: {
         isModal: {
             type: Boolean,

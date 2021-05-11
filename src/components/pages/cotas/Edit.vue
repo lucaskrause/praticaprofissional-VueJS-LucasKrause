@@ -13,7 +13,7 @@
                 <div class="input-group">
                     <input id="cliente" type="text" class="form-control" v-model="clienteSelecionado" readonly/>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-cliente class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consulta-cliente class="btn btn-info ml-1">Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -54,11 +54,16 @@
                 </div>
             </div>
         </div>
+
+        <b-modal id="modal-consulta-cliente" size="xl" title="Consultar Cliente" hide-footer>
+            <ConsultaCliente @emit-cliente="selectCliente" />
+        </b-modal>
     </div>
 </template>
 
 <script>
 import {CotasService} from '@/services/cotas.service'
+import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -66,6 +71,7 @@ const notyf = new Notyf();
 
 export default {
     name: "CotasEdit",
+    components: { ConsultaCliente },
     data() {
         return {
             entity: {
@@ -77,7 +83,7 @@ export default {
                 dtCadastro: "",
                 dtAlteracao: ""
             },
-            clienteSelecionada: "",
+            clienteSelecionado: "",
             isSubmiting: false
         }
     },
@@ -91,6 +97,12 @@ export default {
         }
     },
     methods: {
+        selectCliente(entity) {
+            this.clienteSelecionado = entity.cliente;
+            this.entity.codigoCliente = entity.codigo;
+            this.$bvModal.hide("modal-new-cliente");
+            this.$bvModal.hide("modal-consulta-cliente");
+        },
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;

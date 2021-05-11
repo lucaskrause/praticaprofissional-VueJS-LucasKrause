@@ -123,12 +123,17 @@
         <b-modal id="modal-consulta-cidade" size="xl" title="Consultar Cidade" hide-footer>
             <ConsultaCidade @emit-cidade="selectCidade" />
         </b-modal>
+        
+        <b-modal id="modal-new-contaBancaria" size="xl" title="Cadastrar ContasBancaria" hide-footer>
+            <NovaContaBancaria  @emit-contaBancaria="selectContaBancaria" :isModal="true" />
+        </b-modal>
     </div>
 </template>
 
 <script>
 import {EmpresasService} from '@/services/empresas.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
+import NovaContaBancaria from '@/components/pages/contasBancarias/Edit.vue'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table';
 import {Notyf} from 'notyf';
@@ -138,7 +143,7 @@ const notyf = new Notyf();
 
 export default {
     name: "EmpresasEdit",
-    components: { VueGoodTable, ConsultaCidade },
+    components: { VueGoodTable, ConsultaCidade, NovaContaBancaria },
     data() {
         return {
             entity: {
@@ -201,6 +206,11 @@ export default {
         }
     },
     methods: {
+        selectContaBancaria(entity) {
+            this.contasBancarias.rows.add(entity);
+            this.$bvModal.hide("modal-new-contaBancaria");
+            this.$bvModal.hide("modal-consulta-contaBancaria");
+        },
         selectCidade(entity) {
             this.cidadeSelecionada = entity.cidade;
             this.entity.codigoCidade = entity.codigo;

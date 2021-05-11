@@ -48,7 +48,7 @@
                 <div class="input-group">
                     <input id="cidade" type="text" class="form-control" v-model="cidadeSelecionada" readonly/>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consulta-cidade class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consulta-cidade-dependente class="btn btn-info ml-1">Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -85,9 +85,9 @@
             <div class="col-4">
                 <label>Sócio</label>
                 <div class="input-group">
-                    <input id="cidade" type="text" class="form-control" v-model="socioSelecionado" readonly/>
+                    <input id="cliente" type="text" class="form-control" v-model="socioSelecionado" readonly/>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consulta-cidade class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consulta-cliente class="btn btn-info ml-1">Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -112,12 +112,12 @@
             </div>
         </div>
         
-        <b-modal v-if="!isModal" id="modal-consulta-cidade" size="xl" title="Consultar Cidade" hide-footer>
+        <b-modal v-if="!isModal" id="modal-consulta-cidade-dependente" size="xl" title="Consultar Cidade" hide-footer>
             <ConsultaCidade @emit-cidade="selectCidade" />
         </b-modal>
 
-        <b-modal id="modal-consulta-cidade" size="xl" title="Consultar Cliente" hide-footer>
-            <ConsultaCliente @emit-cidade="selectCliente" />
+        <b-modal id="modal-consulta-cliente" size="xl" title="Consultar Cliente" hide-footer>
+            <ConsultaCliente @emit-cliente="selectCliente" />
         </b-modal>
     </div>
 </template>
@@ -134,6 +134,12 @@ const notyf = new Notyf();
 export default {
     name: "DependentesEdit",
     components: { ConsultaCidade, ConsultaCliente },
+    props: {
+        isModal: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             entity: {
@@ -177,7 +183,7 @@ export default {
             this.cidadeSelecionada = entity.cidade;
             this.entity.codigoCidade = entity.codigo;
             this.$bvModal.hide("modal-new-cidade");
-            this.$bvModal.hide("modal-consulta-cidade");
+            this.$bvModal.hide("modal-consulta-cidade-dependente");
         },
         selectCliente(entity) {
             this.clienteSelecionado = entity.nome;

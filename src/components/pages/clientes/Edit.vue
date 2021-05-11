@@ -99,11 +99,11 @@
             </div>
             
             <div class="col-4">
-                <label>Forma de Pagamento</label>
+                <label>Condição de Pagamento</label>
                 <div class="input-group">
-                    <input id="formaPagamento" type="text" class="form-control" v-model="formaSelecionada" readonly/>
+                    <input id="condicaoPagamento" type="text" class="form-control" v-model="condicaoSelecionada" readonly/>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consulta-formaPagamento class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consulta-condicaoPagamento class="btn btn-info ml-1">Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -115,7 +115,7 @@
             </div>
 
             <div class="col-9 text-right">
-                <b-button v-b-modal.modal-consulta-cidade class="btn btn-success btn-sm">Cadastrar Dependente</b-button>
+                <b-button v-b-modal.modal-new-dependente class="btn btn-success btn-sm">Cadastrar Dependente</b-button>
             </div>
         </div>
         <div v-if="entity.tipoCliente == 'Sócio' && !isModal" class="row mt-1">
@@ -154,8 +154,12 @@
             <ConsultaCidade @emit-cidade="selectCidade" />
         </b-modal>
         
-        <b-modal id="modal-consulta-formaPagamento" size="xl" title="Consultar Forma de Pagamento" hide-footer>
-            <ConsultaFormaPagamento @emit-forma="selectForma" />
+        <b-modal id="modal-consulta-condicaoPagamento" size="xl" title="Consultar Condição de Pagamento" hide-footer>
+            <ConsultaCondicaoPagamento @emit-condicao="selectCondicao" />
+        </b-modal>
+
+        <b-modal id="modal-new-dependente" size="xl" title="Cadastrar Dependente" hide-footer>
+            <NovoDependente @emit-dependente="selectDependente" :isModal="true" />
         </b-modal>
     </div>
 </template>
@@ -163,7 +167,8 @@
 <script>
 import {ClientesService} from '@/services/clientes.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
-import ConsultaFormaPagamento from '@/components/pages/formasPagamento/Consult.vue'
+import ConsultaCondicaoPagamento from '@/components/pages/condicoesPagamento/Consult.vue'
+import NovoDependente from '@/components/pages/dependentes/Edit.vue'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table';
 import {Notyf} from 'notyf';
@@ -173,7 +178,7 @@ const notyf = new Notyf();
 
 export default {
     name: "ClientesEdit",
-    components: { VueGoodTable, ConsultaCidade, ConsultaFormaPagamento },
+    components: { VueGoodTable, ConsultaCidade, ConsultaCondicaoPagamento, NovoDependente },
     props: {
         isModal: {
             type: Boolean,
@@ -198,12 +203,12 @@ export default {
                 rgIe: "",
                 dtNascFundacao: "",
                 tipoCliente: "",
-                codigoFormaPagamento: 0,
+                codigoCondicaoPagamento: 0,
                 dtCadastro: "",
                 dtAlteracao: ""
             },
             cidadeSelecionada: "",
-            formaSelecionada: "",
+            condicaoSelecionada: "",
             dependentes: {
                 columns: [
                     {
@@ -241,9 +246,9 @@ export default {
             ClientesService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
                 vm.cidadeSelecionada = response.data.cidade.cidade;
-                vm.formaSelecionada = response.data.formaPagamento.descricao;
+                vm.condicaoSelecionada = response.data.condicaoPagamento.descricao;
                 vm.$delete(vm.entity, 'cidade');
-                vm.$delete(vm.entity, 'formaPagamento');
+                vm.$delete(vm.entity, 'condicaoPagamento');
             });
         }
     },
@@ -254,11 +259,16 @@ export default {
             this.$bvModal.hide("modal-new-cidade");
             this.$bvModal.hide("modal-consulta-cidade");
         },
-        selectForma(entity) {
-            this.formaSelecionada = entity.descricao;
-            this.entity.codigoFormaPagamento = entity.codigo;
-            this.$bvModal.hide("modal-new-formaPagamento");
-            this.$bvModal.hide("modal-consulta-formaPagamento");
+        selectCondicao(entity) {
+            this.condicaoSelecionada = entity.descricao;
+            this.entity.codigoCondicaoPagamento = entity.codigo;
+            this.$bvModal.hide("modal-new-condicaoPagamento");
+            this.$bvModal.hide("modal-consulta-condicaoPagamento");
+        },
+        selectDependente(entity) {
+            this.dependentes.rows.add(entity);
+            this.$bvModal.hide("modal-new-dependente");
+            this.$bvModal.hide("modal-consulta-dependente");
         },
         save() {
             if(this.isSubmiting) return;

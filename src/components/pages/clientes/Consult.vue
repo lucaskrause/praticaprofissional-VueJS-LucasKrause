@@ -21,20 +21,20 @@
         </div>
         
         <b-modal id="modal-new-cliente" size="xl" title="Cadastrar Cliente" hide-footer>
-            <NovaCliente  @emit-cliente="selectCliente" :isModal="true" />
+            <NovoCliente  @emit-cliente="selectCliente" :isModal="true" />
         </b-modal>
     </div>
 </template>
 
 <script>
 import {ClientesService} from '@/services/clientes.service'
-import NovaCliente from '@/components/pages/clientes/Edit.vue'
+import NovoCliente from '@/components/pages/clientes/Edit.vue'
 import {VueGoodTable} from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
 
 export default {
     name: "ClientesConsult",
-    components: { VueGoodTable, NovaCliente },
+    components: { VueGoodTable, NovoCliente },
     data() {
         return {
              columns: [
