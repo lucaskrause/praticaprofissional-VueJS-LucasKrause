@@ -7,9 +7,16 @@
                 <label>Código</label>
                 <input id="codigo" type="number" class="form-control" v-model="entity.codigo" readonly/>
             </div>
+            
+            <div class="col-2">
+                <label>Tipo Pessoa</label>
+                <br/>
+                <label class="radio-inline mr-2"><input type="radio" value="Física" v-model="entity.tipoPessoa"> Física</label>
+                <label class="radio-inline"><input type="radio" value="Jurídica" v-model="entity.tipoPessoa"> Jurídica</label>
+            </div>
 
             <div class="col-5">
-                <label>Nome Completo</label>
+                <label>Cliente</label>
                 <input id="nome" type="text" class="form-control" v-model="entity.nome"/>
             </div>
 
@@ -18,13 +25,6 @@
                 <br/>
                 <label class="radio-inline mr-2"><input type="radio" value="Feminino" v-model="entity.sexo"> Feminino</label>
                 <label class="radio-inline"><input type="radio" value="Masculino" v-model="entity.sexo"> Masculino</label>
-            </div>
-            
-            <div class="col-3">
-                <label>Tipo Pessoa</label>
-                <br/>
-                <label class="radio-inline mr-2"><input type="radio" value="Física" v-model="entity.tipoPessoa"> Física</label>
-                <label class="radio-inline"><input type="radio" value="Jurídica" v-model="entity.tipoPessoa"> Jurídica</label>
             </div>
         </div>
 
@@ -50,6 +50,11 @@
         </div>
 
         <div class="row form-group">
+            <div class="col-1">
+                <label>Código</label>
+                <input id="codigoCidade" type="number" class="form-control" v-model="entity.codigoCidade" readonly/>
+            </div>
+            
             <div class="col-4">
                 <label>Cidade</label>
                 <div class="input-group">
@@ -60,7 +65,7 @@
                 </div>
             </div>
 
-            <div class="col-2">
+            <div class="col-3">
                 <label>Telefone</label>
                 <input id="telefone" type="text" class="form-control" v-model="entity.telefone"/>
             </div>
@@ -96,6 +101,11 @@
                     <option value="Cliente">Cliente</option>
                     <option value="Sócio">Sócio</option>
                 </select>
+            </div>
+
+            <div class="col-1">
+                <label>Código</label>
+                <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model="entity.codigoCondicaoPagamento" readonly/>
             </div>
             
             <div class="col-4">
@@ -241,7 +251,9 @@ export default {
     },
     created() {
         const vm = this;
-        this.entity.codigo = this.$route.params.codigo;
+        if (this.$route.params.codigo) {
+            this.entity.codigo = this.$route.params.codigo;
+        }
         if(this.entity.codigo){
             ClientesService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;

@@ -61,7 +61,9 @@ export default {
     },
     created() {
         const vm = this;
-        this.entity.codigo = this.$route.params.codigo;
+        if (this.$route.params.codigo) {
+            this.entity.codigo = this.$route.params.codigo;
+        }
         if (this.entity.codigo) {
             FormasPagamentoService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;

@@ -41,6 +41,11 @@
         </div>
 
         <div class="row form-group">
+            <div class="col-1">
+                <label>Código</label> 
+                <input id="codigoCidade" type="number" class="form-control" v-model="entity.codigoCidade" readonly/>
+            </div>
+
             <div class="col-4">
                 <label>Cidade</label>
                 <div class="input-group">
@@ -51,7 +56,7 @@
                 </div>
             </div>
 
-            <div class="col-2">
+            <div class="col-3">
                 <label>Telefone</label>
                 <input id="telefone" type="text" class="form-control" v-model="entity.telefone"/>
             </div>
@@ -76,6 +81,11 @@
             <div class="col-3">
                 <label>Data de Fundação</label>
                 <input id="dtFundacao" type="date" class="form-control" v-model="entity.dtFundacao"/>
+            </div>
+
+            <div class="col-3">
+                <label>Quantidade de Cotas</label>
+                <input id="cotas" type="number" class="form-control" v-model="entity.cotas"/>
             </div>
         </div>
 
@@ -160,6 +170,7 @@ export default {
                 cnpj: "",
                 ie: "",
                 dtFundacao: "",
+                cotas: 0,
                 dtCadastro: "",
                 dtAlteracao: ""
             },
@@ -196,7 +207,9 @@ export default {
     },
     created() {
         const vm = this;
-        this.entity.codigo = this.$route.params.codigo;
+        if (this.$route.params.codigo) {
+            this.entity.codigo = this.$route.params.codigo;
+        }
         if(this.entity.codigo){
             EmpresasService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;

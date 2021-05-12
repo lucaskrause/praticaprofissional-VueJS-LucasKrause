@@ -7,6 +7,13 @@
                 <label>Código</label>
                 <input id="codigo" type="number" class="form-control" v-model="entity.codigo" readonly/>
             </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-1">
+                <label>Código</label>
+                <input id="codigoCliente" type="number" class="form-control" v-model="entity.codigoCliente" readonly/>
+            </div>
 
             <div class="col-4">
                 <label>Cliente</label>
@@ -76,7 +83,7 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                codigoCliente: "",
+                codigoCliente: 0,
                 valor: "",
                 dtInicio: "",
                 dtTermino: "",
@@ -89,7 +96,9 @@ export default {
     },
     created() {
         const vm = this;
-        this.entity.codigo = this.$route.params.codigo;
+        if (this.$route.params.codigo) {
+            this.entity.codigo = this.$route.params.codigo;
+        }
         if (this.entity.codigo) {
             CotasService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;

@@ -17,6 +17,13 @@
                 <label>DDD</label>
                 <input id="ddd" type="text" class="form-control" v-model="entity.ddd"/>
             </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-1">
+                <label>Código</label> 
+                <input id="codigoEstado" type="number" class="form-control" v-model="entity.codigoEstado" readonly/>
+            </div>
             
             <div class="col-4">
                 <label>Estado</label>
@@ -85,7 +92,9 @@ export default {
     },
     created() {
         const vm = this;
-        this.entity.codigo = this.$route.params.codigo;
+        if (this.$route.params.codigo) {
+            this.entity.codigo = this.$route.params.codigo;
+        }
         if(this.entity.codigo){
             CidadesService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;

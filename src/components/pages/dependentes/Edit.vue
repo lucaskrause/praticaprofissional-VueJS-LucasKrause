@@ -9,8 +9,8 @@
             </div>
 
             <div class="col-5">
-                <label>Nome Completo</label>
-                <input id="nome" type="text" class="form-control" v-model="entity.nome"/>
+                <label>Dependente</label>
+                <input id="dependente" type="text" class="form-control" v-model="entity.nome"/>
             </div>
 
             <div class="col-3">
@@ -43,6 +43,11 @@
         </div>
 
         <div class="row form-group">
+            <div class="col-1">
+                <label>Código</label> 
+                <input id="codigoCidade" type="number" class="form-control" v-model="entity.codigoCidade" readonly/>
+            </div>
+
             <div class="col-4">
                 <label>Cidade</label>
                 <div class="input-group">
@@ -53,7 +58,7 @@
                 </div>
             </div>
 
-            <div class="col-2">
+            <div class="col-3">
                 <label>Telefone</label>
                 <input id="telefone" type="text" class="form-control" v-model="entity.telefone"/>
             </div>
@@ -81,7 +86,12 @@
             </div>
         </div>
 
-        <div v-if="!isModal" class="row form-group">            
+        <div v-if="!isModal" class="row form-group">
+            <div class="col-1">
+                <label>Código</label> 
+                <input id="codigoCliente" type="number" class="form-control" v-model="entity.codigoCliente" readonly/>
+            </div>
+
             <div class="col-4">
                 <label>Sócio</label>
                 <div class="input-group">
@@ -112,11 +122,11 @@
             </div>
         </div>
         
-        <b-modal v-if="!isModal" id="modal-consulta-cidade-dependente" size="xl" title="Consultar Cidade" hide-footer>
+        <b-modal id="modal-consulta-cidade-dependente" size="xl" title="Consultar Cidade" hide-footer>
             <ConsultaCidade @emit-cidade="selectCidade" />
         </b-modal>
 
-        <b-modal id="modal-consulta-cliente" size="xl" title="Consultar Cliente" hide-footer>
+        <b-modal v-if="!isModal" id="modal-consulta-cliente" size="xl" title="Consultar Cliente" hide-footer>
             <ConsultaCliente @emit-cliente="selectCliente" />
         </b-modal>
     </div>
@@ -167,7 +177,9 @@ export default {
     },
     created() {
         const vm = this;
-        this.entity.codigo = this.$route.params.codigo;
+        if (this.$route.params.codigo) {
+            this.entity.codigo = this.$route.params.codigo;
+        }
         if(this.entity.codigo){
             DependentesService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;

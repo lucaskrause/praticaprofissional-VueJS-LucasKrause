@@ -17,6 +17,13 @@
                 <label>UF</label>
                 <input id="uf" type="text" class="form-control" v-model="entity.uf"/>
             </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-1">
+                <label>Código</label> 
+                <input id="codigoPais" type="number" class="form-control" v-model="entity.codigoPais" readonly/>
+            </div>
 
             <div class="col-4">
                 <label>País</label>
@@ -88,7 +95,9 @@ export default {
     },
     created() {
         const vm = this;
-        this.entity.codigo = this.$route.params.codigo;
+        if (this.$route.params.codigo) {
+            this.entity.codigo = this.$route.params.codigo;
+        }
         if(this.entity.codigo) {
             EstadosService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;

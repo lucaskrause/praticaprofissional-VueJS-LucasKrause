@@ -35,7 +35,7 @@
             </div>
 
             <div class="col-9 text-right">
-                <b-button v-b-modal.modal-consulta-cidade class="btn btn-success btn-sm">Nova Parcela</b-button>
+                <b-button v-b-modal.modal-new-parcela class="btn btn-success btn-sm">Nova Parcela</b-button>
             </div>
         </div>
 
@@ -70,11 +70,16 @@
                 </div>
             </div>
         </div>
+
+        <b-modal id="modal-new-parcela" size="xl" title="Cadastrar Parcela" hide-footer>
+            <NovaParcela @emit-dependente="selectParcela" :isModal="true" />
+        </b-modal>
     </div>
 </template>
 
 <script>
 import {CondicoesPagamentoService} from '@/services/condicoesPagamento.service'
+import NovaParcela from '@/components/pages/condicaoParcelas/Edit'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table';
 import {Notyf} from 'notyf';
@@ -90,7 +95,7 @@ export default {
             default: false
         }
     },
-    components: { VueGoodTable },
+    components: { VueGoodTable, NovaParcela },
     data() {
         return {
             entity: {
@@ -130,7 +135,9 @@ export default {
     },
     created() {
         const vm = this;
-        this.entity.codigo = this.$route.params.codigo;
+        if (this.$route.params.codigo) {
+            this.entity.codigo = this.$route.params.codigo;
+        }
         if (this.entity.codigo) {
             CondicoesPagamentoService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
