@@ -19,7 +19,7 @@
                                     <component :is="group.icon" font-scale="1.4"/>
                                     {{group.label}}
                                 </a>
-                                <b-collapse :id="'accord-menu-'+group.id">
+                                <b-collapse :id="'accord-menu-'+group.id" class="mt-3">
                                     <ul>
                                         <li v-for="item in getItemByCat(group.id)" :key="item.id">
                                             <router-link :to="item.route" class="itemMenu" @click="changePageTitle(item.name)">
@@ -48,7 +48,7 @@ export default {
         return {
             NameCompany: "CLUBE SINCOFOZ",
             groups: [
-                {id: 1, label: "Empresa",  icon: "BIconBuilding"},
+                {id: 1, label: "Empresas",  icon: "BIconBuilding"},
                 {id: 2, label: "Geral", icon: "BIconCart3"},
                 {id: 3, label: "Pagamentos", icon: "BIconCreditCard"},
                 {id: 4, label: "Regiões", icon: "BIconGeoAlt"},
