@@ -66,8 +66,8 @@ const routes = [
         children: [
             // INÍCIO
             {
-                name: "app",
                 path: "",
+                name: "app",
                 component: Inicio,
                 meta: {
                     label: "Início"

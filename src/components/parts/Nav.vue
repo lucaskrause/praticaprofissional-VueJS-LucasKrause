@@ -4,10 +4,10 @@
             <div class="col-md-12 col-6 logo">
                 <div class="row">
                     <div class="col-12 company-name">
-                        <router-link :to="{name: 'Home'}">
+                        <router-link :to="{name: 'app'}" class="itemMenu">
                             <img src="./../../assets/logo.png" class="rounded-circle" style="backgroundColor: white;" alt="">
+                            {{ NameCompany }}
                         </router-link>
-                        {{ NameCompany }}
                     </div>
                 </div>
                 <hr />
@@ -15,14 +15,14 @@
                     <div class="col-md-12 col-6 menu">
                         <ul>
                             <li v-for="(group) in groups" :key="group.id">
-                                <a href="#" @click.prevent="() => true" v-b-toggle="'accord-menu-'+group.id">
+                                <a href="#" class="itemMenu" @click.prevent="() => true" v-b-toggle="'accord-menu-'+group.id">
                                     <component :is="group.icon" font-scale="1.4"/>
                                     {{group.label}}
                                 </a>
                                 <b-collapse :id="'accord-menu-'+group.id">
                                     <ul>
                                         <li v-for="item in getItemByCat(group.id)" :key="item.id">
-                                            <router-link :to="item.route" @click="changePageTitle(item.name)">
+                                            <router-link :to="item.route" class="itemMenu" @click="changePageTitle(item.name)">
                                                 {{item.label}}
                                             </router-link>
                                         </li>
@@ -128,32 +128,12 @@ li {
     margin-bottom: 10px;
 }
 
-ul > li > a {
-    color: #fff;
-    text-decoration: none;
-}
-
-ul > li > a:link {
-    color: #fff;
-    text-decoration: none;
-}
-
-ul > li > a:visited {
-    color: #fff;
-    text-decoration: none;
-}
-
-ul > li > a:hover {
-    color: #fff;
-    text-decoration: none;
-}
-
-ul > li > a:active {
-    color: #fff;
-    text-decoration: none;
-}
-
 .submenu {
     margin-left: 30px;
+}
+
+.itemMenu {
+    color: #fff;
+    text-decoration: none;
 }
 </style>
