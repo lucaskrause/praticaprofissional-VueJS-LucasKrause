@@ -145,6 +145,10 @@ export default {
         }
     },
     methods: {
+        selectParcela(entity) {
+            this.parcelas.rows.add(entity);
+            this.$bvModal.hide("modal-new-parcela");
+        },
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;

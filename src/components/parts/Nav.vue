@@ -1,5 +1,5 @@
 <template>
-    <div class="custom-nav col-12 col-sm-4 col-lg-3 col-xl-2 col-lg-3 col-md-4">
+    <div class="custom-nav col-12 col-sm-5 col-md-4 col-lg-3 col-xl-2">
         <div class="row">
             <div class="col-md-12 col-6 logo">
                 <div class="row">
@@ -14,10 +14,21 @@
                 <div class="row">
                     <div class="col-md-12 col-6 menu">
                         <ul>
-                            <li v-for="group in groups" :key="group.id">
-                                <router-link :to="group.route">
+                            <li v-for="(group) in groups" :key="group.id">
+                                <a href="#" @click.prevent="() => true" v-b-toggle="'accord-menu-'+group.id">
+                                    <component :is="group.icon" font-scale="1.4"/>
                                     {{group.label}}
-                                </router-link>
+                                </a>
+                                <b-collapse :id="'accord-menu-'+group.id">
+                                    <ul>
+                                        <li v-for="item in getItemByCat(group.id)" :key="item.id">
+                                            <router-link :to="item.route" @click="changePageTitle(item.name)">
+                                                {{item.label}}
+                                            </router-link>
+                                        </li>
+                                    </ul>
+                                </b-collapse>
+                                <hr>
                             </li>
                         </ul>
                     </div>
@@ -29,53 +40,47 @@
 
 <script>
 
+import {BIconBuilding, BIconCart3, BIconCreditCard, BIconGeoAlt} from 'bootstrap-vue'
+
 export default {
-    components: {  },
+    components: { BIconBuilding, BIconCart3, BIconCreditCard, BIconGeoAlt },
     data () {
         return {
             NameCompany: "CLUBE SINCOFOZ",
             groups: [
-                // {id: 1, label: "Empresa",  route: null},
-                // {id: 2, label: "Geral", route: null},
-                // {id: 3, label: "Pagamentos", route: null},
-                // {id: 4, label: "Regiões", route: null},
-                {id: 1, label: "Empresas", route: {name: "EmpresasList"}},
-                {id: 2, label: "Contas Bancarias", route: {name: "ContasBancariasList"}},
-                {id: 3, label: "Funcionários", route: {name: "FuncionariosList"}},
-                {id: 4, label: "Cotas", route: {name: "CotasList"}},
-                {id: 5, label: "Clientes", route: {name: "ClientesList"}},
-                {id: 6, label: "Dependentes", route: {name: "DependentesList"}},
-                {id: 7, label: "Reservas", route: {name: "ReservasList"}},
-                {id: 8, label: "Precificações", route: {name: "PrecificacoesList"}},
-                {id: 9, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
-                {id: 10, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
-                {id: 11, label: "Países", route: {name: "PaisesList"}},
-                {id: 12, label: "Estados", route: {name: "EstadosList"}},
-                {id: 13, label: "Cidades",  route: {name: "CidadesList"}},
+                {id: 1, label: "Empresa",  icon: "BIconBuilding"},
+                {id: 2, label: "Geral", icon: "BIconCart3"},
+                {id: 3, label: "Pagamentos", icon: "BIconCreditCard"},
+                {id: 4, label: "Regiões", icon: "BIconGeoAlt"},
             ],
-            // subGroups: [
-            //     {id: 1, group: 1, label: "Empresa", route: {name: "EmpresasList"}}
-            //     {id: 2, group: 1, label: "Conta Bancaria", route: {name: "ContaBancariaList"}}
-            //     {id: 3, group: 1, label: "Funcionários", route: {name: "FuncionáriosList"}}
-            //     {id: 4, group: 1, label: "Cotas", route: {name: "CotasList"}}
-            //     {id: 5, group: 1, label: "Clientes", route: {name: "ClientesList"}}
-            //     {id: 6, group: 1, label: "Dependentes", route: {name: "DependentesList"}}
-            //     {id: 7, group: 1, label: "Reservas", route: {name: "ReservasList"}},
-            //     {id: 8, group: 2, label: "Fornecedores", route: {name: "FornecedoresList"}}
-            //     {id: 9, group: 2, label: "Produtos", route: {name: "ProdutosList"}}
-            //     {id: 10, group: 2, label: "Serviços", route: {name: "ServiçosList"}}
-            //     {id: 11, group: 2, label: "Compras", route: {name: "ComprasList"}}
-            //     {id: 12, group: 3, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
-            //     {id: 13, group: 3, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
-            //     {id: 14, group: 3, label: "Preços para Reserva", route: {name: "PrecificacaoList"}},
-            //     {id: 15, group: 4, label: "Cidades",  route: {name: "CidadesList"}},
-            //     {id: 16, group: 4, label: "Estados", route: {name: "EstadosList"}},
-            //     {id: 17, group: 4, label: "Países", route: {name: "PaisesList"}},
-            // ]
+            itemsMenu: [
+                {id: 1, group: 1, label: "Empresas", route: {name: "EmpresasList"}},
+                {id: 2, group: 1, label: "Contas Bancarias", route: {name: "ContasBancariasList"}},
+                {id: 3, group: 1, label: "Funcionários", route: {name: "FuncionariosList"}},
+                {id: 4, group: 1, label: "Cotas", route: {name: "CotasList"}},
+                {id: 5, group: 1, label: "Clientes", route: {name: "ClientesList"}},
+                {id: 6, group: 1, label: "Dependentes", route: {name: "DependentesList"}},
+                {id: 7, group: 1, label: "Reservas", route: {name: "ReservasList"}},
+
+                {id: 8, group: 2, label: "Fornecedores", route: {name: "FornecedoresList"}},
+                {id: 9, group: 2, label: "Produtos", route: {name: "ProdutosList"}},
+                {id: 10, group: 2, label: "Serviços", route: {name: "ServicosList"}},
+                // {id: 11, group: 2, label: "Compras", route: {name: "ComprasList"}},
+
+                {id: 12, group: 3, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
+                {id: 13, group: 3, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
+                {id: 14, group: 3, label: "Preços para Reserva", route: {name: "PrecificacoesList"}},
+
+                {id: 15, group: 4, label: "Cidades",  route: {name: "CidadesList"}},
+                {id: 16, group: 4, label: "Estados", route: {name: "EstadosList"}},
+                {id: 17, group: 4, label: "Países", route: {name: "PaisesList"}},
+            ],
         }
     },
     methods: {
-        
+        getItemByCat(group){
+            return this.itemsMenu.filter((item) => item.group === group);
+        },
     }
 }
 </script>

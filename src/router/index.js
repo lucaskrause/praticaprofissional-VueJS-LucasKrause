@@ -3,11 +3,46 @@ import VueRouter from 'vue-router';
 
 const Home = () => import("@/components/Home");
 
+const Inicio = () => import("@/components/Inicio");
+
 const EmpresaList = () => import("@/components/pages/empresas/List");
 const EmpresaEdit = () => import("@/components/pages/empresas/Edit");
 
 const ContaBancariaList = () => import("@/components/pages/contasBancarias/List");
 const ContaBancariaEdit = () => import("@/components/pages/contasBancarias/Edit");
+
+const FuncionarioList = () => import("@/components/pages/funcionarios/List");
+const FuncionarioEdit = () => import("@/components/pages/funcionarios/Edit");
+
+const CotaList = () => import("@/components/pages/cotas/List");
+const CotaEdit = () => import("@/components/pages/cotas/Edit");
+
+const ClienteList = () => import("@/components/pages/clientes/List");
+const ClienteEdit = () => import("@/components/pages/clientes/Edit");
+
+const DependenteList = () => import("@/components/pages/dependentes/List");
+const DependenteEdit = () => import("@/components/pages/dependentes/Edit");
+
+const ReservaList = () => import("@/components/pages/reservas/List");
+const ReservaEdit = () => import("@/components/pages/reservas/Edit");
+
+const PrecoList = () => import("@/components/pages/precificacoes/List");
+const PrecoEdit = () => import("@/components/pages/precificacoes/Edit");
+
+const FormaPagamentoList = () => import("@/components/pages/formasPagamento/List");
+const FormaPagamentoEdit = () => import("@/components/pages/formasPagamento/Edit");
+
+const CondicaoPagamentoList = () => import("@/components/pages/condicoesPagamento/List");
+const CondicaoPagamentoEdit = () => import("@/components/pages/condicoesPagamento/Edit");
+
+const FornecedorList = () => import("@/components/pages/fornecedores/List");
+const FornecedorEdit = () => import("@/components/pages/fornecedores/Edit");
+
+const ServicoList = () => import("@/components/pages/servicos/List");
+const ServicoEdit = () => import("@/components/pages/servicos/Edit");
+
+const ProdutoList = () => import("@/components/pages/produtos/List");
+const ProdutoEdit = () => import("@/components/pages/produtos/Edit");
 
 const PaisList = () => import("@/components/pages/paises/List");
 const PaisEdit = () => import("@/components/pages/paises/Edit");
@@ -18,48 +53,34 @@ const EstadoEdit = () => import("@/components/pages/estados/Edit");
 const CidadeList = () => import("@/components/pages/cidades/List");
 const CidadeEdit = () => import("@/components/pages/cidades/Edit");
 
-const CotaList = () => import("@/components/pages/cotas/List");
-const CotaEdit = () => import("@/components/pages/cotas/Edit");
-
-const ReservaList = () => import("@/components/pages/reservas/List");
-const ReservaEdit = () => import("@/components/pages/reservas/Edit");
-
-const FormaPagamentoList = () => import("@/components/pages/formasPagamento/List");
-const FormaPagamentoEdit = () => import("@/components/pages/formasPagamento/Edit");
-
-const CondicaoPagamentoList = () => import("@/components/pages/condicoesPagamento/List");
-const CondicaoPagamentoEdit = () => import("@/components/pages/condicoesPagamento/Edit");
-
-const ClienteList = () => import("@/components/pages/clientes/List");
-const ClienteEdit = () => import("@/components/pages/clientes/Edit");
-
-const DependenteList = () => import("@/components/pages/dependentes/List");
-const DependenteEdit = () => import("@/components/pages/dependentes/Edit");
-
-const PrecoList = () => import("@/components/pages/precificacoes/List");
-const PrecoEdit = () => import("@/components/pages/precificacoes/Edit");
-
-const FuncionarioList = () => import("@/components/pages/funcionarios/List");
-const FuncionarioEdit = () => import("@/components/pages/funcionarios/Edit");
-
 Vue.use(VueRouter)
 
 const routes = [
     {
-        path: '/',
-        name: 'Home',
+        path: '/app',
+        name: '',
         component: Home,
         meta: {
             label: "Home"
         },
         children: [
+            // INÍCIO
+            {
+                name: "app",
+                path: "",
+                component: Inicio,
+                meta: {
+                    label: "Início"
+                },
+            },
+
             // EMPRESAS
             {
                 path: 'empresas',
                 name: 'EmpresasList',
                 component: EmpresaList,
                 meta: {
-                    label: "Lista de Empresas"
+                    label: "Empresas"
                 },
             },
             {
@@ -67,7 +88,7 @@ const routes = [
                 name: 'EmpresasCad',
                 component: EmpresaEdit,
                 meta: {
-                    label: "Cadastro de Empresa"
+                    label: "Empresa"
                 },
             },
             {
@@ -75,7 +96,7 @@ const routes = [
                 name: 'EmpresasEdit',
                 component: EmpresaEdit,
                 meta: {
-                    label: "Editar Empresa"
+                    label: "Empresa"
                 },
             },
 
@@ -85,7 +106,7 @@ const routes = [
                 name: 'ContasBancariasList',
                 component: ContaBancariaList,
                 meta: {
-                    label: "Lista de Contas Bancarias"
+                    label: "Contas Bancarias"
                 },
             },
             {
@@ -93,7 +114,7 @@ const routes = [
                 name: 'ContasBancariasCad',
                 component: ContaBancariaEdit,
                 meta: {
-                    label: "Cadastro de Contas Bancarias"
+                    label: "Conta Bancaria"
                 },
             },
             {
@@ -101,59 +122,33 @@ const routes = [
                 name: 'ContasBancariasEdit',
                 component: ContaBancariaEdit,
                 meta: {
-                    label: "Editar Conta Bancaria"
+                    label: "Conta Bancaria"
                 },
             },
-            
-            // FORMAS DE PAGAMENTO
+
+            // FUNCIONÁRIOS
             {
-                path: 'formasPagamento',
-                name: 'FormasPagamentoList',
-                component: FormaPagamentoList,
+                path: 'funcionarios',
+                name: 'FuncionariosList',
+                component: FuncionarioList,
                 meta: {
-                    label: "Lista de Formas de Pagamento"
-                },
-            },
-            {
-                path: 'formasPagamento/cadastrar',
-                name: 'FormasPagamentoCad',
-                component: FormaPagamentoEdit,
-                meta: {
-                    label: "Cadastro de Formas de Pagamento"
+                    label: "Funcionários"
                 },
             },
             {
-                path: 'formasPagamento/editar/:codigo',
-                name: 'FormasPagamentoEdit',
-                component: FormaPagamentoEdit,
+                path: 'funcionarios/cadastrar',
+                name: 'FuncionariosCad',
+                component: FuncionarioEdit,
                 meta: {
-                    label: "Editar Forma de Pagamento"
-                },
-            },
-            
-            // CONDIÇÕES DE PAGAMENTO
-            {
-                path: 'condicoesPagamento',
-                name: 'CondicoesPagamentoList',
-                component: CondicaoPagamentoList,
-                meta: {
-                    label: "Lista de Condicoes de Pagamento"
+                    label: "Funcionário"
                 },
             },
             {
-                path: 'condicoesPagamento/cadastrar',
-                name: 'CondicoesPagamentoCad',
-                component: CondicaoPagamentoEdit,
+                path: 'funcionarios/editar/:codigo',
+                name: 'FuncionariosEdit',
+                component: FuncionarioEdit,
                 meta: {
-                    label: "Cadastro de Condicoes de Pagamento"
-                },
-            },
-            {
-                path: 'condicoesPagamento/editar/:codigo',
-                name: 'CondicoesPagamentoEdit',
-                component: CondicaoPagamentoEdit,
-                meta: {
-                    label: "Editar Condição de Pagamento"
+                    label: "Funcionário"
                 },
             },
             
@@ -163,7 +158,7 @@ const routes = [
                 name: 'CotasList',
                 component: CotaList,
                 meta: {
-                    label: "Lista de Cotas"
+                    label: "Cotas"
                 },
             },
             {
@@ -171,7 +166,7 @@ const routes = [
                 name: 'CotasCad',
                 component: CotaEdit,
                 meta: {
-                    label: "Cadastro de Cotas"
+                    label: "Cota"
                 },
             },
             {
@@ -179,7 +174,59 @@ const routes = [
                 name: 'CotasEdit',
                 component: CotaEdit,
                 meta: {
-                    label: "Editar Cota"
+                    label: "Cota"
+                },
+            },
+
+            // CLIENTES
+            {
+                path: 'clientes',
+                name: 'ClientesList',
+                component: ClienteList,
+                meta: {
+                    label: "Clientes"
+                },
+            },
+            {
+                path: 'clientes/cadastrar',
+                name: 'ClientesCad',
+                component: ClienteEdit,
+                meta: {
+                    label: "Cliente"
+                },
+            },
+            {
+                path: 'clientes/editar/:codigo',
+                name: 'ClientesEdit',
+                component: ClienteEdit,
+                meta: {
+                    label: "Cliente"
+                },
+            },
+
+            // DEPENDENTES
+            {
+                path: 'dependentes',
+                name: 'DependentesList',
+                component: DependenteList,
+                meta: {
+                    label: "Dependentes"
+                },
+            },
+            {
+                path: 'dependentes/cadastrar',
+                name: 'DependentesCad',
+                component: DependenteEdit,
+                meta: {
+                    label: "Dependente"
+                },
+            },
+            {
+                path: 'dependentes/editar/:codigo',
+                name: 'DependentesEdit',
+                component: DependenteEdit,
+                meta: {
+                    label: "Dependente"
                 },
             },
             
@@ -189,7 +236,7 @@ const routes = [
                 name: 'ReservasList',
                 component: ReservaList,
                 meta: {
-                    label: "Lista de Reservas"
+                    label: "Reservas"
                 },
             },
             {
@@ -205,59 +252,7 @@ const routes = [
                 name: 'ReservasEdit',
                 component: CotaEdit,
                 meta: {
-                    label: "Editar Reserva"
-                },
-            },
-
-            // CLIENTES
-            {
-                path: 'clientes',
-                name: 'ClientesList',
-                component: ClienteList,
-                meta: {
-                    label: "Lista de Clientes"
-                },
-            },
-            {
-                path: 'clientes/cadastrar',
-                name: 'ClientesCad',
-                component: ClienteEdit,
-                meta: {
-                    label: "Cadastro de Cliente"
-                },
-            },
-            {
-                path: 'clientes/editar/:codigo',
-                name: 'ClientesEdit',
-                component: ClienteEdit,
-                meta: {
-                    label: "Editar Cliente"
-                },
-            },
-
-            // DEPENDENTES
-            {
-                path: 'dependentes',
-                name: 'DependentesList',
-                component: DependenteList,
-                meta: {
-                    label: "Lista de Dependentes"
-                },
-            },
-            {
-                path: 'dependentes/cadastrar',
-                name: 'DependentesCad',
-                component: DependenteEdit,
-                meta: {
-                    label: "Cadastro de Dependente"
-                },
-            },
-            {
-                path: 'dependentes/editar/:codigo',
-                name: 'DependentesEdit',
-                component: DependenteEdit,
-                meta: {
-                    label: "Editar Cliente"
+                    label: "Reserva"
                 },
             },
             
@@ -267,7 +262,7 @@ const routes = [
                 name: 'PrecificacoesList',
                 component: PrecoList,
                 meta: {
-                    label: "Lista de Preços"
+                    label: "Preços"
                 },
             },
             {
@@ -275,7 +270,7 @@ const routes = [
                 name: 'PrecificacoesCad',
                 component: PrecoEdit,
                 meta: {
-                    label: "Cadastro de Preço"
+                    label: "Preço"
                 },
             },
             {
@@ -283,33 +278,137 @@ const routes = [
                 name: 'PrecificacoesEdit',
                 component: PrecoEdit,
                 meta: {
-                    label: "Editar Preço"
+                    label: "Preço"
                 },
             },
-
-            // FUNCIONÁRIOS
+            
+            // FORMAS DE PAGAMENTO
             {
-                path: 'funcionarios',
-                name: 'FuncionariosList',
-                component: FuncionarioList,
+                path: 'formasPagamento',
+                name: 'FormasPagamentoList',
+                component: FormaPagamentoList,
                 meta: {
-                    label: "Lista de Funcionarios"
-                },
-            },
-            {
-                path: 'funcionarios/cadastrar',
-                name: 'FuncionariosCad',
-                component: FuncionarioEdit,
-                meta: {
-                    label: "Cadastro de Funcionario"
+                    label: "Formas de Pagamento"
                 },
             },
             {
-                path: 'funcionarios/editar/:codigo',
-                name: 'FuncionariosEdit',
-                component: FuncionarioEdit,
+                path: 'formasPagamento/cadastrar',
+                name: 'FormasPagamentoCad',
+                component: FormaPagamentoEdit,
                 meta: {
-                    label: "Editar Cliente"
+                    label: "Forma de Pagamento"
+                },
+            },
+            {
+                path: 'formasPagamento/editar/:codigo',
+                name: 'FormasPagamentoEdit',
+                component: FormaPagamentoEdit,
+                meta: {
+                    label: "Forma de Pagamento"
+                },
+            },
+            
+            // CONDIÇÕES DE PAGAMENTO
+            {
+                path: 'condicoesPagamento',
+                name: 'CondicoesPagamentoList',
+                component: CondicaoPagamentoList,
+                meta: {
+                    label: "Condições de Pagamento"
+                },
+            },
+            {
+                path: 'condicoesPagamento/cadastrar',
+                name: 'CondicoesPagamentoCad',
+                component: CondicaoPagamentoEdit,
+                meta: {
+                    label: "Condição de Pagamento"
+                },
+            },
+            {
+                path: 'condicoesPagamento/editar/:codigo',
+                name: 'CondicoesPagamentoEdit',
+                component: CondicaoPagamentoEdit,
+                meta: {
+                    label: "Condição de Pagamento"
+                },
+            },
+            
+            // FORNECEDORES
+            {
+                path: 'fornecedores',
+                name: 'FornecedoresList',
+                component: FornecedorList,
+                meta: {
+                    label: "Fornecedores"
+                },
+            },
+            {
+                path: 'fornecedores/cadastrar',
+                name: 'FornecedoresCad',
+                component: FornecedorEdit,
+                meta: {
+                    label: "Fornecedor"
+                },
+            },
+            {
+                path: 'fornecedores/editar/:codigo',
+                name: 'FornecedoresEdit',
+                component: FornecedorEdit,
+                meta: {
+                    label: "Fornecedor"
+                },
+            },
+            
+            // SERVIÇOS
+            {
+                path: 'servicos',
+                name: 'ServicosList',
+                component: ServicoList,
+                meta: {
+                    label: "Serviços"
+                },
+            },
+            {
+                path: 'servicos/cadastrar',
+                name: 'ServicosCad',
+                component: ServicoEdit,
+                meta: {
+                    label: "Serviço"
+                },
+            },
+            {
+                path: 'servicos/editar/:codigo',
+                name: 'ServicosEdit',
+                component: ServicoEdit,
+                meta: {
+                    label: "Serviço"
+                },
+            },
+            
+            // PRODUTOS
+            {
+                path: 'produtos',
+                name: 'ProdutosList',
+                component: ProdutoList,
+                meta: {
+                    label: "Produtos"
+                },
+            },
+            {
+                path: 'produtos/cadastrar',
+                name: 'ProdutosCad',
+                component: ProdutoEdit,
+                meta: {
+                    label: "Produto"
+                },
+            },
+            {
+                path: 'produtos/editar/:codigo',
+                name: 'ProdutosEdit',
+                component: ProdutoEdit,
+                meta: {
+                    label: "Produto"
                 },
             },
             
@@ -319,7 +418,7 @@ const routes = [
                 name: 'PaisesList',
                 component: PaisList,
                 meta: {
-                    label: "Lista de Paises"
+                    label: "Países"
                 },
             },
             {
@@ -327,7 +426,7 @@ const routes = [
                 name: 'PaisesCad',
                 component: PaisEdit,
                 meta: {
-                    label: "Cadastro de País"
+                    label: "País"
                 },
             },
             {
@@ -335,7 +434,7 @@ const routes = [
                 name: 'PaisesEdit',
                 component: PaisEdit,
                 meta: {
-                    label: "Editar País"
+                    label: "País"
                 },
             },
             
@@ -345,7 +444,7 @@ const routes = [
                 name: 'EstadosList',
                 component: EstadoList,
                 meta: {
-                    label: "Lista de Estados"
+                    label: "Estados"
                 },
             },
             {
@@ -353,7 +452,7 @@ const routes = [
                 name: 'EstadosCad',
                 component: EstadoEdit,
                 meta: {
-                    label: "Cadastro de Estado"
+                    label: "Estado"
                 },
             },
             {
@@ -361,7 +460,7 @@ const routes = [
                 name: 'EstadosEdit',
                 component: EstadoEdit,
                 meta: {
-                    label: "Editar Estado"
+                    label: "Estado"
                 },
             },
             
@@ -371,7 +470,7 @@ const routes = [
                 name: 'CidadesList',
                 component: CidadeList,
                 meta: {
-                    label: "Lista de Cidades"
+                    label: "Cidades"
                 },
             },
             {
@@ -379,7 +478,7 @@ const routes = [
                 name: 'CidadesCad',
                 component: CidadeEdit,
                 meta: {
-                    label: "Cadastro de Cidade"
+                    label: "Cidade"
                 },
             },
             {
@@ -387,7 +486,7 @@ const routes = [
                 name: 'CidadesEdit',
                 component: CidadeEdit,
                 meta: {
-                    label: "Editar Cidade"
+                    label: "Cidade"
                 },
             },
         ]
@@ -398,5 +497,15 @@ const router = new VueRouter({
     base: process.env.BASE_URL,
     routes
 })
+
+function changePageTitle(title){
+    const posfix = ' - SincoFoz';
+    document.title = title + posfix;
+}
+
+router.beforeEach((to, from, next) => {
+    changePageTitle(to.meta.label);
+    next();
+});
 
 export default router
