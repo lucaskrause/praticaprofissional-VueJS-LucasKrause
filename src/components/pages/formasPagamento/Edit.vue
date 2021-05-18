@@ -54,7 +54,9 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                descricao: ""
+                descricao: "",
+                dtCadastro: "",
+                dtAlteracao: ""
             },
             isSubmiting: false
         }
@@ -74,6 +76,8 @@ export default {
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$delete(this.entity, 'dtCadastro');
+            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             FormasPagamentoService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
@@ -83,7 +87,7 @@ export default {
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit('emit-forma', vm.entity);
                 } else {
-                    vm.$router.push('/formasPagamento');
+                    vm.$router.push('/app/formasPagamento');
                 }
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }

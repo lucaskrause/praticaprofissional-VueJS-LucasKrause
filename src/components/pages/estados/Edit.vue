@@ -87,7 +87,9 @@ export default {
                 codigo: 0,
                 estado: "",
                 uf: "",
-                codigoPais: 0
+                codigoPais: 0,
+                dtCadastro: "",
+                dtAlteracao: ""
             },
             paisSelecionado: "",
             isSubmiting: false
@@ -117,6 +119,8 @@ export default {
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$delete(this.entity, 'dtCadastro');
+            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             EstadosService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
@@ -126,7 +130,7 @@ export default {
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit('emit-estado', vm.entity);
                 } else {
-                    vm.$router.push('/estados');
+                    vm.$router.push('/app/estados');
                 }
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }

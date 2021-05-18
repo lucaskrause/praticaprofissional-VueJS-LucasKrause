@@ -120,12 +120,14 @@ export default {
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$delete(this.entity, 'dtCadastro');
+            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             ReservasService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editada" : 'criada';
                 notyf.success("Reserva " + msg + " com sucesso");
                 vm.isSubmiting = false;
-                vm.$router.push('/reservas');
+                vm.$router.push('/app/reservas');
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }
     }

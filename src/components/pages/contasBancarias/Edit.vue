@@ -102,16 +102,18 @@ export default {
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$delete(this.entity, 'dtCadastro');
+            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             ContasBancariasService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
-                notyf.success("País " + msg + " com sucesso");
+                notyf.success("Conta Bancaria " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 if(vm.isModal){
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit('emit-banco', vm.entity);
                 } else {
-                    vm.$router.push('/bancoes');
+                    vm.$router.push('/app/contaBancaria');
                 }
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }

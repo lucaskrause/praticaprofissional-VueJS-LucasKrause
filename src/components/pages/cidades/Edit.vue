@@ -84,7 +84,9 @@ export default {
                 codigo: 0,
                 cidade: "",
                 ddd: "",
-                codigoEstado: 0
+                codigoEstado: 0,
+                dtCadastro: "",
+                dtAlteracao: ""
             },
             estadoSelecionado: "",
             isSubmiting: false
@@ -113,6 +115,8 @@ export default {
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$delete(this.entity, 'dtCadastro');
+            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             CidadesService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
@@ -122,7 +126,7 @@ export default {
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit("emit-cidade", vm.entity);
                 } else {
-                    vm.$router.push('/cidades');
+                    vm.$router.push('/app/cidades');
                 }
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }

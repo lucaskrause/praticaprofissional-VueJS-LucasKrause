@@ -280,11 +280,12 @@ export default {
         selectDependente(entity) {
             this.dependentes.rows.add(entity);
             this.$bvModal.hide("modal-new-dependente");
-            this.$bvModal.hide("modal-consulta-dependente");
         },
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$delete(this.entity, 'dtCadastro');
+            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             ClientesService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
@@ -294,7 +295,7 @@ export default {
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit("emit-cliente", vm.entity);
                 } else {
-                    vm.$router.push('/clientes');
+                    vm.$router.push('/app/clientes');
                 }
             }); //.catch(function (errors) {Helper.saveErrorCallBack(errors.response)});
         }

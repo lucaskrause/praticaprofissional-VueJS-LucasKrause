@@ -206,6 +206,8 @@ export default {
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$delete(this.entity, 'dtCadastro');
+            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             DependentesService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
@@ -215,7 +217,7 @@ export default {
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit("emit-dependente", vm.entity);
                 } else {
-                    vm.$router.push('/dependentes');
+                    vm.$router.push('/app/dependentes');
                 }
             }); //.catch(function (errors) {Helper.saveErrorCallBack(errors.response)});
         }

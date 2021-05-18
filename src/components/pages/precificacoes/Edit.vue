@@ -71,7 +71,9 @@ export default {
                 codigo: 0,
                 valor: "",
                 qtdePessoas: "",
-                tipo: ""
+                tipo: "",
+                dtCadastro: "",
+                dtAlteracao: ""
             },
             isSubmiting: false
         }
@@ -91,6 +93,8 @@ export default {
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$delete(this.entity, 'dtCadastro');
+            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             PrecificacoesService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
@@ -100,7 +104,7 @@ export default {
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit('emit-preco', vm.entity);
                 } else {
-                    vm.$router.push('/precificacoes');
+                    vm.$router.push('/app/precificacoes');
                 }
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }

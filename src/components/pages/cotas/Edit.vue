@@ -115,16 +115,18 @@ export default {
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$delete(this.entity, 'dtCadastro');
+            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             CotasService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
-                notyf.success("País " + msg + " com sucesso");
+                notyf.success("Cota " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 if(vm.isModal){
                     vm.entity.codigo = response.data.codigo;
-                    vm.$emit('emit-pais', vm.entity);
+                    vm.$emit('emit-cota', vm.entity);
                 } else {
-                    vm.$router.push('/cotas');
+                    vm.$router.push('/app/cotas');
                 }
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }

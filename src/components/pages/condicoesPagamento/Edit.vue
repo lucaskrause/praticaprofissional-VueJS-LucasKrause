@@ -152,16 +152,18 @@ export default {
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$delete(this.entity, 'dtCadastro');
+            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             CondicoesPagamentoService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
-                notyf.success("Preço " + msg + " com sucesso");
+                notyf.success("Condição de Pagamento " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 if(vm.isModal){
                     vm.entity.codigo = response.data.codigo;
-                    vm.$emit('emit-preco', vm.entity);
+                    vm.$emit('emit-condicao', vm.entity);
                 } else {
-                    vm.$router.push('/condicoesPagamento');
+                    vm.$router.push('/app/condicoesPagamento');
                 }
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }

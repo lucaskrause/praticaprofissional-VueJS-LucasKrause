@@ -166,12 +166,14 @@ export default {
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$delete(this.entity, 'dtCadastro');
+            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             FornecedoresService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Fornecedor " + msg + " com sucesso");
                 vm.isSubmiting = false;
-                vm.$router.push('/fornecedores');
+                vm.$router.push('/app/fornecedores');
             }); //.catch(function (errors) {Helper.saveErrorCallBack(errors.response)});
         }
     }

@@ -188,12 +188,14 @@ export default {
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$delete(this.entity, 'dtCadastro');
+            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             FuncionariosService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Funcionário " + msg + " com sucesso");
                 vm.isSubmiting = false;
-                vm.$router.push('/funcionarios');
+                vm.$router.push('/app/funcionarios');
             }); //.catch(function (errors) {Helper.saveErrorCallBack(errors.response)});
         }
     }

@@ -85,7 +85,7 @@
 
             <div class="col-3">
                 <label>Quantidade de Cotas</label>
-                <input id="cotas" type="number" class="form-control" v-model="entity.cotas"/>
+                <input id="qtdeCotas" type="number" class="form-control" v-model.number="entity.qtdeCotas"/>
             </div>
         </div>
 
@@ -170,7 +170,7 @@ export default {
                 cnpj: "",
                 ie: "",
                 dtFundacao: "",
-                cotas: 0,
+                qtdeCotas: 0,
                 dtCadastro: "",
                 dtAlteracao: ""
             },
@@ -233,12 +233,14 @@ export default {
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$delete(this.entity, 'dtCadastro');
+            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             EmpresasService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Empresa " + msg + " com sucesso");
                 vm.isSubmiting = false;
-                vm.$router.push('/empresas');
+                vm.$router.push('/app/empresas');
             }); //.catch(function (errors) {Helper.saveErrorCallBack(errors.response)});
         }
     }
