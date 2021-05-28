@@ -41,7 +41,8 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: "number"
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "País",
@@ -49,18 +50,21 @@ export default {
                 },
                 {
                     label: "Sigla",
-                    field: "sigla"
+                    field: "sigla",
+                    width: "100px",
                 },
                 {
                     label: "DDI",
                     field: "ddi",
-                    type: "number"
+                    type: "number",
+                    width: "80px",
                 },
                 {
                     label:"Ação",
                     sortable: false,
                     field: 'btn',
-                    html: true
+                    html: true,
+                    width: "100px",
                 },
             ],
             page: 1,
