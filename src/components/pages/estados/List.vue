@@ -46,7 +46,8 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: "number"
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Estado",
@@ -54,7 +55,8 @@ export default {
                 },
                 {
                     label: "UF",
-                    field: "uf"
+                    field: "uf",
+                    width: "80px",
                 },
                 {
                     label: "País",
@@ -64,7 +66,8 @@ export default {
                     label:"Ação",
                     sortable: false,
                     field: 'btn',
-                    html: true
+                    html: true,
+                    width: "160px",
                 },
             ],
             rows: [],

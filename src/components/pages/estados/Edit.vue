@@ -99,14 +99,11 @@ export default {
         const vm = this;
         if (this.$route.params.codigo) {
             this.entity.codigo = this.$route.params.codigo;
-        }
-        if(this.entity.codigo) {
+        
             EstadosService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
                 vm.paisSelecionado = response.data.pais.pais;
-                vm.$delete(vm.entity, 'pais');
             });
-            
         }
     },
     methods: {
@@ -119,18 +116,17 @@ export default {
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
-            this.$delete(this.entity, 'dtCadastro');
-            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             EstadosService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Estado " + msg + " com sucesso");
                 vm.isSubmiting = false;
-                if(vm.isModal) {
+                
+                if(!vm.isModal) {
+                    vm.$router.push('/app/estados');
+                } else {
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit('emit-estado', vm.entity);
-                } else {
-                    vm.$router.push('/app/estados');
                 }
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }
