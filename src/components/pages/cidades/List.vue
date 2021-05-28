@@ -46,7 +46,8 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: "number"
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Cidade",
@@ -54,7 +55,8 @@ export default {
                 },
                 {
                     label: "DDD",
-                    field: "ddd"
+                    field: "ddd",
+                    width: "80px",
                 },
                 {
                     label: "Estado",
@@ -64,7 +66,8 @@ export default {
                     label: "Ações",
                     sortable: false,
                     field: 'btn',
-                    html: true
+                    html: true,
+                    width: "160px",
                 },
             ],
             rows: [],

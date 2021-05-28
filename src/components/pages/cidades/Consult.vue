@@ -41,25 +41,29 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: "number"
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Cidade",
-                    field: "cidade"
+                    field: "cidade",
                 },
                 {
                     label: "DDD",
-                    field: "ddd"
+                    field: "ddd",
+                    width: "80px",
                 },
                 {
                     label: "UF",
-                    field: "estado.uf"
+                    field: "estado.uf",
+                    width: "80px",
                 },
                 {
                     label:"Ação",
                     sortable: false,
                     field: 'btn',
-                    html: true
+                    html: true,
+                    width: "100px",
                 },
             ],
             page: 1,
