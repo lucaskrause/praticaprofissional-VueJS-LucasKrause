@@ -1,11 +1,11 @@
 <template>
     <div class="row">
         <div class="col-12 text-right">
-            <b-button v-b-modal.modal-new-cliente class="btn btn-success ml-1">Novo Fornecedor</b-button>
+            <b-button v-b-modal.modal-new-fornecedor class="btn btn-success ml-1">Novo Fornecedor</b-button>
         </div>
         
         <div class="col-12 mt-2">
-            <vue-good-table compactMode mode="remote"
+            <vue-good-table compactMode 
                 :totalRows="totalRecords"
                 :columns="columns"
                 :rows="rows"
@@ -27,8 +27,8 @@
 </template>
 
 <script>
-import {FornecedoresService} from '@/services/clientes.service'
-import NovoFornecedor from '@/components/pages/clientes/Edit.vue'
+import {FornecedoresService} from '@/services/fornecedores.service'
+import NovoFornecedor from '@/components/pages/fornecedores/Edit.vue'
 import {VueGoodTable} from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
 
@@ -41,27 +41,27 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: "number"
+                    type: "number",
+                    width: "100px",
                 },
                 {
-                    label: "Razão Social",
-                    field: "razaoSocial"
+                    label: "Fornecedor",
+                    field: "fornecedor"
                 },
                 {
-                    label: "CNPJ",
-                    field: "cnpj"
+                    label: "CPF / CNPJ",
+                    field: "cpfcnpj",
+                    width: "180px",
                 },
                 {
                     label: "Telefone",
-                    field: "telefone"
-                },
-                {
-                    label: "Email",
-                    field: "email"
+                    field: "telefone",
+                    width: "160px",
                 },
                 {
                     label: "Ação",
-                    field: "btn"
+                    field: "btn",
+                    width: "100px",
                 }
             ],
             page: 1,

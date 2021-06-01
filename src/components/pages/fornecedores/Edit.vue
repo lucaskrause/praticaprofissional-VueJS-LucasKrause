@@ -1,21 +1,32 @@
 <template>
     <div class="col-12">
-        <h2>Cadastro de Fornecedor</h2>
-        <hr />
+        <h2 v-if="!isModal">Cadastro de Fornecedor</h2>
+        <hr v-if="!isModal"/>
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label>
                 <input id="codigo" type="number" class="form-control" v-model="entity.codigo" readonly/>
             </div>
 
-            <div class="col-5">
-                <label>Razão Social</label>
-                <input id="razaoSocial" type="text" class="form-control" v-model="entity.razaoSocial"/>
+            <div class="col-2">
+                <label>Tipo Pessoa</label>
+                <br/>
+                <label class="radio-inline labelRadio"><input type="radio" value="Física" v-model="entity.tipoPessoa"> Física</label>
+                <br/>
+                <label class="radio-inline labelRadio"><input type="radio" value="Jurídica" v-model="entity.tipoPessoa"> Jurídica</label>
             </div>
 
             <div class="col-5">
-                <label>Nome Fantasia</label>
-                <input id="nomeFantasia" type="text" class="form-control" v-model="entity.nomeFantasia"/>
+                <label>Fornercedor</label>
+                <input id="nome" type="text" class="form-control" v-model="entity.nome"/>
+            </div>
+            
+            <div class="col-2">
+                <label>Sexo</label>
+                <br/>
+                <label class="radio-inline labelRadio"><input type="radio" value="Feminino" v-model="entity.sexo"> Feminino</label>
+                <br/>
+                <label class="radio-inline labelRadio"><input type="radio" value="Masculino" v-model="entity.sexo"> Masculino</label>
             </div>
         </div>
 
@@ -69,18 +80,18 @@
 
         <div class="row form-group">
             <div class="col-3">
-                <label>CNPJ</label>
-                <input id="cnpj" type="text" class="form-control" v-model="entity.cnpj"/>
+                <label>CPF / CNPJ</label>
+                <input id="cpfcnpj" type="text" class="form-control" v-model="entity.cpfcnpj"/>
             </div>
 
             <div class="col-3">
-                <label>IE</label>
-                <input id="ie" type="text" class="form-control" v-model="entity.ie"/>
+                <label>RG / IE</label>
+                <input id="rgie" type="text" class="form-control" v-model="entity.rgie"/>
             </div>
 
             <div class="col-3">
-                <label>Data de Fundação</label>
-                <input id="dtFundacao" type="date" class="form-control" v-model="entity.dtFundacao"/>
+                <label>Data de Nascimento / Fundação</label>
+                <input id="dtNascFundacao" type="date" class="form-control" v-model="entity.dtNascFundacao"/>
             </div>
         </div>
 
@@ -97,7 +108,7 @@
 
             <div class="col-8">
                 <div class="text-right">
-                    <router-link :to="{name: 'FornecedoresList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <router-link v-if="!isModal" :to="{name: 'FornecedoresList'}" class="btn btn-danger mr-3">Voltar</router-link>
                     <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
                 </div>
             </div>
@@ -120,22 +131,28 @@ const notyf = new Notyf();
 export default {
     name: "FornecedoresEdit",
     components: { ConsultaCidade },
+    props: {
+        isModal: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             entity: {
                 codigo: 0,
-                razaoSocial: "",
-                nomeFantasia: "",
+                nome: "",
+                cpfcnpj: "",
+                rgie: "",
+                sexo: "",
+                telefone: "",
+                email: "",
+                dtNascFundacao: "",
+                codigoCidade: 0,
                 logradouro: "",
                 complemento: "",
                 bairro: "",
                 cep: "",
-                codigoCidade: 0,
-                telefone: "",
-                email: "",
-                cnpj: "",
-                ie: "",
-                dtFundacao: "",
                 dtCadastro: "",
                 dtAlteracao: ""
             },
@@ -147,12 +164,10 @@ export default {
         const vm = this;
         if (this.$route.params.codigo) {
             this.entity.codigo = this.$route.params.codigo;
-        }
-        if(this.entity.codigo){
+            
             FornecedoresService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
                 vm.cidadeSelecionada = response.data.cidade.cidade;
-                vm.$delete(vm.entity, 'cidade');
             });
         }
     },
@@ -166,8 +181,6 @@ export default {
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
-            this.$delete(this.entity, 'dtCadastro');
-            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             FornecedoresService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
@@ -179,3 +192,10 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    .labelRadio {
+        display: inline-block;
+        margin-bottom: 0 !important;
+    }
+</style>
