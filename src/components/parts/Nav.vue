@@ -55,7 +55,7 @@ export default {
             ],
             itemsMenu: [
                 {id: 1, group: 1, label: "Empresas", route: {name: "EmpresasList"}},
-                {id: 2, group: 1, label: "Contas Bancarias", route: {name: "ContasBancariasList"}},
+                // {id: 2, group: 1, label: "Contas Bancarias", route: {name: "ContasBancariasList"}},
                 {id: 3, group: 1, label: "Funcionários", route: {name: "FuncionariosList"}},
                 {id: 4, group: 1, label: "Cotas", route: {name: "CotasList"}},
                 {id: 5, group: 1, label: "Clientes", route: {name: "ClientesList"}},

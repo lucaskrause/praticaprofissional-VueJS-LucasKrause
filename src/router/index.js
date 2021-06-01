@@ -5,6 +5,8 @@ const Home = () => import("@/components/Home");
 
 const Inicio = () => import("@/components/Inicio");
 
+const NotFound = () => import("@/components/NotFound");
+
 const EmpresaList = () => import("@/components/pages/empresas/List");
 const EmpresaEdit = () => import("@/components/pages/empresas/Edit");
 
@@ -56,6 +58,10 @@ const CidadeEdit = () => import("@/components/pages/cidades/Edit");
 Vue.use(VueRouter)
 
 const routes = [
+    {
+        path: '/',
+        redirect: '/app'
+    },
     {
         path: '/app',
         name: '',
@@ -490,6 +496,14 @@ const routes = [
                 },
             },
         ]
+    },
+    {
+        path: '*',
+        name: 'NotFound',
+        component: NotFound,
+        meta: {
+            label: "404"
+        },
     }
 ]
 
