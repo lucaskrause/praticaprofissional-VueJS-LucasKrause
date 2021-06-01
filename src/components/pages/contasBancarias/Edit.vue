@@ -9,8 +9,13 @@
             </div>
 
             <div class="col-4">
-                <label>Banco</label>
-                <input id="banco" type="text" class="form-control" v-model="entity.banco"/>
+                <label>Instituição</label>
+                <input id="instituicao" type="text" class="form-control" v-model="entity.instituicao"/>
+            </div>
+
+            <div class="col-3">
+                <label>Número do Banco</label>
+                <input id="numeroBanco" type="text" class="form-control" v-model="entity.numeroBanco"/>
             </div>
 
             <div class="col-2">
@@ -22,17 +27,12 @@
                 <label>Conta</label>
                 <input id="conta" type="text" class="form-control" v-model="entity.conta"/>
             </div>
-
-            <div class="col-3">
-                <label>Número da Conta</label>
-                <input id="numeroBanco" type="text" class="form-control" v-model="entity.numeroBanco"/>
-            </div>
         </div>
 
         <div class="row form-group">
             <div class="col-2">
                 <label>Saldo</label> 
-                <input id="saldo" type="number" class="form-control" v-model="entity.saldo"/>
+                <input id="saldo" type="number" class="form-control" v-model.number="entity.saldo"/>
             </div>
         </div>
 
@@ -76,10 +76,10 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                banco: "",
+                instituicao: "",
+                numeroBanco: "",
                 agencia: "",
                 conta: "",
-                numeroBanco: "",
                 saldo: "",
                 dtCadastro: "",
                 dtAlteracap: "",
@@ -89,10 +89,9 @@ export default {
     },
     created() {
         const vm = this;
-        if (this.$route.params.codigo) {
+        if (!this.isModal && this.$route.params.codigo) {
             this.entity.codigo = this.$route.params.codigo;
-        }
-        if (this.entity.codigo) {
+
             ContasBancariasService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
             });
@@ -102,18 +101,17 @@ export default {
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
-            this.$delete(this.entity, 'dtCadastro');
-            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             ContasBancariasService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Conta Bancaria " + msg + " com sucesso");
                 vm.isSubmiting = false;
-                if(vm.isModal){
-                    vm.entity.codigo = response.data.codigo;
-                    vm.$emit('emit-banco', vm.entity);
+
+                if(!vm.isModal){
+                    vm.$router.push('/app/contasBancarias');
                 } else {
-                    vm.$router.push('/app/contaBancaria');
+                    vm.entity.codigo = response.data.codigo;
+                    vm.$emit('emit-contaBancaria', vm.entity);
                 }
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }

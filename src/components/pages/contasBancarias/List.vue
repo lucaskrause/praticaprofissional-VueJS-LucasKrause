@@ -46,29 +46,34 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: "number"
+                    type: "number",
+                    width: "100px",
                 },
                 {
-                    label: "Banco",
-                    field: "banco"
-                },
-                {
-                    label: "Agência",
-                    field: "agencia"
-                },
-                {
-                    label: "Conta",
-                    field: "conta"
+                    label: "Instituição",
+                    field: "instituicao"
                 },
                 {
                     label: "Número do Banco",
-                    field: "numeroBanco"
+                    field: "numeroBanco",
+                    width: "180px",
+                },
+                {
+                    label: "Agência",
+                    field: "agencia",
+                    width: "150px",
+                },
+                {
+                    label: "Conta",
+                    field: "conta",
+                    width: "150px",
                 },
                 {
                     label:"Ação",
                     sortable: false,
                     field: 'btn',
-                    html: true
+                    html: true,
+                    width: "160px",
                 },
             ],
             page: 1,
