@@ -170,8 +170,7 @@ export default {
         const vm = this;
         if (this.$route.params.codigo) {
             this.entity.codigo = this.$route.params.codigo;
-        }
-        if(this.entity.codigo){
+
             FuncionariosService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
                 vm.cidadeSelecionada = response.data.cidade.cidade;
