@@ -16,8 +16,9 @@
             <div class="col-3">
                 <label>Sexo</label>
                 <br/>
-                <label class="radio-inline mr-2"><input type="radio" value="Feminino" v-model="entity.sexo"> Feminino</label>
-                <label class="radio-inline"><input type="radio" value="Masculino" v-model="entity.sexo"> Masculino</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="Feminino" v-model="entity.sexo"> Feminino</label>
+                <br/>
+                <label class="radio-inline labelRadio"><input type="radio" value="Masculino" v-model="entity.sexo"> Masculino</label>
             </div>
         </div>
 
@@ -89,7 +90,7 @@
         <div class="row form-group">            
             <div class="col-3">
                 <label>Salário</label>
-                <input id="salario" type="number" class="form-control" v-model="entity.salario"/>
+                <input id="salario" type="number" class="form-control" v-model.number="entity.salario"/>
             </div>
 
             <div class="col-3">
@@ -188,8 +189,6 @@ export default {
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
-            this.$delete(this.entity, 'dtCadastro');
-            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             FuncionariosService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
@@ -201,3 +200,10 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    .labelRadio {
+        display: inline-block;
+        margin-bottom: 0 !important;
+    }
+</style>

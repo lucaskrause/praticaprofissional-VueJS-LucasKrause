@@ -46,7 +46,8 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: "number"
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Nome",
@@ -54,19 +55,18 @@ export default {
                 },
                 {
                     label: "CPF",
-                    field: "cpf"
+                    field: "cpf",
+                    width: "160px",
                 },
                 {
                     label: "Telefone",
-                    field: "telefone"
-                },
-                {
-                    label: "Sócio",
-                    field: "cliente"
+                    field: "telefone",
+                    width: "160px",
                 },
                 {
                     label: "Ação",
-                    field: "btn"
+                    field: "btn",
+                    width: "160px",
                 }
             ],
             rows: [],
