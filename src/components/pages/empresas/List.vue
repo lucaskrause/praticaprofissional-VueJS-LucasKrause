@@ -46,27 +46,27 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: "number"
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Razão Social",
-                    field: "razaoSocial"
+                    field: "razaoSocial",
                 },
                 {
                     label: "CNPJ",
-                    field: "cnpj"
+                    field: "cnpj",
+                    width: "180px",
                 },
                 {
                     label: "Telefone",
-                    field: "telefone"
-                },
-                {
-                    label: "Email",
-                    field: "email"
+                    field: "telefone",
+                    width: "150px",
                 },
                 {
                     label: "Ação",
-                    field: "btn"
+                    field: "btn",
+                    width: "160px",
                 }
             ],
             rows: [],

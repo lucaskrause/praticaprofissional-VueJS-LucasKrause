@@ -107,6 +107,12 @@
                     :search-options="{enabled: false}"
                     :pagination-options="{perPage: 5, enabled: true}"
                 >
+                    <template slot="table-row" slot-scope="props">
+                        <span v-if="props.column.field == 'btn'">
+                            <a @click.prevent="EditConta(props.row.codigo)" class="btn btn-sm btn-primary mr-3" href="#">Editar</a>
+                            <a @click.prevent="removeConta(props.row.codigo)" class="btn btn-sm btn-danger" href="#">Excluir</a>
+                        </span>
+                    </template>
                 </vue-good-table>
             </div>
         </div>
@@ -142,6 +148,7 @@
 
 <script>
 import {EmpresasService} from '@/services/empresas.service'
+import {ContasBancariasService} from '@/services/contasBancarias.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
 import NovaContaBancaria from '@/components/pages/contasBancarias/Edit.vue'
 import 'vue-good-table/dist/vue-good-table.css'
@@ -178,20 +185,26 @@ export default {
             contasBancarias: {
                 columns: [
                     {
-                        label: "Banco",
-                        field: "banco"
+                        label: "Código",
+                        field: "codigo",
+                        type: "number",
+                        width: "100px",
                     },
                     {
-                        label: "Número da Conta",
-                        field: "numeroConta"
+                        label: "Banco",
+                        field: "banco"
                     },
                     {
                         label: "Agência",
                         field: "agencia"
                     },
                     {
-                        label: "Tipo",
-                        field: "tipo"
+                        label: "Conta",
+                        field: "conta"
+                    },
+                    {
+                        label: "Número da Conta",
+                        field: "numeroConta"
                     },
                     {
                         label: "Ação",
@@ -209,18 +222,21 @@ export default {
         const vm = this;
         if (this.$route.params.codigo) {
             this.entity.codigo = this.$route.params.codigo;
-        }
-        if(this.entity.codigo){
+            
             EmpresasService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
+                console.log(vm.entity);
                 vm.cidadeSelecionada = response.data.cidade.cidade;
-                vm.$delete(vm.entity, 'cidade');
+            });
+
+            ContasBancariasService.getByEmpresa(this.entity.codigo).then(function (response) {
+                vm.contasBancarias.rows.push(response.data);
             });
         }
     },
     methods: {
         selectContaBancaria(entity) {
-            this.contasBancarias.rows.add(entity);
+            this.contasBancarias.rows.push(entity);
             this.$bvModal.hide("modal-new-contaBancaria");
             this.$bvModal.hide("modal-consulta-contaBancaria");
         },
@@ -233,8 +249,6 @@ export default {
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
-            this.$delete(this.entity, 'dtCadastro');
-            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             EmpresasService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
