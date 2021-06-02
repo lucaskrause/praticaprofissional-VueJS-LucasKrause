@@ -70,6 +70,9 @@ export default {
         isModal: {
             type: Boolean,
             default: false
+        },
+        codigoEmpresa: {
+            default: 0
         }
     },
     data() {
@@ -81,6 +84,7 @@ export default {
                 agencia: "",
                 conta: "",
                 saldo: "",
+                codigoEmpresa: 0,
                 dtCadastro: "",
                 dtAlteracap: "",
             },
@@ -99,21 +103,28 @@ export default {
     },
     methods: {
         save() {
-            if (this.isSubmiting) return;
-            this.isSubmiting = true;
-            const vm = this;
-            ContasBancariasService.save(this.entity).then(function (response) {
-                const msg = vm.entity.codigo ? "editado" : 'criado';
-                notyf.success("Conta Bancaria " + msg + " com sucesso");
-                vm.isSubmiting = false;
+            if(this.codigoEmpresa > 0) {
+                this.entity.codigoEmpresa = this.codigoEmpresa;
+                if (this.isSubmiting) return;
+                this.isSubmiting = true;
+                const vm = this;
+                ContasBancariasService.save(this.entity).then(function (response) {
+                    const msg = vm.entity.codigo ? "editado" : 'criado';
+                    notyf.success("Conta Bancaria " + msg + " com sucesso");
+                    vm.isSubmiting = false;
 
-                if(!vm.isModal){
-                    vm.$router.push('/app/contasBancarias');
-                } else {
-                    vm.entity.codigo = response.data.codigo;
-                    vm.$emit('emit-contaBancaria', vm.entity);
-                }
-            }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
+                    if(!vm.isModal){
+                        vm.$router.push('/app/contasBancarias');
+                    } else {
+                        vm.entity.codigo = response.data.codigo;
+                        vm.$emit('emit-contaBancaria', vm.entity);
+                    }
+                }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
+            } else {
+                this.$delete(this.entity, 'dtCadastro');
+                this.$delete(this.entity, 'dtAlteracap');
+                this.$emit('emit-contaBancaria', this.entity);
+            }
         }
     }
 }

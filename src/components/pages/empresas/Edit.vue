@@ -140,7 +140,7 @@
         </b-modal>
         
         <b-modal id="modal-new-contaBancaria" size="xl" title="Cadastrar ContasBancaria" hide-footer>
-            <NovaContaBancaria  @emit-contaBancaria="selectContaBancaria" :isModal="true" />
+            <NovaContaBancaria  @emit-contaBancaria="selectContaBancaria" :isModal="true" :codigoEmpresa="entity.codigo" />
         </b-modal>
     </div>
 </template>
@@ -190,25 +190,31 @@ export default {
                         width: "100px",
                     },
                     {
-                        label: "Banco",
-                        field: "banco"
+                        label: "Instituição",
+                        field: "instituicao"
+                    },
+                    {
+                        label: "Número do Banco",
+                        field: "numeroBanco",
+                        width: "180px",
                     },
                     {
                         label: "Agência",
-                        field: "agencia"
+                        field: "agencia",
+                        width: "150px",
                     },
                     {
                         label: "Conta",
-                        field: "conta"
+                        field: "conta",
+                        width: "150px",
                     },
                     {
-                        label: "Número da Conta",
-                        field: "numeroConta"
+                        label:"Ação",
+                        sortable: false,
+                        field: 'btn',
+                        html: true,
+                        width: "160px",
                     },
-                    {
-                        label: "Ação",
-                        field: "btn"
-                    }
                 ],
                 rows: [],
                 page: 1,
@@ -224,12 +230,13 @@ export default {
             
             EmpresasService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
-                console.log(vm.entity);
                 vm.cidadeSelecionada = response.data.cidade.cidade;
             });
 
             ContasBancariasService.getByEmpresa(this.entity.codigo).then(function (response) {
-                vm.contasBancarias.rows.push(response.data);
+                if(response.data.length > 0) {
+                    vm.contasBancarias.rows = response.data;
+                }
             });
         }
     },
@@ -249,6 +256,12 @@ export default {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
+
+            if(this.entity.codigo == 0) {
+                this.entity.contasBancarias = this.contasBancarias.rows;
+                console.log(this.entity);
+            }
+
             EmpresasService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Empresa " + msg + " com sucesso");
