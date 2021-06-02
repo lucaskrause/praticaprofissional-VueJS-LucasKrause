@@ -100,11 +100,10 @@
         </div>
         <div class="row mt-1">
             <div class="col-12">
-                <vue-good-table
-                    compactMode
+                <vue-good-table compactMode
                     :columns="contasBancarias.columns"
                     :rows="contasBancarias.rows"
-                    :search-options="{enabled: false}"
+                    :search-options="{enabled: true, placeholder: 'Buscar'}"
                     :pagination-options="{perPage: 5, enabled: true}"
                 >
                     <template slot="table-row" slot-scope="props">
