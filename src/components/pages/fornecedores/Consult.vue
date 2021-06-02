@@ -9,7 +9,7 @@
                 :totalRows="totalRecords"
                 :columns="columns"
                 :rows="rows"
-                :search-options="{enabled: true, placeholder: 'Busque por nome'}"
+                :search-options="{enabled: true, placeholder: 'Buscar'}"
                 :pagination-options="{perPage: 5, enabled: true}"
             >
                 <template slot="table-row" slot-scope="props">
@@ -72,7 +72,7 @@ export default {
     created() {
         const vm = this;
         FornecedoresService.getAll().then(function (response) {
-            vm.totalRecords = response.data.count;
+            vm.totalRecords = response.data.length;
             vm.rows = response.data; 
         });
     },

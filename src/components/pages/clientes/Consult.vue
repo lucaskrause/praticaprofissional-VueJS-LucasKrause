@@ -5,11 +5,11 @@
         </div>
         
         <div class="col-12 mt-2">
-            <vue-good-table compactMode mode="remote"
+            <vue-good-table compactMode 
                 :totalRows="totalRecords"
                 :columns="columns"
                 :rows="rows"
-                :search-options="{enabled: true, placeholder: 'Busque por nome'}"
+                :search-options="{enabled: true, placeholder: 'Buscar'}"
                 :pagination-options="{perPage: 5, enabled: true}"
             >
                 <template slot="table-row" slot-scope="props">
@@ -41,7 +41,8 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: "number"
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Nome",
@@ -49,19 +50,18 @@ export default {
                 },
                 {
                     label: "CPF / CNPJ",
-                    field: "cpfCnpj"
+                    field: "cpfCnpj",
+                    width: "180px",
                 },
                 {
                     label: "Telefone",
-                    field: "telefone"
-                },
-                {
-                    label: "Tipo",
-                    field: "tipoPessoa"
+                    field: "telefone",
+                    width: "160px",
                 },
                 {
                     label: "Ação",
-                    field: "btn"
+                    field: "btn",
+                    width: "160px",
                 }
             ],
             page: 1,
@@ -72,7 +72,7 @@ export default {
     created() {
         const vm = this;
         ClientesService.getAll().then(function (response) {
-            vm.totalRecords = response.data.count;
+            vm.totalRecords = response.data.length;
             vm.rows = response.data; 
         });
     },

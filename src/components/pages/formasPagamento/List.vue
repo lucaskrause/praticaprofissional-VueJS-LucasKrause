@@ -9,11 +9,11 @@
 
         <div class="row mt-2">
             <div class="col-12">
-                <vue-good-table compactMode mode="remote"
+                <vue-good-table compactMode 
                     :totalRows="totalRecords"
                     :columns="columns"
                     :rows="rows"
-                    :search-options="{enabled: true, placeholder: 'Busque por nome'}"
+                    :search-options="{enabled: true, placeholder: 'Buscar'}"
                     :pagination-options="{perPage: 5, enabled: true}"
                 >
                     <template slot="table-row" slot-scope="props">
@@ -73,7 +73,7 @@ export default {
         loadData() {
             const vm = this;
             FormasPagamentoService.getAll().then(function (response) {
-                vm.totalRecords = response.data.count;
+                vm.totalRecords = response.data.length;
                 vm.rows = response.data;
             });
         },

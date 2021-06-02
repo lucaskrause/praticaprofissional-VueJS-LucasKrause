@@ -9,11 +9,11 @@
 
         <div class="row mt-2">
             <div class="col-12">
-                <vue-good-table
-                    compactMode
+                <vue-good-table compactMode
+                    :totalRows="totalRecords"
                     :columns="columns"
                     :rows="rows"
-                    :search-options="{enabled: false}"
+                    :search-options="{enabled: true, placeholder: 'Buscar'}"
                     :pagination-options="{perPage: 5, enabled: true}"
                 >
                     <template slot="table-row" slot-scope="props">
@@ -46,7 +46,8 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: "number"
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Nome",
@@ -54,19 +55,20 @@ export default {
                 },
                 {
                     label: "CPF / CNPJ",
-                    field: "cpfCnpj"
+                    field: "cpfCnpj",
+                    width: "180px",
                 },
                 {
                     label: "Telefone",
-                    field: "telefone"
-                },
-                {
-                    label: "Tipo",
-                    field: "tipoPessoa"
+                    field: "telefone",
+                    width: "160px",
                 },
                 {
                     label: "Ação",
-                    field: "btn"
+                    sortable: false,
+                    field: "btn",
+                    html: true,
+                    width: "160px",
                 }
             ],
             rows: [],
@@ -81,7 +83,7 @@ export default {
         loadData() {
             const vm = this;
             ClientesService.getAll().then(function (response) {
-                vm.totalRecords = response.data.count;
+                vm.totalRecords = response.data.length;
                 vm.rows = response.data;
             });
         },

@@ -9,11 +9,10 @@
 
         <div class="row mt-2">
             <div class="col-12">
-                <vue-good-table compactMode mode="remote"
-                    :totalRows="totalRecords"
+                <vue-good-table compactMode
                     :columns="columns"
                     :rows="rows"
-                    :search-options="{enabled: true, placeholder: 'Busque por nome'}"
+                    :search-options="{enabled: true}"
                     :pagination-options="{perPage: 5, enabled: true}"
                 >
                     <template slot="table-row" slot-scope="props">
@@ -44,14 +43,14 @@ export default {
         return {
             columns: [
                 {
-                    label: "Código",
+                    label: "ID",
                     field: "codigo",
                     type: "number",
                     width: '100px',
                 },
                 {
                     label: "País",
-                    field: "pais"
+                    field: "pais",
                 },
                 {
                     label: "Sigla",
@@ -84,7 +83,7 @@ export default {
         loadData() {
             const vm = this;
             PaisesService.getAll().then(function (response) {
-                vm.totalRecords = response.data.count;
+                vm.totalRecords = response.data.length;
                 vm.rows = response.data;
             });
         },

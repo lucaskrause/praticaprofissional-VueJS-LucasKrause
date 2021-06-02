@@ -5,7 +5,7 @@
         </div>
         
         <div class="col-12 mt-2">
-            <vue-good-table compactMode mode="remote"
+            <vue-good-table compactMode 
                 :totalRows="totalRecords"
                 :columns="columns"
                 :rows="rows"
@@ -79,7 +79,7 @@ export default {
     created() {
         const vm = this;
         ContasBancariasService.getAll().then(function (response) {
-            vm.totalRecords = response.data.count;
+            vm.totalRecords = response.data.length;
             vm.rows = response.data; 
         });
     },
