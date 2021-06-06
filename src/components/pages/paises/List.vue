@@ -13,7 +13,8 @@
                     :columns="columns"
                     :rows="rows"
                     :search-options="{enabled: true}"
-                    :pagination-options="{perPage: 5, enabled: true}"
+                    :pagination-options="{perPage: 10, enabled: true}"
+                    styleClass="vgt-table bordered vgt-compact condensed"
                 >
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'btn'">
@@ -43,7 +44,7 @@ export default {
         return {
             columns: [
                 {
-                    label: "ID",
+                    label: "Código",
                     field: "codigo",
                     type: "number",
                     width: '100px',
