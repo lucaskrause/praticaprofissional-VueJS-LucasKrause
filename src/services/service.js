@@ -20,7 +20,7 @@ export class Service {
 
     save(entity) {
         if(entity.codigo) {
-            return this.api.put(this.endpoint + "/editar", entity);
+            return this.api.put(this.endpoint + "/editar/" + entity.codigo, entity);
         } else {
             return this.api.post(this.endpoint + "/inserir", entity);
         }

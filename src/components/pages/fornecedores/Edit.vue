@@ -5,15 +5,15 @@
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label>
-                <input id="codigo" type="number" class="form-control" v-model="entity.codigo" readonly/>
+                <input id="codigo" type="number" class="form-control" v-model.number="entity.codigo" readonly/>
             </div>
 
             <div class="col-2">
                 <label>Tipo Pessoa</label>
                 <br/>
-                <label class="radio-inline labelRadio"><input type="radio" value="Física" v-model="entity.tipoPessoa"> Física</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="PF" v-model="entity.tipoPessoa"> Pessoa Física</label>
                 <br/>
-                <label class="radio-inline labelRadio"><input type="radio" value="Jurídica" v-model="entity.tipoPessoa"> Jurídica</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="PJ" v-model="entity.tipoPessoa"> Pessoa Jurídica</label>
             </div>
 
             <div class="col-5">
