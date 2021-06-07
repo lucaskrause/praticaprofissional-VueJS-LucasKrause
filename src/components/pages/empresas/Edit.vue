@@ -103,8 +103,9 @@
                 <vue-good-table compactMode
                     :columns="contasBancarias.columns"
                     :rows="contasBancarias.rows"
-                    :search-options="{enabled: true, placeholder: 'Buscar'}"
-                    :pagination-options="{perPage: 5, enabled: true}"
+                    :search-options="{enabled: false, placeholder: 'Buscar'}"
+                    :pagination-options="{perPage: 5, enabled: false}"
+                    styleClass="vgt-table bordered vgt-compact condensed"
                 >
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'btn'">
@@ -259,7 +260,6 @@ export default {
 
             if(this.entity.codigo == 0) {
                 this.entity.contasBancarias = this.contasBancarias.rows;
-                console.log(this.entity);
             }
 
             EmpresasService.save(this.entity).then(function () {
