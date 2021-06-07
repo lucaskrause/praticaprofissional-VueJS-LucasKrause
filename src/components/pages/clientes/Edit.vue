@@ -5,14 +5,15 @@
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label>
-                <input id="codigo" type="number" class="form-control" v-model="entity.codigo" readonly/>
+                <input id="codigo" type="number" class="form-control" v-model.number="entity.codigo" readonly/>
             </div>
             
             <div class="col-2">
                 <label>Tipo Pessoa</label>
                 <br/>
-                <label class="radio-inline mr-2"><input type="radio" value="Física" v-model="entity.tipoPessoa"> Física</label>
-                <label class="radio-inline"><input type="radio" value="Jurídica" v-model="entity.tipoPessoa"> Jurídica</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="PF" v-model="entity.tipoPessoa"> Pessoa Física</label>
+                <br/>
+                <label class="radio-inline labelRadio"><input type="radio" value="PJ" v-model="entity.tipoPessoa"> Pessoa Jurídica</label>
             </div>
 
             <div class="col-5">
@@ -20,11 +21,20 @@
                 <input id="nome" type="text" class="form-control" v-model="entity.nome"/>
             </div>
 
-            <div class="col-3">
+            <div class="col-2">
                 <label>Sexo</label>
                 <br/>
-                <label class="radio-inline mr-2"><input type="radio" value="Feminino" v-model="entity.sexo"> Feminino</label>
-                <label class="radio-inline"><input type="radio" value="Masculino" v-model="entity.sexo"> Masculino</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="Feminino" v-model="entity.sexo"> Feminino</label>
+                <br/>
+                <label class="radio-inline labelRadio"><input type="radio" value="Masculino" v-model="entity.sexo"> Masculino</label>
+            </div>
+
+            <div class="col-2">
+                <label>Sócio</label>
+                <br/>
+                <label class="radio-inline labelRadio"><input type="radio" value="Sim" v-model="socio" disabled> Sim</label>
+                <br/>
+                <label class="radio-inline labelRadio"><input type="radio" value="Não" v-model="socio" disabled> Não</label>
             </div>
         </div>
 
@@ -94,15 +104,6 @@
         </div>
 
         <div class="row form-group">
-            <div class="col-3">  
-                <label>Tipo Cliente</label>
-                <select class="form-control" v-model="entity.tipoCliente">
-                    <option selected>Selecione...</option>
-                    <option value="Cliente">Cliente</option>
-                    <option value="Sócio">Sócio</option>
-                </select>
-            </div>
-
             <div class="col-1">
                 <label>Código</label>
                 <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model="entity.codigoCondicaoPagamento" readonly/>
@@ -119,7 +120,7 @@
             </div>
         </div>
 
-        <div v-if="entity.tipoCliente == 'Sócio' && !isModal" class="row">
+        <div v-if="socio == 'Sim' && !isModal" class="row">
             <div class="col-3">
                 <label>Dependentes</label>
             </div>
@@ -128,13 +129,12 @@
                 <b-button v-b-modal.modal-new-dependente class="btn btn-success btn-sm">Cadastrar Dependente</b-button>
             </div>
         </div>
-        <div v-if="entity.tipoCliente == 'Sócio' && !isModal" class="row mt-1">
+        <div v-if="socio == 'Sim' && !isModal" class="row mt-1">
             <div class="col-12">
-                <vue-good-table
-                    compactMode
+                <vue-good-table compactMode
                     :columns="dependentes.columns"
                     :rows="dependentes.rows"
-                    :search-options="{enabled: false}"
+                    :search-options="{enabled: true, placeholder: 'Buscar'}"
                     :pagination-options="{perPage: 5, enabled: true}"
                 >
                 </vue-good-table>
@@ -212,11 +212,11 @@ export default {
                 cpfCnpj: "",
                 rgIe: "",
                 dtNascFundacao: "",
-                tipoCliente: "",
                 codigoCondicaoPagamento: 0,
                 dtCadastro: "",
                 dtAlteracao: ""
             },
+            socio: "Não",
             cidadeSelecionada: "",
             condicaoSelecionada: "",
             dependentes: {
@@ -253,14 +253,13 @@ export default {
         const vm = this;
         if (this.$route.params.codigo) {
             this.entity.codigo = this.$route.params.codigo;
-        }
-        if(this.entity.codigo){
+            
             ClientesService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
                 vm.cidadeSelecionada = response.data.cidade.cidade;
                 vm.condicaoSelecionada = response.data.condicaoPagamento.descricao;
-                vm.$delete(vm.entity, 'cidade');
-                vm.$delete(vm.entity, 'condicaoPagamento');
+
+                //TODO: Verificar tabela de cotas
             });
         }
     },
@@ -278,14 +277,12 @@ export default {
             this.$bvModal.hide("modal-consulta-condicaoPagamento");
         },
         selectDependente(entity) {
-            this.dependentes.rows.add(entity);
+            this.dependentes.rows.push(entity);
             this.$bvModal.hide("modal-new-dependente");
         },
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
-            this.$delete(this.entity, 'dtCadastro');
-            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             ClientesService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
@@ -302,3 +299,10 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    .labelRadio {
+        display: inline-block;
+        margin-bottom: 0 !important;
+    }
+</style>
