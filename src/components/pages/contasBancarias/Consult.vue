@@ -10,7 +10,8 @@
                 :columns="columns"
                 :rows="rows"
                 :search-options="{enabled: true, placeholder: 'Busque por Banco'}"
-                :pagination-options="{perPage: 5, enabled: true}"
+                :pagination-options="{perPage: 10, enabled: true}"
+                styleClass="vgt-table bordered vgt-compact condensed"
             >
                 <template slot="table-row" slot-scope="props">
                     <span v-if="props.column.field == 'btn'">

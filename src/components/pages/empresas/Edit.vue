@@ -104,7 +104,7 @@
                     :columns="contasBancarias.columns"
                     :rows="contasBancarias.rows"
                     :search-options="{enabled: false, placeholder: 'Buscar'}"
-                    :pagination-options="{perPage: 5, enabled: false}"
+                    :pagination-options="{perPage: 10, enabled: false}"
                     styleClass="vgt-table bordered vgt-compact condensed"
                 >
                     <template slot="table-row" slot-scope="props">

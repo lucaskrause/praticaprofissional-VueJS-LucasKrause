@@ -135,7 +135,8 @@
                     :columns="dependentes.columns"
                     :rows="dependentes.rows"
                     :search-options="{enabled: true, placeholder: 'Buscar'}"
-                    :pagination-options="{perPage: 5, enabled: true}"
+                    :pagination-options="{perPage: 10, enabled: true}"
+                    styleClass="vgt-table bordered vgt-compact condensed"
                 >
                 </vue-good-table>
             </div>
