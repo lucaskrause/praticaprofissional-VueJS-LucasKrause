@@ -14,7 +14,8 @@
                     :columns="columns"
                     :rows="rows"
                     :search-options="{enabled: true, placeholder: 'Buscar'}"
-                    :pagination-options="{perPage: 5, enabled: true}"
+                    :pagination-options="{perPage: 10, enabled: true}"
+                    styleClass="vgt-table bordered vgt-compact condensed"
                 >
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'btn'">
@@ -46,29 +47,34 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: "number"
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Cliente",
-                    field: "cliente"
+                    field: "cliente.nome",
                 },
                 {
                     label: "Valor",
-                    field: "valor"
+                    field: "valor",
+                    width: "150px",
                 },
                 {
                     label: "Data de Início",
-                    field: "dtInicio"
+                    field: "dtInicio",
+                    width: "180px",
                 },
                 {
                     label: "Data de Termino",
-                    field: "dtTermino"
+                    field: "dtTermino",
+                    width: "180px",
                 },
                 {
                     label:"Ação",
                     sortable: false,
                     field: 'btn',
-                    html: true
+                    html: true,
+                    width: "160px",
                 },
             ],
             page: 1,
