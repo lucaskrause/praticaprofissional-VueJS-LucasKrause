@@ -165,23 +165,23 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                razaoSocial: "",
-                nomeFantasia: "",
-                logradouro: "",
-                complemento: "",
-                bairro: "",
-                cep: "",
+                razaoSocial: null,
+                nomeFantasia: null,
+                logradouro: null,
+                complemento: null,
+                bairro: null,
+                cep: null,
                 codigoCidade: 0,
-                telefone: "",
-                email: "",
-                cnpj: "",
-                ie: "",
-                dtFundacao: "",
+                telefone: null,
+                email: null,
+                cnpj: null,
+                ie: null,
+                dtFundacao: null,
                 qtdeCotas: 0,
-                dtCadastro: "",
-                dtAlteracao: ""
+                dtCadastro: null,
+                dtAlteracao: null
             },
-            cidadeSelecionada: "",
+            cidadeSelecionada: null,
             contasBancarias: {
                 columns: [
                     {

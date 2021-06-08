@@ -141,22 +141,22 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                nome: "",
-                cpfcnpj: "",
-                rgie: "",
-                sexo: "",
-                telefone: "",
-                email: "",
-                dtNascFundacao: "",
+                nome: null,
+                cpfcnpj: null,
+                rgie: null,
+                sexo: null,
+                telefone: null,
+                email: null,
+                dtNascFundacao: null,
                 codigoCidade: 0,
-                logradouro: "",
-                complemento: "",
-                bairro: "",
-                cep: "",
-                dtCadastro: "",
-                dtAlteracao: ""
+                logradouro: null,
+                complemento: null,
+                bairro: null,
+                cep: null,
+                dtCadastro: null,
+                dtAlteracao: null
             },
-            cidadeSelecionada: "",
+            cidadeSelecionada: null,
             isSubmiting: false
         }
     },

@@ -82,13 +82,13 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                cidade: "",
-                ddd: "",
+                cidade: null,
+                ddd: null,
                 codigoEstado: 0,
-                dtCadastro: "",
-                dtAlteracao: ""
+                dtCadastro: null,
+                dtAlteracao: null
             },
-            estadoSelecionado: "",
+            estadoSelecionado: null,
             isSubmiting: false
         }
     },

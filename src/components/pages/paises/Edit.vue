@@ -64,11 +64,11 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                pais: "",
-                sigla: "",
-                ddi: "",
-                dtCadastro: "",
-                dtAlteracao: "" 
+                pais: null,
+                sigla: null,
+                ddi: null,
+                dtCadastro: null,
+                dtAlteracao: null 
             },
             isSubmiting: false
         }

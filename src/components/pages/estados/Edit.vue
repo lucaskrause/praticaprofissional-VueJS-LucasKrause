@@ -85,13 +85,13 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                estado: "",
-                uf: "",
+                estado: null,
+                uf: null,
                 codigoPais: 0,
-                dtCadastro: "",
-                dtAlteracao: ""
+                dtCadastro: null,
+                dtAlteracao: null
             },
-            paisSelecionado: "",
+            paisSelecionado: null,
             isSubmiting: false
         }
     },

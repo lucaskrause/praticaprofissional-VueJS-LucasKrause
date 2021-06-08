@@ -54,9 +54,9 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                descricao: "",
-                dtCadastro: "",
-                dtAlteracao: ""
+                descricao: null,
+                dtCadastro: null,
+                dtAlteracao: null
             },
             isSubmiting: false
         }

@@ -79,14 +79,14 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                instituicao: "",
-                numeroBanco: "",
-                agencia: "",
-                conta: "",
-                saldo: "",
+                instituicao: null,
+                numeroBanco: null,
+                agencia: null,
+                conta: null,
+                saldo: null,
                 codigoEmpresa: 0,
-                dtCadastro: "",
-                dtAlteracap: "",
+                dtCadastro: null,
+                dtAlteracap: null,
             },
             isSubmiting: false
         }

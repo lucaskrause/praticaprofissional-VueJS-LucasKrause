@@ -199,26 +199,26 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                nome: "",
-                sexo: "",
-                tipoPessoa: "",
-                logradouro: "",
-                complemento: "",
-                bairro: "",
-                cep: "",
+                nome: null,
+                sexo: null,
+                tipoPessoa: null,
+                logradouro: null,
+                complemento: null,
+                bairro: null,
+                cep: null,
                 codigoCidade: 0,
-                telefone: "",
-                email: "",
-                cpfCnpj: "",
-                rgIe: "",
-                dtNascFundacao: "",
+                telefone: null,
+                email: null,
+                cpfCnpj: null,
+                rgIe: null,
+                dtNascFundacao: null,
                 codigoCondicaoPagamento: 0,
-                dtCadastro: "",
-                dtAlteracao: ""
+                dtCadastro: null,
+                dtAlteracao: null
             },
             socio: "Não",
-            cidadeSelecionada: "",
-            condicaoSelecionada: "",
+            cidadeSelecionada: null,
+            condicaoSelecionada: null,
             dependentes: {
                 columns: [
                     {
