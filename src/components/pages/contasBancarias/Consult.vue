@@ -21,7 +21,7 @@
             </vue-good-table>
         </div>
         
-        <b-modal id="modal-new-contaBancaria" size="xl" title="Cadastrar ContasBancaria" hide-footer>
+        <b-modal id="modal-new-contaBancaria" size="xl" title="Cadastrar Contas Bancaria" hide-footer>
             <NovaContaBancaria  @emit-contaBancaria="selectContasBancaria" :isModal="true" />
         </b-modal>
     </div>
