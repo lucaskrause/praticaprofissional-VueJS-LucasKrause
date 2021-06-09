@@ -5,19 +5,35 @@
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label>
-                <input id="codigo" type="number" class="form-control" v-model="entity.codigo" readonly/>
+                <input id="codigo" type="number" class="form-control" v-model.number="entity.codigo" readonly/>
             </div>
 
-            <div class="col-5">
+            <div class="col-4">
                 <label>Dependente</label>
                 <input id="dependente" type="text" class="form-control" v-model="entity.nome"/>
             </div>
 
-            <div class="col-3">
+            <div class="col-2">
                 <label>Sexo</label>
                 <br/>
-                <label class="radio-inline mr-2"><input type="radio" value="Feminino" v-model="entity.sexo"> Feminino</label>
-                <label class="radio-inline"><input type="radio" value="Masculino" v-model="entity.sexo"> Masculino</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="Feminino" v-model="entity.sexo"> Feminino</label>
+                <br/>
+                <label class="radio-inline labelRadio"><input type="radio" value="Masculino" v-model="entity.sexo"> Masculino</label>
+            </div>
+
+             <div class="col-1">
+                <label>Código</label> 
+                <input id="codigoCliente" type="number" class="form-control" v-model="entity.codigoCliente" readonly/>
+            </div>
+
+            <div v-if="!isModal" class="col-4">
+                <label>Sócio</label>
+                <div class="input-group">
+                    <input id="cliente" type="text" class="form-control" v-model="socioSelecionado" readonly/>
+                    <span class="input-group-btn">
+                        <b-button v-b-modal.modal-consulta-cliente class="btn btn-info ml-1">Buscar</b-button>
+                    </span>
+                </div>
             </div>
         </div>
 
@@ -86,23 +102,6 @@
             </div>
         </div>
 
-        <div v-if="!isModal" class="row form-group">
-            <div class="col-1">
-                <label>Código</label> 
-                <input id="codigoCliente" type="number" class="form-control" v-model="entity.codigoCliente" readonly/>
-            </div>
-
-            <div class="col-4">
-                <label>Sócio</label>
-                <div class="input-group">
-                    <input id="cliente" type="text" class="form-control" v-model="socioSelecionado" readonly/>
-                    <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consulta-cliente class="btn btn-info ml-1">Buscar</b-button>
-                    </span>
-                </div>
-            </div>
-        </div>
-
         <div class="row form-group align-items-end mt-5">
             <div class="col-2">
                 <label>Data de Cadastro</label>
@@ -121,13 +120,13 @@
                 </div>
             </div>
         </div>
-        
-        <b-modal id="modal-consulta-cidade-dependente" size="xl" title="Consultar Cidade" hide-footer>
-            <ConsultaCidade @emit-cidade="selectCidade" />
-        </b-modal>
 
         <b-modal v-if="!isModal" id="modal-consulta-cliente" size="xl" title="Consultar Cliente" hide-footer>
             <ConsultaCliente @emit-cliente="selectCliente" />
+        </b-modal>
+        
+        <b-modal id="modal-consulta-cidade-dependente" size="xl" title="Consultar Cidade" hide-footer>
+            <ConsultaCidade @emit-cidade="selectCidade" />
         </b-modal>
     </div>
 </template>
@@ -154,24 +153,24 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                nome: "",
-                sexo: "",
-                logradouro: "",
-                complemento: "",
-                bairro: "",
-                cep: "",
+                nome: null,
+                sexo: null,
+                logradouro: null,
+                complemento: null,
+                bairro: null,
+                cep: null,
                 codigoCidade: 0,
-                telefone: "",
-                email: "",
-                cpf: "",
-                rg: "",
-                dtNascimento: "",
+                telefone: null,
+                email: null,
+                cpf: null,
+                rg: null,
+                dtNascimento: null,
                 codigoCliente: 0,
-                dtCadastro: "",
-                dtAlteracao: ""
+                dtCadastro: null,
+                dtAlteracao: null
             },
-            cidadeSelecionada: "",
-            socioSelecionado: "",
+            socioSelecionado: null,
+            cidadeSelecionada: null,
             isSubmiting: false
         }
     },
@@ -179,35 +178,30 @@ export default {
         const vm = this;
         if (this.$route.params.codigo) {
             this.entity.codigo = this.$route.params.codigo;
-        }
-        if(this.entity.codigo){
+
             DependentesService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
-                vm.cidadeSelecionada = response.data.cidade.cidade;
                 vm.socioSelecionado = response.data.cliente.nome;
-                vm.$delete(vm.entity, 'cidade');
-                vm.$delete(vm.entity, 'cliente');
+                vm.cidadeSelecionada = response.data.cidade.cidade;
             });
         }
     },
     methods: {
+        selectCliente(entity) {
+            this.socioSelecionado = entity.nome;
+            this.entity.codigoCliente = entity.codigo;
+            this.$bvModal.hide("modal-new-cliente");
+            this.$bvModal.hide("modal-consulta-cliente");
+        },
         selectCidade(entity) {
             this.cidadeSelecionada = entity.cidade;
             this.entity.codigoCidade = entity.codigo;
             this.$bvModal.hide("modal-new-cidade");
             this.$bvModal.hide("modal-consulta-cidade-dependente");
         },
-        selectCliente(entity) {
-            this.clienteSelecionado = entity.nome;
-            this.entity.codigoCliente = entity.codigo;
-            this.$bvModal.hide("modal-new-cliente");
-            this.$bvModal.hide("modal-consulta-cliente");
-        },
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
-            this.$delete(this.entity, 'dtCadastro');
-            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
             DependentesService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
@@ -224,3 +218,10 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    .labelRadio {
+        display: inline-block;
+        margin-bottom: 0 !important;
+    }
+</style>
