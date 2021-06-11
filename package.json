@@ -14,7 +14,7 @@
     "core-js": "^3.6.5",
     "notyf": "^3.9.0",
     "vue": "^2.6.12",
-    "vue-good-table": "^2.21.6",
+    "vue-good-table": "^2.21.10",
     "vue-notifyjs": "^0.3.0",
     "vue-router": "^3.5.1",
     "vuex": "^3.4.0"
