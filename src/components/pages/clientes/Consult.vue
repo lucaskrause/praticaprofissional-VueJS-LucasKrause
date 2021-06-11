@@ -22,7 +22,7 @@
         </div>
         
         <b-modal id="modal-new-cliente" size="xl" title="Cadastrar Cliente" hide-footer>
-            <NovoCliente  @emit-cliente="selectCliente" :isModal="true" />
+            <NovoCliente  @emit-cliente="selectCliente" :isModal="true" :isCota="true" />
         </b-modal>
     </div>
 </template>
@@ -36,6 +36,12 @@ import 'vue-good-table/dist/vue-good-table.css'
 export default {
     name: "ClientesConsult",
     components: { VueGoodTable, NovoCliente },
+    props: {
+        isCota: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
              columns: [

@@ -30,11 +30,11 @@
             </div>
 
             <div class="col-2">
-                <label>Sócio</label>
+                <label>É sócio?</label>
                 <br/>
-                <label class="radio-inline labelRadio"><input type="radio" value="Sim" v-model="socio" disabled> Sim</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="true" v-model="entity.isSocio" disabled> Sim</label>
                 <br/>
-                <label class="radio-inline labelRadio"><input type="radio" value="Não" v-model="socio" disabled> Não</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="false" v-model="entity.isSocio" disabled> Não</label>
             </div>
         </div>
 
@@ -120,7 +120,7 @@
             </div>
         </div>
 
-        <div v-if="socio == 'Sim' && !isModal" class="row">
+        <div v-if="entity.isSocio == true" class="row">
             <div class="col-3">
                 <label>Dependentes</label>
             </div>
@@ -129,15 +129,21 @@
                 <b-button v-b-modal.modal-new-dependente class="btn btn-success btn-sm">Cadastrar Dependente</b-button>
             </div>
         </div>
-        <div v-if="socio == 'Sim' && !isModal" class="row mt-1">
+        <div v-if="entity.isSocio == true" class="row mt-1">
             <div class="col-12">
                 <vue-good-table compactMode
                     :columns="dependentes.columns"
                     :rows="dependentes.rows"
-                    :search-options="{enabled: true, placeholder: 'Buscar'}"
-                    :pagination-options="{perPage: 10, enabled: true}"
+                    :search-options="{enabled: false, placeholder: 'Buscar'}"
+                    :pagination-options="{perPage: 10, enabled: false}"
                     styleClass="vgt-table bordered vgt-compact condensed"
                 >
+                    <template slot="table-row" slot-scope="props">
+                        <span v-if="props.column.field == 'btn'">
+                            <a @click.prevent="editDependente(props)" class="btn btn-sm btn-primary mr-3" href="#">Editar</a>
+                            <a @click.prevent="removeDependente(props)" class="btn btn-sm btn-danger" href="#">Excluir</a>
+                        </span>
+                    </template>
                 </vue-good-table>
             </div>
         </div>
@@ -172,6 +178,10 @@
         <b-modal id="modal-new-dependente" size="xl" title="Cadastrar Dependente" hide-footer>
             <NovoDependente @emit-dependente="selectDependente" :isModal="true" />
         </b-modal>
+        
+        <b-modal id="modal-edit-dependente" size="xl" title="Editar Dependente" hide-footer>
+            <NovoDependente @emit-dependente="selectDependente" :isModal="true" :editDependente="this.dependenteToEdit" />
+        </b-modal>
     </div>
 </template>
 
@@ -192,6 +202,10 @@ export default {
     components: { VueGoodTable, ConsultaCidade, ConsultaCondicaoPagamento, NovoDependente },
     props: {
         isModal: {
+            type: Boolean,
+            default: false
+        },
+        isCota: {
             type: Boolean,
             default: false
         }
@@ -215,38 +229,52 @@ export default {
                 dtNascFundacao: null,
                 codigoCondicaoPagamento: 0,
                 dtCadastro: null,
-                dtAlteracao: null
+                dtAlteracao: null,
+                isSocio: false
             },
-            socio: "Não",
             cidadeSelecionada: null,
             condicaoSelecionada: null,
             dependentes: {
                 columns: [
                     {
+                        label: "Código",
+                        field: "codigo",
+                        type: "number",
+                        width: "100px",
+                    },
+                    {
                         label: "Nome",
                         field: "nome"
                     },
                     {
-                        label: "CPF / CNPJ",
-                        field: "cpfCnpj"
+                        label: "CPF",
+                        field: "cpf",
+                        width: "150px",
                     },
                     {
                         label: "Telefone",
-                        field: "telefone"
+                        field: "telefone",
+                        width: "150px",
                     },
                     {
-                        label: "Tipo",
-                        field: "tipo"
+                        label: "Sócio",
+                        field: "cliente.nome"
                     },
                     {
-                        label: "Ações",
-                        field: "btn"
+                        label: "Ação",
+                        field: "btn",
+                        sortable: false,
+                        html: true,
+                        width: "160px",
                     }
                 ],
                 rows: [],
                 page: 1,
                 totalRecords: 0
             },
+            dependenteToEdit: {},
+            isEdit: false,
+            indexEdit: -1,
             isSubmiting: false
         }
     },
@@ -257,11 +285,14 @@ export default {
             
             ClientesService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
-                vm.cidadeSelecionada = response.data.cidade.cidade;
-                vm.condicaoSelecionada = response.data.condicaoPagamento.descricao;
-
-                //TODO: Verificar tabela de cotas
+                vm.cidadeSelecionada = vm.entity.cidade.cidade;
+                vm.condicaoSelecionada = vm.entity.condicaoPagamento.descricao;
+                vm.dependentes.rows = vm.entity.dependentes ? vm.entity.dependentes : []; 
             });
+        }
+        
+        if (this.isCota) {
+            this.entity.isSocio = true;
         }
     },
     methods: {
@@ -278,13 +309,23 @@ export default {
             this.$bvModal.hide("modal-consulta-condicaoPagamento");
         },
         selectDependente(entity) {
-            this.dependentes.rows.push(entity);
-            this.$bvModal.hide("modal-new-dependente");
+            if (!this.isEdit) {
+                this.dependentes.rows.push(entity);
+                this.$bvModal.hide("modal-new-dependente");
+            } else {
+                this.dependentes.rows[this.indexEdit] = entity;
+                this.indexEdit = -1;
+                this.isEdit = false;
+                this.$bvModal.hide("modal-edit-dependente");
+            }
         },
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
+
+            this.dependentes.rows = this.clearDependentes(this.dependentes.rows);
+            this.entity.dependentes = this.dependentes.rows;
             ClientesService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Cliente " + msg + " com sucesso");
@@ -296,6 +337,30 @@ export default {
                     vm.$router.push('/app/clientes');
                 }
             }); //.catch(function (errors) {Helper.saveErrorCallBack(errors.response)});
+        },
+        editDependente(prop) {
+            this.dependenteToEdit = prop.row;
+            this.isEdit = true;
+            this.indexEdit = prop.index;
+            this.$bvModal.show("modal-edit-dependente");
+        },
+        removeDependente(entity) {
+            if (entity.row.codigo > 0) {
+                this.dependentes.rows[entity.index].status = "Inativo";
+            } else {
+                this.dependentes.rows.splice(entity.index, 1);
+            }
+        },
+        clearDependentes(dependentes) {
+            if (dependentes.length > 0) {
+                for (let i = 0; i < dependentes.length; i++) {
+                    var dependente = dependentes[i];
+                    this.$delete(dependente, 'cliente');
+                    this.$delete(dependente, 'cidade');
+                    dependentes[i] = dependente;
+                }
+            }
+            return dependentes;
         }
     }
 }

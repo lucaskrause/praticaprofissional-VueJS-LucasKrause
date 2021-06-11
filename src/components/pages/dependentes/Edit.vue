@@ -21,7 +21,7 @@
                 <label class="radio-inline labelRadio"><input type="radio" value="Masculino" v-model="entity.sexo"> Masculino</label>
             </div>
 
-             <div class="col-1">
+             <div v-if="!isModal" class="col-1">
                 <label>Código</label> 
                 <input id="codigoCliente" type="number" class="form-control" v-model="entity.codigoCliente" readonly/>
             </div>
@@ -147,6 +147,10 @@ export default {
         isModal: {
             type: Boolean,
             default: false
+        },
+        editDependente: {
+            type: Object,
+            default: null
         }
     },
     data() {
@@ -175,15 +179,22 @@ export default {
         }
     },
     created() {
-        const vm = this;
-        if (this.$route.params.codigo) {
-            this.entity.codigo = this.$route.params.codigo;
+        if (this.isModal) {
+            if (this.editDependente != null) {
+                this.entity = this.editDependente;
+                this.cidadeSelecionada = this.entity.cidade.cidade;
+            }
+        } else {
+            const vm = this;
+            if (this.$route.params.codigo) {
+                this.entity.codigo = this.$route.params.codigo;
 
-            DependentesService.getById(this.entity.codigo).then(function (response) {
-                vm.entity = response.data;
-                vm.socioSelecionado = response.data.cliente.nome;
-                vm.cidadeSelecionada = response.data.cidade.cidade;
-            });
+                DependentesService.getById(this.entity.codigo).then(function (response) {
+                    vm.entity = response.data;
+                    vm.socioSelecionado = response.data.cliente.nome;
+                    vm.cidadeSelecionada = response.data.cidade.cidade;
+                });
+            }
         }
     },
     methods: {
@@ -200,20 +211,20 @@ export default {
             this.$bvModal.hide("modal-consulta-cidade-dependente");
         },
         save() {
-            if(this.isSubmiting) return;
-            this.isSubmiting = true;
-            const vm = this;
-            DependentesService.save(this.entity).then(function (response) {
-                const msg = vm.entity.codigo ? "editado" : 'criado';
-                notyf.success("Dependente " + msg + " com sucesso");
-                vm.isSubmiting = false;
-                if(vm.isModal){
-                    vm.entity.codigo = response.data.codigo;
-                    vm.$emit("emit-dependente", vm.entity);
-                } else {
+            if (this.isModal) {
+                this.$emit('emit-dependente', this.entity);
+            } else {
+                if(this.isSubmiting) return;
+                this.isSubmiting = true;
+                const vm = this;
+
+                DependentesService.save(this.entity).then(function () {
+                    const msg = vm.entity.codigo ? "editado" : 'criado';
+                    notyf.success("Dependente " + msg + " com sucesso");
+                    vm.isSubmiting = false;
                     vm.$router.push('/app/dependentes');
-                }
-            }); //.catch(function (errors) {Helper.saveErrorCallBack(errors.response)});
+                }); //.catch(function (errors) {Helper.saveErrorCallBack(errors.response)});
+            }
         }
     }
 }
