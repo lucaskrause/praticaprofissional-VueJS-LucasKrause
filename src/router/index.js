@@ -31,6 +31,9 @@ const ReservaEdit = () => import("@/components/pages/reservas/Edit");
 const PrecoList = () => import("@/components/pages/precificacoes/List");
 const PrecoEdit = () => import("@/components/pages/precificacoes/Edit");
 
+const AreaLocacaoList = () => import("@/components/pages/areaLocacao/List");
+const AreaLocacaoEdit = () => import("@/components/pages/areaLocacao/Edit");
+
 const FormaPagamentoList = () => import("@/components/pages/formasPagamento/List");
 const FormaPagamentoEdit = () => import("@/components/pages/formasPagamento/Edit");
 
@@ -285,6 +288,32 @@ const routes = [
                 component: PrecoEdit,
                 meta: {
                     label: "Preço"
+                },
+            },
+            
+            // ÁREA DE LOCACAO
+            {
+                path: 'areaLocacao',
+                name: 'AreasLocacaoList',
+                component: AreaLocacaoList,
+                meta: {
+                    label: "Área de Locação"
+                },
+            },
+            {
+                path: 'areaLocacao/cadastrar',
+                name: 'AreasLocacaoCad',
+                component: AreaLocacaoEdit,
+                meta: {
+                    label: "Área de Locação"
+                },
+            },
+            {
+                path: 'areaLocacao/editar/:codigo',
+                name: 'AreasLocacaoEdit',
+                component: AreaLocacaoEdit,
+                meta: {
+                    label: "Área de Locação"
                 },
             },
             

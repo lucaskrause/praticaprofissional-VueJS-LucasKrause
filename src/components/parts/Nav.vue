@@ -65,6 +65,7 @@ export default {
                 {id: 8, group: 2, label: "Fornecedores", route: {name: "FornecedoresList"}},
                 {id: 9, group: 2, label: "Produtos", route: {name: "ProdutosList"}},
                 {id: 10, group: 2, label: "Serviços", route: {name: "ServicosList"}},
+                {id: 11, group: 2, label: "Areas de Locação", route: {name: "AreasLocacaoList"}},
                 // {id: 11, group: 2, label: "Compras", route: {name: "ComprasList"}},
 
                 {id: 12, group: 3, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
