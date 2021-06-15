@@ -1,7 +1,7 @@
 <template>
     <div class="col-12">
         <h2>Cadastro de Empresa</h2>
-        <hr />
+        <hr/>
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label>
