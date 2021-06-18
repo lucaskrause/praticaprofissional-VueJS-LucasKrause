@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-6 text-left"><h2>Precificações</h2></div>
             <div class="col-6 text-right pt-2">
-                <router-link :to="{name: 'PrecificacoesCad'}" class="btn btn-success">Novo Preço</router-link>
+                <router-link :to="{name: 'PrecificacoesCad'}" class="btn btn-success">Nova Precificação</router-link>
             </div>
         </div>
 
@@ -47,25 +47,31 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: "number"
+                    type: "number",
+                    width: "100px",
+                },
+                {
+                    label: "De",
+                    field: "minPessoas",
+                    type: "number",
+                },
+                {
+                    label: "Até",
+                    field: "maxPessoas",
+                    type: "number",
                 },
                 {
                     label: "Valor",
-                    field: "valor"
-                },
-                {
-                    label: "Quantidade de Pessoas",
-                    field: "qtdePessoas"
-                },
-                {
-                    label: "Tipo",
-                    field: "tipo"
+                    field: "valor",
+                    type: "decimal",
+                    width: "160px",
                 },
                 {
                     label:"Ação",
                     sortable: false,
                     field: 'btn',
-                    html: true
+                    html: true,
+                    width: "160px",
                 },
             ],
             page: 1,
