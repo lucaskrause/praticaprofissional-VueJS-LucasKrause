@@ -47,26 +47,36 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: "number"
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Produto",
                     field: "produto"
                 },
                 {
+                    label: "Categoria",
+                    field: "categoria.descricao",
+                    width: "180px",
+                },
+                {
                     label: "Unidades",
-                    field: "unidades"
+                    field: "unidades",
+                    type: "number",
+                    width: "120px",
                 },
                 {
                     label: "Valor de Custo",
                     field: "valorCusto",
-                    type: "number"
+                    type: "number",
+                    width: "150px",
                 },
                 {
                     label: "Ações",
                     sortable: false,
                     field: 'btn',
-                    html: true
+                    html: true,
+                    width: "160px",
                 },
             ],
             rows: [],
