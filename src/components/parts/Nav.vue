@@ -62,18 +62,19 @@ export default {
                 {id: 6, group: 1, label: "Dependentes", route: {name: "DependentesList"}},
                 {id: 7, group: 1, label: "Reservas", route: {name: "ReservasList"}},
                 
-                {id: 8, group: 2, label: "Areas de Locação", route: {name: "AreasLocacaoList"}},
+                {id: 8, group: 2, label: "Áreas de Locação", route: {name: "AreasLocacaoList"}},
                 {id: 9, group: 2, label: "Preço por Pessoa", route: {name: "PrecificacoesList"}},
-                {id: 10, group: 2, label: "Produtos", route: {name: "ProdutosList"}},
-                {id: 11, group: 2, label: "Serviços", route: {name: "ServicosList"}},
-                {id: 12, group: 2, label: "Fornecedores", route: {name: "FornecedoresList"}},
+                {id: 11, group: 2, label: "Categoria de Produto", route: {name: "CategoriasList"}},
+                {id: 12, group: 2, label: "Produtos", route: {name: "ProdutosList"}},
+                {id: 13, group: 2, label: "Serviços", route: {name: "ServicosList"}},
+                {id: 14, group: 2, label: "Fornecedores", route: {name: "FornecedoresList"}},
 
-                {id: 13, group: 3, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
-                {id: 14, group: 3, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
+                {id: 15, group: 3, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
+                {id: 16, group: 3, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
 
-                {id: 15, group: 4, label: "Cidades",  route: {name: "CidadesList"}},
-                {id: 16, group: 4, label: "Estados", route: {name: "EstadosList"}},
-                {id: 17, group: 4, label: "Países", route: {name: "PaisesList"}},
+                {id: 17, group: 4, label: "Cidades",  route: {name: "CidadesList"}},
+                {id: 18, group: 4, label: "Estados", route: {name: "EstadosList"}},
+                {id: 19, group: 4, label: "Países", route: {name: "PaisesList"}},
             ],
         }
     },
