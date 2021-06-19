@@ -18,7 +18,7 @@
                 <div class="input-group">
                     <input id="cliente" type="text" class="form-control" v-model.lazy="clienteSelecionado" readonly/>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consulta-cliente class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consult-cliente class="btn btn-info ml-1">Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -60,7 +60,7 @@
             </div>
         </div>
 
-        <b-modal id="modal-consulta-cliente" size="xl" title="Consultar Cliente" hide-footer>
+        <b-modal id="modal-consult-cliente" size="xl" title="Consultar Cliente" hide-footer>
             <ConsultaCliente @emit-cliente="selectCliente" :isCota="this.isCota" />
         </b-modal>
     </div>
@@ -108,7 +108,7 @@ export default {
             this.clienteSelecionado = entity.nome;
             this.entity.codigoCliente = entity.codigo;
             this.$bvModal.hide("modal-new-cliente");
-            this.$bvModal.hide("modal-consulta-cliente");
+            this.$bvModal.hide("modal-consult-cliente");
         },
         save() {
             if (this.isSubmiting) return;

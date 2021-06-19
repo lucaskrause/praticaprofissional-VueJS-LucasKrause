@@ -70,7 +70,7 @@
                 <div class="input-group">
                     <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="cidadeSelecionada" readonly/>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consulta-cidade class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consult-cidade class="btn btn-info ml-1">Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -114,7 +114,7 @@
                 <div class="input-group">
                     <input id="condicaoPagamento" type="text" class="form-control" v-uppercase v-model.lazy="condicaoSelecionada" readonly/>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consulta-condicaoPagamento class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consult-condicaoPagamento class="btn btn-info ml-1">Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -167,11 +167,11 @@
             </div>
         </div>
         
-        <b-modal id="modal-consulta-cidade" size="xl" title="Consultar Cidade" hide-footer>
+        <b-modal id="modal-consult-cidade" size="xl" title="Consultar Cidade" hide-footer>
             <ConsultaCidade @emit-cidade="selectCidade" />
         </b-modal>
         
-        <b-modal id="modal-consulta-condicaoPagamento" size="xl" title="Consultar Condição de Pagamento" hide-footer>
+        <b-modal id="modal-consult-condicaoPagamento" size="xl" title="Consultar Condição de Pagamento" hide-footer>
             <ConsultaCondicaoPagamento @emit-condicao="selectCondicao" />
         </b-modal>
 
@@ -300,13 +300,13 @@ export default {
             this.cidadeSelecionada = entity.cidade;
             this.entity.codigoCidade = entity.codigo;
             this.$bvModal.hide("modal-new-cidade");
-            this.$bvModal.hide("modal-consulta-cidade");
+            this.$bvModal.hide("modal-consult-cidade");
         },
         selectCondicao(entity) {
             this.condicaoSelecionada = entity.descricao;
             this.entity.codigoCondicaoPagamento = entity.codigo;
             this.$bvModal.hide("modal-new-condicaoPagamento");
-            this.$bvModal.hide("modal-consulta-condicaoPagamento");
+            this.$bvModal.hide("modal-consult-condicaoPagamento");
         },
         selectDependente(entity) {
             if (!this.isEdit) {

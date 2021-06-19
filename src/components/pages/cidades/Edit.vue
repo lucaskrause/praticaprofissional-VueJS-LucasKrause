@@ -30,7 +30,7 @@
                 <div class="input-group">
                     <input id="estado" type="text" class="form-control" v-model.lazy="estadoSelecionado" readonly/>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consulta-estado class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consult-estado class="btn btn-info ml-1">Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -55,7 +55,7 @@
             </div>
         </div>
 
-        <b-modal id="modal-consulta-estado" size="xl" title="Consultar Estado" hide-footer>
+        <b-modal id="modal-consult-estado" size="xl" title="Consultar Estado" hide-footer>
             <ConsultaEstado @emit-estado="selectEstado" />
         </b-modal>
     </div>
@@ -108,7 +108,7 @@ export default {
             this.estadoSelecionado = entity.estado;
             this.entity.codigoEstado = entity.codigo;
             this.$bvModal.hide("modal-new-estado");
-            this.$bvModal.hide("modal-consulta-estado");
+            this.$bvModal.hide("modal-consult-estado");
         },
         save() {
             if(this.isSubmiting) return;

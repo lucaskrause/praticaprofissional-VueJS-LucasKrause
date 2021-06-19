@@ -31,7 +31,7 @@
                 <div class="input-group">
                     <input id="cliente" type="text" class="form-control" v-model.lazy="socioSelecionado" readonly/>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consulta-cliente class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consult-cliente class="btn btn-info ml-1">Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                 <div class="input-group">
                     <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="cidadeSelecionada" readonly/>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consulta-cidade-dependente class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consult-cidade-dependente class="btn btn-info ml-1">Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -121,11 +121,11 @@
             </div>
         </div>
 
-        <b-modal v-if="!isModal" id="modal-consulta-cliente" size="xl" title="Consultar Cliente" hide-footer>
+        <b-modal v-if="!isModal" id="modal-consult-cliente" size="xl" title="Consultar Cliente" hide-footer>
             <ConsultaCliente @emit-cliente="selectCliente" />
         </b-modal>
         
-        <b-modal id="modal-consulta-cidade-dependente" size="xl" title="Consultar Cidade" hide-footer>
+        <b-modal id="modal-consult-cidade-dependente" size="xl" title="Consultar Cidade" hide-footer>
             <ConsultaCidade @emit-cidade="selectCidade" />
         </b-modal>
     </div>
@@ -202,13 +202,13 @@ export default {
             this.socioSelecionado = entity.nome;
             this.entity.codigoCliente = entity.codigo;
             this.$bvModal.hide("modal-new-cliente");
-            this.$bvModal.hide("modal-consulta-cliente");
+            this.$bvModal.hide("modal-consult-cliente");
         },
         selectCidade(entity) {
             this.cidadeSelecionada = entity.cidade;
             this.entity.codigoCidade = entity.codigo;
             this.$bvModal.hide("modal-new-cidade");
-            this.$bvModal.hide("modal-consulta-cidade-dependente");
+            this.$bvModal.hide("modal-consult-cidade-dependente");
         },
         save() {
             if (this.isModal) {
