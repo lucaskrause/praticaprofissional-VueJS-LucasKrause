@@ -46,6 +46,9 @@ const FornecedorEdit = () => import("@/components/pages/fornecedores/Edit");
 const ServicoList = () => import("@/components/pages/servicos/List");
 const ServicoEdit = () => import("@/components/pages/servicos/Edit");
 
+const CategoriaList = () => import("@/components/pages/categorias/List");
+const CategoriaEdit = () => import("@/components/pages/categorias/Edit");
+
 const ProdutoList = () => import("@/components/pages/produtos/List");
 const ProdutoEdit = () => import("@/components/pages/produtos/Edit");
 
@@ -418,6 +421,32 @@ const routes = [
                 component: ServicoEdit,
                 meta: {
                     label: "Serviço"
+                },
+            },
+            
+            // CATEGORIAS
+            {
+                path: 'categorias',
+                name: 'CategoriasList',
+                component: CategoriaList,
+                meta: {
+                    label: "Categorias"
+                },
+            },
+            {
+                path: 'categorias/cadastrar',
+                name: 'CategoriasCad',
+                component: CategoriaEdit,
+                meta: {
+                    label: "Categoria"
+                },
+            },
+            {
+                path: 'categorias/editar/:codigo',
+                name: 'CategoriasEdit',
+                component: CategoriaEdit,
+                meta: {
+                    label: "Categoria"
                 },
             },
             
