@@ -11,56 +11,56 @@
             <div class="col-2">
                 <label>Tipo Pessoa</label>
                 <br/>
-                <label class="radio-inline labelRadio"><input type="radio" value="PF" v-model="entity.tipoPessoa"> Pessoa Física</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="PF" v-uppercase v-model.lazy="entity.tipoPessoa"> Pessoa Física</label>
                 <br/>
-                <label class="radio-inline labelRadio"><input type="radio" value="PJ" v-model="entity.tipoPessoa"> Pessoa Jurídica</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="PJ" v-uppercase v-model.lazy="entity.tipoPessoa"> Pessoa Jurídica</label>
             </div>
 
             <div class="col-5">
                 <label>Fornercedor</label>
-                <input id="nome" type="text" class="form-control" v-model="entity.nome"/>
+                <input id="nome" type="text" class="form-control" v-uppercase v-model.lazy="entity.nome"/>
             </div>
             
             <div class="col-2">
                 <label>Sexo</label>
                 <br/>
-                <label class="radio-inline labelRadio"><input type="radio" value="Feminino" v-model="entity.sexo"> Feminino</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="Feminino" v-uppercase v-model.lazy="entity.sexo"> Feminino</label>
                 <br/>
-                <label class="radio-inline labelRadio"><input type="radio" value="Masculino" v-model="entity.sexo"> Masculino</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="Masculino" v-uppercase v-model.lazy="entity.sexo"> Masculino</label>
             </div>
         </div>
 
         <div class="row form-group">
             <div class="col-4">
                 <label>Logradouro</label>
-                <input id="logradouro" type="text" class="form-control" v-model="entity.logradouro"/>
+                <input id="logradouro" type="text" class="form-control" v-uppercase v-model.lazy="entity.logradouro"/>
             </div>
 
             <div class="col-2">
                 <label>Complemento</label>
-                <input id="complemento" type="text" class="form-control" v-model="entity.complemento"/>
+                <input id="complemento" type="text" class="form-control" v-uppercase v-model.lazy="entity.complemento"/>
             </div>
             <div class="col-4">
                 <label>Bairro</label>
-                <input id="bairro" type="text" class="form-control" v-model="entity.bairro"/>
+                <input id="bairro" type="text" class="form-control" v-uppercase v-model.lazy="entity.bairro"/>
             </div>
 
             <div class="col-2">
                 <label>CEP</label>
-                <input id="cep" type="text" class="form-control" v-model="entity.cep"/>
+                <input id="cep" type="text" class="form-control" v-uppercase v-model.lazy="entity.cep"/>
             </div>
         </div>
 
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label> 
-                <input id="codigoCidade" type="number" class="form-control" v-model="entity.codigoCidade" readonly/>
+                <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" readonly/>
             </div>
 
             <div class="col-4">
                 <label>Cidade</label>
                 <div class="input-group">
-                    <input id="cidade" type="text" class="form-control" v-model="cidadeSelecionada" readonly/>
+                    <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="cidadeSelecionada" readonly/>
                     <span class="input-group-btn">
                         <b-button v-b-modal.modal-consulta-cidade class="btn btn-info ml-1">Buscar</b-button>
                     </span>
@@ -69,29 +69,29 @@
 
             <div class="col-3">
                 <label>Telefone</label>
-                <input id="telefone" type="text" class="form-control" v-model="entity.telefone"/>
+                <input id="telefone" type="text" class="form-control" v-uppercase v-model.lazy="entity.telefone"/>
             </div>
 
             <div class="col-4">
                 <label>Email</label>
-                <input id="email" type="text" class="form-control" v-model="entity.email"/>
+                <input id="email" type="text" class="form-control" v-uppercase v-model.lazy="entity.email"/>
             </div>
         </div>
 
         <div class="row form-group">
             <div class="col-3">
                 <label>CPF / CNPJ</label>
-                <input id="cpfcnpj" type="text" class="form-control" v-model="entity.cpfcnpj"/>
+                <input id="cpfcnpj" type="text" class="form-control" v-uppercase v-model.lazy="entity.cpfcnpj"/>
             </div>
 
             <div class="col-3">
                 <label>RG / IE</label>
-                <input id="rgie" type="text" class="form-control" v-model="entity.rgie"/>
+                <input id="rgie" type="text" class="form-control" v-uppercase v-model.lazy="entity.rgie"/>
             </div>
 
             <div class="col-3">
                 <label>Data de Nascimento / Fundação</label>
-                <input id="dtNascFundacao" type="date" class="form-control" v-model="entity.dtNascFundacao"/>
+                <input id="dtNascFundacao" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtNascFundacao"/>
             </div>
         </div>
 

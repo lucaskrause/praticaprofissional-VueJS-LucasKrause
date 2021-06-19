@@ -10,22 +10,22 @@
 
             <div class="col-4">
                 <label>Instituição</label>
-                <input id="instituicao" type="text" class="form-control" v-model="entity.instituicao"/>
+                <input id="instituicao" type="text" class="form-control" v-uppercase v-model.lazy="entity.instituicao"/>
             </div>
 
             <div class="col-3">
                 <label>Número do Banco</label>
-                <input id="numeroBanco" type="text" class="form-control" v-model="entity.numeroBanco"/>
+                <input id="numeroBanco" type="text" class="form-control" v-uppercase v-model.lazy="entity.numeroBanco"/>
             </div>
 
             <div class="col-2">
                 <label>Agência</label>
-                <input id="agencia" type="text" class="form-control" v-model="entity.agencia"/>
+                <input id="agencia" type="text" class="form-control" v-uppercase v-model.lazy="entity.agencia"/>
             </div>
 
             <div class="col-2">
                 <label>Conta</label>
-                <input id="conta" type="text" class="form-control" v-model="entity.conta"/>
+                <input id="conta" type="text" class="form-control" v-uppercase v-model.lazy="entity.conta"/>
             </div>
         </div>
 

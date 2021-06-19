@@ -10,17 +10,17 @@
 
             <div class="col-5">
                 <label>País</label>
-                <input id="pais" type="text" class="form-control" v-model="entity.pais"/>
+                <input id="pais" type="text" class="form-control" v-uppercase v-model.lazy="entity.pais"/>
             </div>
 
             <div class="col-2">
                 <label>Sigla</label>
-                <input id="sigla" type="text" class="form-control" v-model="entity.sigla"/>
+                <input id="sigla" type="text" class="form-control" v-uppercase v-model.lazy="entity.sigla"/>
             </div>
 
             <div class="col-2">
                 <label>DDI</label>
-                <input id="ddi" type="text" class="form-control" v-model="entity.ddi"/>
+                <input id="ddi" type="text" class="form-control" v-uppercase v-model.lazy="entity.ddi"/>
             </div>
         </div>
 

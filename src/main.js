@@ -12,6 +12,12 @@ Vue.config.productionTip = false
 
 ApiService.init('http://localhost:5000/api/');
 
+Vue.directive('uppercase', function (el) {
+    el.addEventListener('input', function () {
+      this.value = el.value.toUpperCase();
+    });
+});
+
 new Vue({
   router,
   render: h => h(App),

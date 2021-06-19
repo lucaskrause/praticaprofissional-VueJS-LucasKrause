@@ -10,25 +10,25 @@
 
             <div class="col-5">
                 <label>Cidade</label> 
-                <input id="cidade" type="text" class="form-control" v-model="entity.cidade"/>
+                <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="entity.cidade"/>
             </div>
 
             <div class="col-2">
                 <label>DDD</label>
-                <input id="ddd" type="text" class="form-control" v-model="entity.ddd"/>
+                <input id="ddd" type="text" class="form-control" v-uppercase v-model.lazy="entity.ddd"/>
             </div>
         </div>
 
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label> 
-                <input id="codigoEstado" type="number" class="form-control" v-model="entity.codigoEstado" readonly/>
+                <input id="codigoEstado" type="number" class="form-control" v-model.number="entity.codigoEstado" readonly/>
             </div>
             
             <div class="col-4">
                 <label>Estado</label>
                 <div class="input-group">
-                    <input id="estado" type="text" class="form-control" v-model="estadoSelecionado" readonly/>
+                    <input id="estado" type="text" class="form-control" v-model.lazy="estadoSelecionado" readonly/>
                     <span class="input-group-btn">
                         <b-button v-b-modal.modal-consulta-estado class="btn btn-info ml-1">Buscar</b-button>
                     </span>

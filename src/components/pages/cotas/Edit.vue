@@ -10,13 +10,13 @@
 
             <div class="col-1">
                 <label>Código</label>
-                <input id="codigoCliente" type="number" class="form-control" v-model="entity.codigoCliente" readonly/>
+                <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" readonly/>
             </div>
 
             <div class="col-4">
                 <label>Cliente</label>
                 <div class="input-group">
-                    <input id="cliente" type="text" class="form-control" v-model="clienteSelecionado" readonly/>
+                    <input id="cliente" type="text" class="form-control" v-model.lazy="clienteSelecionado" readonly/>
                     <span class="input-group-btn">
                         <b-button v-b-modal.modal-consulta-cliente class="btn btn-info ml-1">Buscar</b-button>
                     </span>
@@ -32,12 +32,12 @@
         <div class="row form-group">
             <div class="col-3">
                 <label>Data de Início</label>
-                <input id="dtInicio" type="date" class="form-control" v-model="entity.dtInicio"/>
+                <input id="dtInicio" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtInicio"/>
             </div>
 
             <div class="col-3">
                 <label>Data de Término</label>
-                <input id="dtTermino" type="date" class="form-control" v-model="entity.dtTermino"/>
+                <input id="dtTermino" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtTermino"/>
             </div>
         </div>
 

@@ -10,7 +10,7 @@
 
             <div class="col-4">
                 <label>Área de Locação</label>
-                <input id="descricao" type="text" class="form-control" v-model="entity.descricao"/>
+                <input id="descricao" type="text" class="form-control" v-uppercase v-model.lazy="entity.descricao"/>
             </div>
 
             <div class="col-2">

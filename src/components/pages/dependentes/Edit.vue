@@ -10,26 +10,26 @@
 
             <div class="col-4">
                 <label>Dependente</label>
-                <input id="dependente" type="text" class="form-control" v-model="entity.nome"/>
+                <input id="dependente" type="text" class="form-control" v-uppercase v-model.lazy="entity.nome"/>
             </div>
 
             <div class="col-2">
                 <label>Sexo</label>
                 <br/>
-                <label class="radio-inline labelRadio"><input type="radio" value="Feminino" v-model="entity.sexo"> Feminino</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="Feminino" v-uppercase v-model.lazy="entity.sexo"> Feminino</label>
                 <br/>
-                <label class="radio-inline labelRadio"><input type="radio" value="Masculino" v-model="entity.sexo"> Masculino</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="Masculino" v-uppercase v-model.lazy="entity.sexo"> Masculino</label>
             </div>
 
              <div v-if="!isModal" class="col-1">
                 <label>Código</label> 
-                <input id="codigoCliente" type="number" class="form-control" v-model="entity.codigoCliente" readonly/>
+                <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" readonly/>
             </div>
 
             <div v-if="!isModal" class="col-4">
                 <label>Sócio</label>
                 <div class="input-group">
-                    <input id="cliente" type="text" class="form-control" v-model="socioSelecionado" readonly/>
+                    <input id="cliente" type="text" class="form-control" v-model.lazy="socioSelecionado" readonly/>
                     <span class="input-group-btn">
                         <b-button v-b-modal.modal-consulta-cliente class="btn btn-info ml-1">Buscar</b-button>
                     </span>
@@ -40,34 +40,34 @@
         <div class="row form-group">
             <div class="col-4">
                 <label>Logradouro</label>
-                <input id="logradouro" type="text" class="form-control" v-model="entity.logradouro"/>
+                <input id="logradouro" type="text" class="form-control" v-uppercase v-model.lazy="entity.logradouro"/>
             </div>
 
             <div class="col-2">
                 <label>Complemento</label>
-                <input id="complemento" type="text" class="form-control" v-model="entity.complemento"/>
+                <input id="complemento" type="text" class="form-control" v-uppercase v-model.lazy="entity.complemento"/>
             </div>
             <div class="col-4">
                 <label>Bairro</label>
-                <input id="bairro" type="text" class="form-control" v-model="entity.bairro"/>
+                <input id="bairro" type="text" class="form-control" v-uppercase v-model.lazy="entity.bairro"/>
             </div>
 
             <div class="col-2">
                 <label>CEP</label>
-                <input id="cep" type="text" class="form-control" v-model="entity.cep"/>
+                <input id="cep" type="text" class="form-control" v-uppercase v-model.lazy="entity.cep"/>
             </div>
         </div>
 
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label> 
-                <input id="codigoCidade" type="number" class="form-control" v-model="entity.codigoCidade" readonly/>
+                <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" readonly/>
             </div>
 
             <div class="col-4">
                 <label>Cidade</label>
                 <div class="input-group">
-                    <input id="cidade" type="text" class="form-control" v-model="cidadeSelecionada" readonly/>
+                    <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="cidadeSelecionada" readonly/>
                     <span class="input-group-btn">
                         <b-button v-b-modal.modal-consulta-cidade-dependente class="btn btn-info ml-1">Buscar</b-button>
                     </span>
@@ -76,29 +76,29 @@
 
             <div class="col-3">
                 <label>Telefone</label>
-                <input id="telefone" type="text" class="form-control" v-model="entity.telefone"/>
+                <input id="telefone" type="text" class="form-control" v-uppercase v-model.lazy="entity.telefone"/>
             </div>
 
             <div class="col-4">
                 <label>Email</label>
-                <input id="email" type="text" class="form-control" v-model="entity.email"/>
+                <input id="email" type="text" class="form-control" v-uppercase v-model.lazy="entity.email"/>
             </div>
         </div>
 
         <div class="row form-group">
             <div class="col-3">
                 <label>CPF</label>
-                <input id="cpf" type="text" class="form-control" v-model="entity.cpf"/>
+                <input id="cpf" type="text" class="form-control" v-uppercase v-model.lazy="entity.cpf"/>
             </div>
 
             <div class="col-3">
                 <label>RG</label>
-                <input id="rg" type="text" class="form-control" v-model="entity.rg"/>
+                <input id="rg" type="text" class="form-control" v-uppercase v-model.lazy="entity.rg"/>
             </div>
 
             <div class="col-3">
                 <label>Data de Nascimento</label>
-                <input id="dtNascimento" type="date" class="form-control" v-model="entity.dtNascimento"/>
+                <input id="dtNascimento" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtNascimento"/>
             </div>
         </div>
 

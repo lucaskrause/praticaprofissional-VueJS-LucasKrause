@@ -61,7 +61,8 @@ export default {
                 },
                 {
                     label: "Estado",
-                    field: "estado.estado"
+                    field: "estado.uf",
+                    width: "150px",
                 },
                 {
                     label: "Ações",
