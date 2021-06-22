@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         <div class="col-12 text-right">
-            <b-button v-b-modal.modal-new-cliente class="btn btn-success ml-1">Novo Condição de Pagamento</b-button>
+            <b-button v-b-modal.modal-new-condicao class="btn btn-success ml-1">Novo Condição de Pagamento</b-button>
         </div>
         
         <div class="col-12 mt-2">
@@ -10,18 +10,19 @@
                 :columns="columns"
                 :rows="rows"
                 :search-options="{enabled: true, placeholder: 'Buscar'}"
-                :pagination-options="{perPage: 5, enabled: true}"
+                :pagination-options="{perPage: 10, enabled: true}"
+                styleClass="vgt-table bordered vgt-compact condensed"
             >
                 <template slot="table-row" slot-scope="props">
                     <span v-if="props.column.field == 'btn'">
-                        <a @click.prevent="selectCondicaoPagamento(props.row)" class="btn btn-sm btn-primary" href="#">Selecionar</a>
+                        <a @click.prevent="selectCondicao(props.row)" class="btn btn-sm btn-primary" href="#">Selecionar</a>
                     </span>
                 </template>
             </vue-good-table>
         </div>
         
-        <b-modal id="modal-new-cliente" size="xl" title="Cadastrar Condição de Pagamento" hide-footer>
-            <NovoCondicaoPagamento  @emit-cliente="selectCondicaoPagamento" :isModal="true" />
+        <b-modal id="modal-new-condicao" size="xl" title="Cadastrar Condição de Pagamento" hide-footer>
+            <NovoCondicaoPagamento  @emit-condicao="selectCondicao" :isModal="true" />
         </b-modal>
     </div>
 </template>
@@ -78,8 +79,8 @@ export default {
         });
     },
     methods: {
-        selectCondicaoPagamento(entity) {
-            this.$emit('emit-condicaoPagamento', entity);
+        selectCondicao(entity) {
+            this.$emit('emit-condicao', entity);
         }
     }
 }

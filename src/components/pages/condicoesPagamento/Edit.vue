@@ -5,27 +5,32 @@
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label>
-                <input id="codigo" type="number" class="form-control" v-model="entity.codigo" readonly/>
+                <input id="codigo" type="number" class="form-control" v-model.number="entity.codigo" readonly/>
             </div>
 
             <div class="col-3">
                 <label>Condição de Pagamento</label>
-                <input id="valor" type="text" class="form-control" v-model="entity.descricao"/>
+                <input id="valor" type="text" class="form-control" v-uppercase v-model.lazy="entity.descricao"/>
             </div>
 
             <div class="col-2">
                 <label>Juros (%)</label>
-                <input id="juros" type="number" class="form-control" v-model="entity.juros"/>
+                <input id="juros" type="number" class="form-control" v-model.number="entity.juros"/>
             </div>
 
             <div class="col-2">
                 <label>Multa (%)</label>
-                <input id="multa" type="number" class="form-control" v-model="entity.multa"/>
+                <input id="multa" type="number" class="form-control" v-model.number="entity.multa"/>
             </div>
 
             <div class="col-2">
                 <label>Desconto (%)</label>
-                <input id="desconto" type="number" class="form-control" v-model="entity.desconto"/>
+                <input id="desconto" type="number" class="form-control" v-model.number="entity.desconto"/>
+            </div>
+
+            <div class="col-2">
+                <label>Total Parcelas</label>
+                <input id="totalParcelas" type="number" class="form-control" v-model.number="entity.totalParcelas" disabled/>
             </div>
         </div>
 
@@ -41,13 +46,19 @@
 
         <div class="row mt-1">
             <div class="col-12">
-                <vue-good-table
-                    compactMode
+                <vue-good-table compactMode
                     :columns="parcelas.columns"
                     :rows="parcelas.rows"
                     :search-options="{enabled: false}"
-                    :pagination-options="{perPage: 5, enabled: true}"
+                    :pagination-options="{perPage: 12, enabled: false}"
+                    styleClass="vgt-table bordered vgt-compact condensed"
                 >
+                    <template slot="table-row" slot-scope="props">
+                        <span v-if="props.column.field == 'btn'">
+                            <a @click.prevent="editParcela(props)" class="btn btn-sm btn-primary mr-3" href="#">Editar</a>
+                            <a @click.prevent="removeParcela(props)" class="btn btn-sm btn-danger" href="#">Excluir</a>
+                        </span>
+                    </template>
                 </vue-good-table>
             </div>
         </div>
@@ -72,7 +83,11 @@
         </div>
 
         <b-modal id="modal-new-parcela" size="xl" title="Cadastrar Parcela" hide-footer>
-            <NovaParcela @emit-dependente="selectParcela" :isModal="true" />
+            <NovaParcela @emit-parcela="selectParcela" :isModal="true" :numeroParcela="numeroParcela" />
+        </b-modal>
+
+        <b-modal id="modal-edit-parcela" size="xl" title="Editar Parcela" hide-footer>
+            <NovaParcela @emit-parcela="selectParcela" :isModal="true" :editParcela="this.parcelaToEdit" />
         </b-modal>
     </div>
 </template>
@@ -100,36 +115,54 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                descricao: "",
-                multa: "",
-                juros: "",
-                desconto: "",
-                dtCadastro: "",
-                dtAlteracao: ""
+                descricao: null,
+                multa: null,
+                juros: null,
+                desconto: null,
+                totalParcelas: 0,
+                dtCadastro: null,
+                dtAlteracao: null
             },
             parcelas: {
                 columns: [
                     {
-                        label: "Dia",
-                        field: "dia"
+                        label: "Parcela",
+                        field: "numeroParcela",
+                        type: "number",
+                        width: "120px",
+                    },
+                    {
+                        label: "Dias",
+                        field: "numeroDias",
+                        type: "number",
+                        width: "120px",
                     },
                     {
                         label: "Porcentagem (%)",
-                        field: "porcentagem"
+                        field: "porcentagem",
+                        type: "number",
+                        width: "200px",
                     },
                     {
                         label: "Forma de Pagamento",
-                        field: "formaPagamento"
+                        field: "formaPagamento.descricao"
                     },
                     {
                         label: "Ações",
-                        field: "btn"
+                        field: "btn",
+                        html: true,
+                        sortable: false,
+                        width: "170px"
                     }
                 ],
                 rows: [],
                 page: 1,
                 totalRecords: 0
             },
+            numeroParcela: 1,
+            parcelaToEdit: {},
+            isEdit: false,
+            indexEdit: -1,
             isSubmiting: false
         }
     },
@@ -137,24 +170,36 @@ export default {
         const vm = this;
         if (this.$route.params.codigo) {
             this.entity.codigo = this.$route.params.codigo;
-        }
-        if (this.entity.codigo) {
+            
             CondicoesPagamentoService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
+                vm.parcelas.rows = vm.entity.parcelas;
             });
         }
     },
     methods: {
         selectParcela(entity) {
-            this.parcelas.rows.add(entity);
-            this.$bvModal.hide("modal-new-parcela");
+            if (!this.isEdit) {
+                this.parcelas.rows.push(entity);
+                this.$bvModal.hide("modal-new-parcela");
+                this.entity.totalParcelas = this.numeroParcela;
+                this.numeroParcela++;
+            } else {
+                this.parcelas.rows[this.indexEdit] = entity;
+                this.indexEdit = -1;
+                this.isEdit = false;
+                this.$bvModal.hide("modal-edit-parcela");
+            }
         },
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
-            this.$delete(this.entity, 'dtCadastro');
-            this.$delete(this.entity, 'dtAlteracao');
             const vm = this;
+
+            if(this.entity.codigo == 0) {
+                this.entity.parcelas = this.parcelas.rows;
+            }
+
             CondicoesPagamentoService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Condição de Pagamento " + msg + " com sucesso");
@@ -166,6 +211,23 @@ export default {
                     vm.$router.push('/app/condicoesPagamento');
                 }
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
+        },
+        editParcela(prop) {
+            this.parcelaToEdit = prop.row;
+            this.isEdit = true;
+            this.indexEdit = prop.index;
+            this.$bvModal.show("modal-edit-parcela");
+        },
+        orderParcela(index) {
+            for (var i = index; i < this.parcelas.rows.length; i++) {
+                this.parcelas.rows[i].numeroParcela--;
+            }
+        },
+        removeParcela(entity) {
+            this.parcelas.rows.splice(entity.index, 1);
+            this.orderParcela(entity.index);
+            this.entity.totalParcelas--;
+            this.numeroParcela--;
         }
     }
 }
