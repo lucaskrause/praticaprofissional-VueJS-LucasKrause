@@ -74,7 +74,6 @@ export default {
     },
     methods: {
         save() {
-            console.log(this.entity);
             if(this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
