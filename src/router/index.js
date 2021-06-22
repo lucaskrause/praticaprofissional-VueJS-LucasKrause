@@ -262,7 +262,7 @@ const routes = [
             {
                 path: 'reservas/editar/:codigo',
                 name: 'ReservasEdit',
-                component: CotaEdit,
+                component: ReservaEdit,
                 meta: {
                     label: "Reserva"
                 },
