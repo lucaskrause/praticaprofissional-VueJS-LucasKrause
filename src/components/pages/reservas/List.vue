@@ -47,26 +47,30 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: "number"
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Cliente",
                     field: "cliente.nome"
                 },
                 {
-                    label: "Quantidade de Pessoas",
+                    label: "Qtde Pessoas",
                     field: "qtdePessoas",
-                    type: "number"
+                    type: "number",
+                    width: "150px",
                 },
                 {
                     label: "Data da Reserva",
-                    field: "dtReserva"
+                    field: "dtReserva",
+                    width: "200px",
                 },
                 {
                     label:"Ação",
                     sortable: false,
                     field: 'btn',
-                    html: true
+                    html: true,
+                    width: "160px",
                 },
             ],
             page: 1,
