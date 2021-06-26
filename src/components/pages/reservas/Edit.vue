@@ -39,6 +39,21 @@
                     </span>
                 </div>
             </div>
+
+            <div class="col-1">
+                <label>Código</label>
+                <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" readonly/>
+            </div>
+            
+            <div class="col-4">
+                <label>Condição de Pagamento</label>
+                <div class="input-group">
+                    <input id="condicaoPagamento" type="text" class="form-control" v-uppercase v-model.lazy="condicaoSelecionada" readonly/>
+                    <span class="input-group-btn">
+                        <b-button v-b-modal.modal-consult-condicaoPagamento class="btn btn-info ml-1">Buscar</b-button>
+                    </span>
+                </div>
+            </div>
         </div>
 
         <div class="row">
@@ -95,6 +110,10 @@
         <b-modal id="modal-consult-cliente" size="xl" title="Consultar Cliente" hide-footer>
             <ConsultaCliente @emit-cliente="selectCliente" />
         </b-modal>
+
+        <b-modal id="modal-consult-condicaoPagamento" size="xl" title="Consultar Condição de Pagamento" hide-footer>
+            <ConsultaCondicaoPagamento @emit-condicao="selectCondicao" />
+        </b-modal>
     </div>
 </template>
 
@@ -103,6 +122,7 @@ import {AreasLocacaoService} from '@/services/areasLocacao.service'
 import {PrecificacoesService} from '@/services/precificacoes.service'
 import {ReservasService} from '@/services/reservas.service'
 import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
+import ConsultaCondicaoPagamento from '@/components/pages/condicoesPagamento/Consult.vue'
 import {VueGoodTable} from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
 import {Notyf} from 'notyf';
@@ -112,7 +132,7 @@ const notyf = new Notyf();
 
 export default {
     name: "ReservasEdit",
-    components: { VueGoodTable, ConsultaCliente },
+    components: { VueGoodTable, ConsultaCliente, ConsultaCondicaoPagamento },
     data() {
         return {
             entity: {
@@ -121,11 +141,13 @@ export default {
                 qtdePessoas: 0,
                 dtReserva: null,
                 valor: 0,
+                codigoCondicaoPagamento: 0,
                 areasLocacao: [],
                 dtCadastro: null,
                 dtAlteracao: null
             },
             clienteSelecionado: null,
+            condicaoSelecionada: null,
             areasLocacao: {
                 columns: [
                     {
@@ -200,6 +222,7 @@ export default {
             ReservasService.getById(id).then(function (response) {
                 vm.entity = response.data;
                 vm.clienteSelecionado = vm.entity.cliente.nome;
+                vm.condicaoSelecionada = vm.entity.condicaoPagamento.descricao;
                 vm.areasLocacao.rows = vm.areasLocacao.rows.map(function (item) {
                     item.vgtSelected = vm.entity.areasLocacao.some((area) => area.codigo == item.codigo);
                     return item;
@@ -212,12 +235,17 @@ export default {
             this.$bvModal.hide("modal-new-cliente");
             this.$bvModal.hide("modal-consult-cliente");
         },
+        selectCondicao(entity) {
+            this.condicaoSelecionada = entity.descricao;
+            this.entity.codigoCondicaoPagamento = entity.codigo;
+            this.$bvModal.hide("modal-new-condicaoPagamento");
+            this.$bvModal.hide("modal-consult-condicaoPagamento");
+        },
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
-            console.log(this.$refs['areas'].selectedRows);
-            if(vm) return;
+
             ReservasService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editada" : 'criada';
                 notyf.success("Reserva " + msg + " com sucesso");
