@@ -159,6 +159,7 @@ export default {
                 page: 1,
                 totalRecords: 0
             },
+            parcelasDeletedas:[],
             numeroParcela: 1,
             parcelaToEdit: {},
             isEdit: false,
@@ -174,6 +175,7 @@ export default {
             CondicoesPagamentoService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
                 vm.parcelas.rows = vm.entity.parcelas;
+                vm.numeroParcela += vm.entity.totalParcelas;
             });
         }
     },
@@ -181,9 +183,9 @@ export default {
         selectParcela(entity) {
             if (!this.isEdit) {
                 this.parcelas.rows.push(entity);
-                this.$bvModal.hide("modal-new-parcela");
                 this.entity.totalParcelas = this.numeroParcela;
                 this.numeroParcela++;
+                this.$bvModal.hide("modal-new-parcela");
             } else {
                 this.parcelas.rows[this.indexEdit] = entity;
                 this.indexEdit = -1;
@@ -195,11 +197,8 @@ export default {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
-
-            if(this.entity.codigo == 0) {
-                this.entity.parcelas = this.parcelas.rows;
-            }
-
+            
+            this.entity.parcelas = this.parcelas.rows.concat(this.parcelasDeletedas);
             CondicoesPagamentoService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Condição de Pagamento " + msg + " com sucesso");
@@ -224,6 +223,10 @@ export default {
             }
         },
         removeParcela(entity) {
+            if (this.parcelas.rows[entity.index].codigo > 0) {
+                this.parcelas.rows[entity.index].status = "Inativo";
+                this.parcelasDeletedas.push(this.parcelas.rows[entity.index]);
+            }
             this.parcelas.rows.splice(entity.index, 1);
             this.orderParcela(entity.index);
             this.entity.totalParcelas--;
