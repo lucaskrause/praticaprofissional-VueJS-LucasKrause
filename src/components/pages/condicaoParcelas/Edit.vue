@@ -60,12 +60,7 @@
 </template>
 
 <script>
-// import {ParcelasService} from '@/services/parcelas.service'
 import ConsultaFormaPagamento from '@/components/pages/formasPagamento/Consult.vue'
-// import {Notyf} from 'notyf';
-// import 'notyf/notyf.min.css';
-
-// const notyf = new Notyf();
 
 export default {
     name: "ParcelasEdit",
@@ -108,14 +103,6 @@ export default {
                 this.entity = this.editParcela;
             }
         }
-        // const vm = this;
-        // if (this.$route.params.codigo) {
-        //     this.entity.codigo = this.$route.params.codigo;
-
-        //     ParcelasService.getById(this.entity.codigo).then(function (response) {
-        //         vm.entity = response.data;
-        //     });
-        // }
     },
     methods: {
         selectForma(entity) {
@@ -127,21 +114,6 @@ export default {
         },
         save() {
             this.$emit('emit-parcela', this.entity);
-            
-            // if (this.isSubmiting) return;
-            // this.isSubmiting = true;
-            // const vm = this;
-            // ParcelasService.save(this.entity).then(function (response) {
-            //     const msg = vm.entity.codigo ? "editado" : 'criado';
-            //     notyf.success("País " + msg + " com sucesso");
-            //     vm.isSubmiting = false;
-            //     if(vm.isModal){
-            //         vm.entity.codigo = response.data.codigo;
-            //         vm.$emit('emit-pais', vm.entity);
-            //     } else {
-            //         vm.$router.push('/parcelas');
-            //     }
-            // }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }
     }
 }
