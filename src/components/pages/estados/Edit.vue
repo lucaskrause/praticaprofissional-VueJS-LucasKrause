@@ -22,7 +22,7 @@
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label> 
-                <input id="codigoPais" type="number" class="form-control" v-model.number="entity.codigoPais" readonly/>
+                <input id="codigoPais" type="number" class="form-control" v-model.number="entity.codigoPais" @input="searchPais" />
             </div>
 
             <div class="col-4">
@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import {PaisesService} from '@/services/paises.service'
 import {EstadosService} from '@/services/estados.service'
 import ConsultaPais from '@/components/pages/paises/Consult.vue'
 import {Notyf} from 'notyf';
@@ -112,6 +113,20 @@ export default {
             this.entity.codigoPais = entity.codigo;
             this.$bvModal.hide("modal-new-pais");
             this.$bvModal.hide("modal-consult-pais");
+        },
+        searchPais() {
+            var vm = this;
+            if (vm.entity.codigoPais > 0) {
+                PaisesService.getById(vm.entity.codigoPais).then(function (response) {
+                    vm.paisSelecionado = response.data.pais;
+                }).catch(function() {
+                    vm.entity.codigoPais = 0;
+                    vm.paisSelecionado = null;
+                    notyf.error("País não encontrado");
+                });
+            } else {
+                vm.paisSelecionado = null;
+            }
         },
         save() {
             if (this.isSubmiting) return;

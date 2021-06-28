@@ -22,7 +22,7 @@
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label> 
-                <input id="codigoEstado" type="number" class="form-control" v-model.number="entity.codigoEstado" readonly/>
+                <input id="codigoEstado" type="number" class="form-control" v-model.number="entity.codigoEstado" @input="searchEstado"/>
             </div>
             
             <div class="col-4">
@@ -62,6 +62,7 @@
 </template>
 
 <script>
+import {EstadosService} from '@/services/estados.service'
 import {CidadesService} from '@/services/cidades.service'
 import ConsultaEstado from '@/components/pages/estados/Consult.vue'
 import {Notyf} from 'notyf';
@@ -109,6 +110,20 @@ export default {
             this.entity.codigoEstado = entity.codigo;
             this.$bvModal.hide("modal-new-estado");
             this.$bvModal.hide("modal-consult-estado");
+        },
+        searchEstado() {
+            var vm = this;
+            if (vm.entity.codigoEstado > 0) {
+                EstadosService.getById(vm.entity.codigoEstado).then(function (response) {
+                    vm.estadoSelecionado = response.data.estado;
+                }).catch(function() {
+                    vm.entity.codigoEstado = 0;
+                    vm.estadoSelecionado = null;
+                    notyf.error("Estado não encontrado");
+                });
+            } else {
+                vm.estadoSelecionado = null;
+            }
         },
         save() {
             if(this.isSubmiting) return;

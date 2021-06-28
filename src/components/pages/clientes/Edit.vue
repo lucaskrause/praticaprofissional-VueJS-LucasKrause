@@ -62,7 +62,7 @@
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label>
-                <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" readonly/>
+                <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="searchCidade"/>
             </div>
             
             <div class="col-4">
@@ -106,7 +106,7 @@
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label>
-                <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" readonly/>
+                <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" @input="searchCondicao"/>
             </div>
             
             <div class="col-4">
@@ -186,6 +186,8 @@
 </template>
 
 <script>
+import {CidadesService} from '@/services/cidades.service'
+import {CondicoesPagamentoService} from '@/services/condicoesPagamento.service'
 import {ClientesService} from '@/services/clientes.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
 import ConsultaCondicaoPagamento from '@/components/pages/condicoesPagamento/Consult.vue'
@@ -317,6 +319,34 @@ export default {
                 this.indexEdit = -1;
                 this.isEdit = false;
                 this.$bvModal.hide("modal-edit-dependente");
+            }
+        },
+        searchCidade() {
+            var vm = this;
+            if (vm.entity.codigoCidade > 0) {
+                CidadesService.getById(vm.entity.codigoCidade).then(function (response) {
+                    vm.cidadeSelecionada = response.data.cidade;
+                }).catch(function() {
+                    vm.entity.codigoCidade = 0;
+                    vm.cidadeSelecionada = null;
+                    notyf.error("Cidade não encontrada");
+                });
+            } else {
+                vm.cidadeSelecionada = null;
+            }
+        },
+        searchCondicao() {
+            var vm = this;
+            if (vm.entity.codigoCondicaoPagamento > 0) {
+                CondicoesPagamentoService.getById(vm.entity.codigoCondicaoPagamento).then(function (response) {
+                    vm.condicaoSelecionada = response.data.descricao;
+                }).catch(function() {
+                    vm.entity.codigoCondicaoPagamento = 0;
+                    vm.condicaoSelecionada = null;
+                    notyf.error("Condição de Pagamento não encontrada");
+                });
+            } else {
+                vm.condicaoSelecionada = null;
             }
         },
         save() {

@@ -23,7 +23,7 @@
 
              <div v-if="!isModal" class="col-1">
                 <label>Código</label> 
-                <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" readonly/>
+                <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="searchCliente"/>
             </div>
 
             <div v-if="!isModal" class="col-4">
@@ -61,7 +61,7 @@
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label> 
-                <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" readonly/>
+                <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="searchCidade"/>
             </div>
 
             <div class="col-4">
@@ -132,6 +132,8 @@
 </template>
 
 <script>
+import {ClientesService} from '@/services/clientes.service'
+import {CidadesService} from '@/services/cidades.service'
 import {DependentesService} from '@/services/dependentes.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
 import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
@@ -209,6 +211,34 @@ export default {
             this.entity.codigoCidade = entity.codigo;
             this.$bvModal.hide("modal-new-cidade");
             this.$bvModal.hide("modal-consult-cidade-dependente");
+        },
+        searchCliente() {
+            var vm = this;
+            if (vm.entity.codigoCliente > 0) {
+                ClientesService.getSocioById(vm.entity.codigoCliente).then(function (response) {
+                    vm.socioSelecionado = response.data.nome;
+                }).catch(function() {
+                    vm.entity.codigoCliente = 0;
+                    vm.socioSelecionado = null;
+                    notyf.error("Socio não encontrado");
+                });
+            } else {
+                vm.socioSelecionado = null;
+            }
+        },
+        searchCidade() {
+            var vm = this;
+            if (vm.entity.codigoCidade > 0) {
+                CidadesService.getById(vm.entity.codigoCidade).then(function (response) {
+                    vm.cidadeSelecionada = response.data.cidade;
+                }).catch(function() {
+                    vm.entity.codigoCidade = 0;
+                    vm.cidadeSelecionada = null;
+                    notyf.error("Cidade não encontrada");
+                });
+            } else {
+                vm.cidadeSelecionada = null;
+            }
         },
         save() {
             if (this.isModal) {

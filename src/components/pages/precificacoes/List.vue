@@ -1,7 +1,7 @@
 <template>
     <div class="col-12">
         <div class="row">
-            <div class="col-6 text-left"><h2>Precificações</h2></div>
+            <div class="col-6 text-left"><h3>Precificações por quantidade de pessoas</h3></div>
             <div class="col-6 text-right pt-2">
                 <router-link :to="{name: 'PrecificacoesCad'}" class="btn btn-success">Nova Precificação</router-link>
             </div>

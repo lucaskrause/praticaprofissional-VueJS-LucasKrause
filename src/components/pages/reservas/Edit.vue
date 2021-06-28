@@ -10,7 +10,7 @@
             
             <div class="col-3 form-group">
                 <label>Quantidade de Pessoas</label>
-                <input id="qtdePessoas" type="number" class="form-control" v-model.number="entity.qtdePessoas"/>
+                <input id="qtdePessoas" type="number" class="form-control" v-model.number="entity.qtdePessoas" @input="calcValor"/>
             </div>
 
             <div class="col-3">
@@ -27,7 +27,7 @@
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label>
-                <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" readonly/>
+                <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="searchCliente"/>
             </div>
 
             <div class="col-4">
@@ -42,7 +42,7 @@
 
             <div class="col-1">
                 <label>Código</label>
-                <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" readonly/>
+                <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" @input="searchCondicao"/>
             </div>
             
             <div class="col-4">
@@ -118,6 +118,8 @@
 </template>
 
 <script>
+import {ClientesService} from '@/services/clientes.service'
+import {CondicoesPagamentoService} from '@/services/condicoesPagamento.service'
 import {AreasLocacaoService} from '@/services/areasLocacao.service'
 import {PrecificacoesService} from '@/services/precificacoes.service'
 import {ReservasService} from '@/services/reservas.service'
@@ -202,20 +204,6 @@ export default {
             }
         });
     },
-    watch: {
-        'entity.qtdePessoas'(value) {
-            this.valorPessoas = 0;
-            for (let i=0; i < this.precoPessoas.length; i++) {
-                var min = this.precoPessoas[i].minPessoas;
-                var max = this.precoPessoas[i].maxPessoas;
-                if (value >= min && value <= max) {
-                    var valor = this.precoPessoas[i].valor;
-                    this.valorPessoas = value * valor;
-                }
-            }
-            this.entity.valor = this.valorPessoas + this.valorAreas;
-        }
-    },
     methods: {
         getReserva(id) {
             var vm = this;
@@ -241,6 +229,34 @@ export default {
             this.$bvModal.hide("modal-new-condicaoPagamento");
             this.$bvModal.hide("modal-consult-condicaoPagamento");
         },
+        searchCliente() {
+            var vm = this;
+            if (vm.entity.codigoCliente > 0) {
+                ClientesService.getById(vm.entity.codigoCliente).then(function (response) {
+                    vm.clienteSelecionado = response.data.nome;
+                }).catch(function() {
+                    vm.entity.codigoCliente = 0;
+                    vm.clienteSelecionado = null;
+                    notyf.error("Cliente não encontrada");
+                });
+            } else {
+                vm.clienteSelecionado = null;
+            }
+        },
+        searchCondicao() {
+            var vm = this;
+            if (vm.entity.codigoCondicaoPagamento > 0) {
+                CondicoesPagamentoService.getById(vm.entity.codigoCondicaoPagamento).then(function (response) {
+                    vm.condicaoSelecionada = response.data.descricao;
+                }).catch(function() {
+                    vm.entity.codigoCondicaoPagamento = 0;
+                    vm.condicaoSelecionada = null;
+                    notyf.error("Condição de Pagamento não encontrada");
+                });
+            } else {
+                vm.condicaoSelecionada = null;
+            }
+        },
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
@@ -252,6 +268,20 @@ export default {
                 vm.isSubmiting = false;
                 vm.$router.push('/app/reservas');
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
+        },
+        calcValor() {
+            this.valorPessoas = 0;
+            var value = this.entity.qtdePessoas > 70 ? 70 : this.entity.qtdePessoas;
+            for (let i=0; i < this.precoPessoas.length; i++) {
+                var max = this.precoPessoas[i].maxPessoas;
+                if (value > max) {
+                    continue;
+                } else {
+                    var valor = this.precoPessoas[i].valor;
+                    this.valorPessoas = value * valor;
+                }
+            }
+            this.entity.valor = this.valorPessoas + this.valorAreas;
         },
         selecionarAreas(areas) {
             var selecionadas = areas.selectedRows;

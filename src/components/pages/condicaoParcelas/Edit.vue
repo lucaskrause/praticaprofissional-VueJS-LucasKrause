@@ -20,7 +20,7 @@
 
             <div class="col-1">
                 <label>Código</label>
-                <input id="codigoFormaPagamento" type="number" class="form-control" v-model.number="entity.formaPagamento.codigo" readonly/>
+                <input id="codigoFormaPagamento" type="number" class="form-control" v-model.number="entity.codigoFormaPagamento" @input="searchForma"/>
             </div>
             
             <div class="col-4">
@@ -60,7 +60,12 @@
 </template>
 
 <script>
+import {FormasPagamentoService} from '@/services/formasPagamento.service'
 import ConsultaFormaPagamento from '@/components/pages/formasPagamento/Consult.vue'
+import {Notyf} from 'notyf';
+import 'notyf/notyf.min.css';
+
+const notyf = new Notyf();
 
 export default {
     name: "ParcelasEdit",
@@ -86,7 +91,7 @@ export default {
                 numeroParcela: 0,
                 numeroDias: null,
                 porcentagem: null,
-                codigoFormaPagamento: null,
+                codigoFormaPagamento: 0,
                 formaPagamento: {
                     codigo: 0,
                     descricao: null
@@ -112,7 +117,24 @@ export default {
             this.$bvModal.hide("modal-new-formaPagamento");
             this.$bvModal.hide("modal-consult-formaPagamento");
         },
+        searchForma() {
+            var vm = this;
+            if (vm.entity.codigoFormaPagamento > 0) {
+                FormasPagamentoService.getById(vm.entity.codigoFormaPagamento).then(function (response) {
+                    vm.entity.formaPagamento.codigo = response.data.codigo;
+                    vm.entity.formaPagamento.descricao = response.data.descricao;
+                }).catch(function() {
+                    vm.entity.codigoFormaPagamento = 0;
+                    vm.entity.formaPagamento.codigo = 0;
+                    vm.entity.formaPagamento.descricao = null;
+                    notyf.error("Forma de Pagamento não encontrada");
+                });
+            } else {
+                vm.entity.formaPagamento.descricao = null;
+            }
+        },
         save() {
+            this.entity.formaPagamento.codigo = this.entity.codigoFormaPagamento;
             this.$emit('emit-parcela', this.entity);
         }
     }

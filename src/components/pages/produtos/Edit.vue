@@ -32,7 +32,7 @@
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label> 
-                <input id="codigoCategoria" type="number" class="form-control" v-model.number="entity.codigoCategoria" readonly/>
+                <input id="codigoCategoria" type="number" class="form-control" v-model.number="entity.codigoCategoria" @input="searchCategoria"/>
             </div>
 
             <div class="col-4">
@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import {CategoriasService} from '@/services/categorias.service'
 import {ProdutosService} from '@/services/produtos.service'
 import ConsultaCategoria from '@/components/pages/categorias/Consult.vue'
 import {Notyf} from 'notyf';
@@ -133,6 +134,20 @@ export default {
             this.entity.codigoCategoria = entity.codigo;
             this.$bvModal.hide("modal-new-categoria");
             this.$bvModal.hide("modal-consult-categoria");
+        },
+        searchCategoria() {
+            var vm = this;
+            if (vm.entity.codigoCategoria > 0) {
+                CategoriasService.getById(vm.entity.codigoCategoria).then(function (response) {
+                    vm.categoriaSelecionada = response.data.descricao;
+                }).catch(function() {
+                    vm.entity.codigoCategoria = 0;
+                    vm.categoriaSelecionada = null;
+                    notyf.error("Categoria não encontrado");
+                });
+            } else {
+                vm.categoriaSelecionada = null;
+            }
         },
         save() {
             if(this.isSubmiting) return;

@@ -46,7 +46,7 @@
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label>
-                <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" readonly/>
+                <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="searchCidade"/>
             </div>
 
             <div class="col-4">
@@ -130,6 +130,7 @@
 </template>
 
 <script>
+import {CidadesService} from '@/services/cidades.service'
 import {FuncionariosService} from '@/services/funcionarios.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
 import {Notyf} from 'notyf';
@@ -184,6 +185,20 @@ export default {
             this.entity.codigoCidade = entity.codigo;
             this.$bvModal.hide("modal-new-cidade");
             this.$bvModal.hide("modal-consult-cidade");
+        },
+        searchCidade() {
+            var vm = this;
+            if (vm.entity.codigoCidade > 0) {
+                CidadesService.getById(vm.entity.codigoCidade).then(function (response) {
+                    vm.cidadeSelecionada = response.data.cidade;
+                }).catch(function() {
+                    vm.entity.codigoCidade = 0;
+                    vm.cidadeSelecionada = null;
+                    notyf.error("Cidade não encontrada");
+                });
+            } else {
+                vm.cidadeSelecionada = null;
+            }
         },
         save() {
             if(this.isSubmiting) return;

@@ -3,14 +3,14 @@
         <h2>Cadastro de Cota</h2>
         <hr/>
         <div class="row form-group">
-            <div class="col-1">
+            <div class="col-2">
                 <label>Cota</label>
                 <input id="codigo" type="number" class="form-control" v-model.number="entity.codigo" readonly/>
             </div>
 
             <div class="col-1">
                 <label>Código</label>
-                <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" readonly/>
+                <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="searchCliente"/>
             </div>
 
             <div class="col-4">
@@ -61,12 +61,13 @@
         </div>
 
         <b-modal id="modal-consult-cliente" size="xl" title="Consultar Cliente" hide-footer>
-            <ConsultaCliente @emit-cliente="selectCliente" :isCota="this.isCota" />
+            <ConsultaCliente @emit-cliente="selectCliente" :isCota="true" />
         </b-modal>
     </div>
 </template>
 
 <script>
+import {ClientesService} from '@/services/clientes.service'
 import {CotasService} from '@/services/cotas.service'
 import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
 import {Notyf} from 'notyf';
@@ -109,6 +110,20 @@ export default {
             this.entity.codigoCliente = entity.codigo;
             this.$bvModal.hide("modal-new-cliente");
             this.$bvModal.hide("modal-consult-cliente");
+        },
+        searchCliente() {
+            var vm = this;
+            if (vm.entity.codigoCliente > 0) {
+                ClientesService.getById(vm.entity.codigoCliente).then(function (response) {
+                    vm.clienteSelecionado = response.data.nome;
+                }).catch(function() {
+                    vm.entity.codigoCliente = 0;
+                    vm.clienteSelecionado = null;
+                    notyf.error("Cliente não encontrado");
+                });
+            } else {
+                vm.clienteSelecionado = null;
+            }
         },
         save() {
             if (this.isSubmiting) return;
