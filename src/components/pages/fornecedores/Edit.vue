@@ -124,6 +124,7 @@
 import {CidadesService} from '@/services/cidades.service'
 import {FornecedoresService} from '@/services/fornecedores.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
+import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -168,6 +169,14 @@ export default {
             
             FornecedoresService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
+
+                var dateAniversario = Helper.dateToDateString(vm.entity.dtCadastro);
+                var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
+                var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
+                
+                vm.entity.dtNascFundacao = dateAniversario;
+                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.cidadeSelecionada = response.data.cidade.cidade;
             });
         }

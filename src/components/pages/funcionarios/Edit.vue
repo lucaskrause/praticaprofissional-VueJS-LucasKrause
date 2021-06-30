@@ -133,6 +133,7 @@
 import {CidadesService} from '@/services/cidades.service'
 import {FuncionariosService} from '@/services/funcionarios.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
+import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -174,8 +175,19 @@ export default {
 
             FuncionariosService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
+                
+                var dateNascimento = Helper.dateToDateString(vm.entity.dtNascimento);
+                var dateAdmissao = Helper.dateToDateString(vm.entity.dtAdmissao);
+                var dateDemissao = Helper.dateToDateString(vm.entity.dtDemissao);
+                var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
+                var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
+
+                vm.entity.dtNascimento = dateNascimento;
+                vm.entity.dtAdmissao = dateAdmissao;
+                vm.entity.dtDemissao = dateDemissao;
+                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.cidadeSelecionada = response.data.cidade.cidade;
-                vm.$delete(vm.entity, 'cidade');
             });
         }
     },

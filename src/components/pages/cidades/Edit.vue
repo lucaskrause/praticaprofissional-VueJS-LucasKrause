@@ -65,6 +65,7 @@
 import {EstadosService} from '@/services/estados.service'
 import {CidadesService} from '@/services/cidades.service'
 import ConsultaEstado from '@/components/pages/estados/Consult.vue'
+import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -100,6 +101,12 @@ export default {
             
             CidadesService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
+
+                var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
+                var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
+
+                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.estadoSelecionado = response.data.estado.estado;
             });
         }

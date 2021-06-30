@@ -59,6 +59,7 @@
 
 <script>
 import {ContasBancariasService} from '@/services/contasBancarias.service'
+import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -71,8 +72,9 @@ export default {
             type: Boolean,
             default: false
         },
-        codigoEmpresa: {
-            default: 0
+        editContaBancaria: {
+            type: Object,
+            default: null
         }
     },
     data() {
@@ -92,38 +94,48 @@ export default {
         }
     },
     created() {
-        const vm = this;
-        if (!this.isModal && this.$route.params.codigo) {
-            this.entity.codigo = this.$route.params.codigo;
+        if (this.isModal) {
+            if (this.editContaBancaria != null) {
+                this.entity = this.editContaBancaria;
 
-            ContasBancariasService.getById(this.entity.codigo).then(function (response) {
-                vm.entity = response.data;
-            });
+                var dateTimeCad = Helper.serverDateToDateTimeString(this.entity.dtCadastro);
+                var dateTimeAlt = Helper.serverDateToDateTimeString(this.entity.dtAlteracao);
+
+                this.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                this.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
+            }
+        } else {
+            const vm = this;
+            if (this.$route.params.codigo) {
+                this.entity.codigo = this.$route.params.codigo;
+
+                ContasBancariasService.getById(this.entity.codigo).then(function (response) {
+                    vm.entity = response.data;
+
+                    var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
+                    var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
+
+                    vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                    vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
+                });
+            }
         }
     },
     methods: {
         save() {
-            if(this.codigoEmpresa > 0) {
-                this.entity.codigoEmpresa = this.codigoEmpresa;
-                if (this.isSubmiting) return;
+            if (this.isModal) {
+                this.$emit('emit-contaBancaria', this.entity);
+            } else {
+                if(this.isSubmiting) return;
                 this.isSubmiting = true;
                 const vm = this;
-                ContasBancariasService.save(this.entity).then(function (response) {
+
+                ContasBancariasService.save(this.entity).then(function () {
                     const msg = vm.entity.codigo ? "editado" : 'criado';
                     notyf.success("Conta Bancaria " + msg + " com sucesso");
                     vm.isSubmiting = false;
-
-                    if(!vm.isModal){
-                        vm.$router.push('/app/contasBancarias');
-                    } else {
-                        vm.entity.codigo = response.data.codigo;
-                        vm.$emit('emit-contaBancaria', vm.entity);
-                    }
+                    vm.$router.push('/app/contasBancarias');
                 }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
-            } else {
-                this.$delete(this.entity, 'dtCadastro');
-                this.$delete(this.entity, 'dtAlteracap');
-                this.$emit('emit-contaBancaria', this.entity);
             }
         }
     }

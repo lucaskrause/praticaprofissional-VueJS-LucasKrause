@@ -16,7 +16,7 @@
             <div class="col-4">
                 <label>Cliente</label>
                 <div class="input-group">
-                    <input id="cliente" type="text" class="form-control" v-model.lazy="clienteSelecionado" readonly/>
+                    <input id="cliente" type="text" class="form-control" v-uppercase v-model.lazy="clienteSelecionado" readonly/>
                     <span class="input-group-btn">
                         <b-button v-b-modal.modal-consult-cliente class="btn btn-info ml-1">Buscar</b-button>
                     </span>
@@ -32,12 +32,12 @@
         <div class="row form-group">
             <div class="col-3">
                 <label>Data de Início</label>
-                <input id="dtInicio" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtInicio"/>
+                <input id="dtInicio" type="date" class="form-control" v-model="entity.dtInicio"/>
             </div>
 
             <div class="col-3">
                 <label>Data de Término</label>
-                <input id="dtTermino" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtTermino"/>
+                <input id="dtTermino" type="date" class="form-control" v-model="entity.dtTermino"/>
             </div>
         </div>
 
@@ -70,6 +70,7 @@
 import {ClientesService} from '@/services/clientes.service'
 import {CotasService} from '@/services/cotas.service'
 import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
+import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -100,6 +101,15 @@ export default {
 
             CotasService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
+                var dateInicio = Helper.dateToDateString(vm.entity.dtInicio);
+                var dateTermino = Helper.dateToDateString(vm.entity.dtTermino);
+                var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
+                var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
+
+                vm.entity.dtInicio = dateInicio;
+                vm.entity.dtTermino = dateTermino;
+                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.clienteSelecionado = vm.entity.cliente.nome;
             });
         }

@@ -125,8 +125,9 @@ import {PrecificacoesService} from '@/services/precificacoes.service'
 import {ReservasService} from '@/services/reservas.service'
 import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
 import ConsultaCondicaoPagamento from '@/components/pages/condicoesPagamento/Consult.vue'
-import {VueGoodTable} from 'vue-good-table';
+import {VueGoodTable} from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
+import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -168,18 +169,12 @@ export default {
                         type: "decimal", 
                         width: "150px",
                     },
-                    // {
-                    //     label:"Ação",
-                    //     sortable: false,
-                    //     field: 'btn',
-                    //     html: true,
-                    //     width: "160px",
-                    // },
                 ],
                 rows: [],
                 page: 1,
                 totalRecords: 0
             },
+            isCreate: false,
             precoPessoas: [],
             valorPessoas: 0,
             valorAreas: 0,
@@ -209,12 +204,23 @@ export default {
             var vm = this;
             ReservasService.getById(id).then(function (response) {
                 vm.entity = response.data;
+                
+                var dateReserva = Helper.dateToDateString(vm.entity.dtReserva);
+                var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
+                var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
+
+                vm.entity.dtReserva = dateReserva;
+                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.clienteSelecionado = vm.entity.cliente.nome;
                 vm.condicaoSelecionada = vm.entity.condicaoPagamento.descricao;
+                
+                vm.isCreate = true;
                 vm.areasLocacao.rows = vm.areasLocacao.rows.map(function (item) {
                     item.vgtSelected = vm.entity.areasLocacao.some((area) => area.codigo == item.codigo);
                     return item;
                 });
+                vm.isCreate = false;
             });
         },
         selectCliente(entity) {
@@ -284,13 +290,17 @@ export default {
             this.entity.valor = this.valorPessoas + this.valorAreas;
         },
         selecionarAreas(areas) {
-            var selecionadas = areas.selectedRows;
-            this.entity.areasLocacao = selecionadas;
-            this.valorAreas = 0;
-            for (let i = 0; i < selecionadas.length; i++) {
-                this.valorAreas += selecionadas[i].valor;
+            if (this.isCreate) {
+                var selecionadas = areas.selectedRows;
+                this.entity.areasLocacao = selecionadas;
+                this.valorAreas = 0;
+
+                for (let i = 0; i < selecionadas.length; i++) {
+                    this.valorAreas += selecionadas[i].valor;
+                }
+
+                this.calcValor();
             }
-            this.entity.valor = this.valorPessoas + this.valorAreas;
         }
     }
 }

@@ -99,7 +99,7 @@
 
             <div class="col-3">
                 <label>Data de Nascimento / Fundação</label>
-                <input id="dtNascFundacao" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtNascFundacao"/>
+                <input id="dtNascimento" type="date" class="form-control" v-model="entity.dtNascimento"/>
             </div>
         </div>
 
@@ -193,9 +193,10 @@ import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
 import ConsultaCondicaoPagamento from '@/components/pages/condicoesPagamento/Consult.vue'
 import NovoDependente from '@/components/pages/dependentes/Edit.vue'
 import 'vue-good-table/dist/vue-good-table.css'
-import {VueGoodTable} from 'vue-good-table';
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {VueGoodTable} from 'vue-good-table'
+import Helper from '@/components/helper'
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
 
 const notyf = new Notyf();
 
@@ -228,7 +229,7 @@ export default {
                 email: null,
                 cpfCnpj: null,
                 rgIe: null,
-                dtNascFundacao: null,
+                dtNascimento: null,
                 codigoCondicaoPagamento: 0,
                 dtCadastro: null,
                 dtAlteracao: null,
@@ -254,13 +255,14 @@ export default {
                         width: "150px",
                     },
                     {
-                        label: "Telefone",
-                        field: "telefone",
+                        label: "RG",
+                        field: "rg",
                         width: "150px",
                     },
                     {
-                        label: "Sócio",
-                        field: "cliente.nome"
+                        label: "Telefone",
+                        field: "telefone",
+                        width: "150px",
                     },
                     {
                         label: "Ação",
@@ -275,6 +277,7 @@ export default {
                 totalRecords: 0
             },
             dependenteToEdit: {},
+            dependenteRemovido: [],
             isEdit: false,
             indexEdit: -1,
             isSubmiting: false
@@ -287,6 +290,14 @@ export default {
             
             ClientesService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
+
+                var dateNascimento = Helper.dateToDateString(vm.entity.dtNascimento);
+                var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
+                var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
+
+                vm.entity.dtNascimento = dateNascimento;
+                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.cidadeSelecionada = vm.entity.cidade.cidade;
                 vm.condicaoSelecionada = vm.entity.condicaoPagamento.descricao;
                 vm.dependentes.rows = vm.entity.dependentes ? vm.entity.dependentes : []; 
@@ -354,7 +365,7 @@ export default {
             this.isSubmiting = true;
             const vm = this;
 
-            this.dependentes.rows = this.clearDependentes(this.dependentes.rows);
+            this.dependentes.rows = this.clearDependentes(this.dependentes.rows.concat(this.dependenteRemovido));
             this.entity.dependentes = this.dependentes.rows;
             ClientesService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
@@ -377,9 +388,9 @@ export default {
         removeDependente(entity) {
             if (entity.row.codigo > 0) {
                 this.dependentes.rows[entity.index].status = "Inativo";
-            } else {
-                this.dependentes.rows.splice(entity.index, 1);
+                this.dependenteRemovido.push(this.dependentes.rows[entity.index]);
             }
+            this.dependentes.rows.splice(entity.index, 1);
         },
         clearDependentes(dependentes) {
             if (dependentes.length > 0) {
@@ -387,6 +398,8 @@ export default {
                     var dependente = dependentes[i];
                     this.$delete(dependente, 'cliente');
                     this.$delete(dependente, 'cidade');
+                    this.$delete(dependente, 'dtCadastro');
+                    this.$delete(dependente, 'dtAlteracao');
                     dependentes[i] = dependente;
                 }
             }

@@ -33,6 +33,7 @@
 import {ReservasService} from '@/services/reservas.service'
 import {VueGoodTable} from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
+import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -63,7 +64,10 @@ export default {
                 {
                     label: "Data da Reserva",
                     field: "dtReserva",
-                    width: "200px",
+                    type: "date",
+                    dateInputFormat: 'yyyy-MM-dd',
+                    dateOutputFormat: 'dd/MM/yyyy',
+                    width: "170px",
                 },
                 {
                     label:"Ação",
@@ -87,6 +91,10 @@ export default {
             ReservasService.getAll().then(function (response) {
                 vm.totalRecords = response.data.length;
                 vm.rows = response.data;
+                for (let i = 0; i < vm.totalRecords; i++) {
+                    var dateReserva = Helper.dateToDateString(vm.rows[i].dtReserva);
+                    vm.rows[i].dtReserva = dateReserva;
+                }
             });
         },
         remove(codigo) {

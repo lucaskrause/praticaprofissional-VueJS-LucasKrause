@@ -47,6 +47,7 @@
 
 <script>
 import {PrecificacoesService} from '@/services/precificacoes.service'
+import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -74,6 +75,12 @@ export default {
 
             PrecificacoesService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
+
+                var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
+                var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
+                
+                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
             });
         }
     },

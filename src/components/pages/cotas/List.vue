@@ -33,6 +33,7 @@
 import {CotasService} from '@/services/cotas.service'
 import {VueGoodTable} from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
+import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -62,11 +63,17 @@ export default {
                 {
                     label: "Data de Início",
                     field: "dtInicio",
+                    type: "date",
+                    dateInputFormat: 'yyyy-MM-dd',
+                    dateOutputFormat: 'dd/MM/yyyy',
                     width: "180px",
                 },
                 {
                     label: "Data de Termino",
                     field: "dtTermino",
+                    type: "date",
+                    dateInputFormat: 'yyyy-MM-dd',
+                    dateOutputFormat: 'dd/MM/yyyy',
                     width: "180px",
                 },
                 {
@@ -91,6 +98,14 @@ export default {
             CotasService.getAll().then(function (response) {
                 vm.totalRecords = response.data.length;
                 vm.rows = response.data;
+
+                for (let i = 0; i < vm.totalRecords; i++) {
+                    var dateInicio = Helper.dateToDateString(vm.rows[i].dtInicio);
+                    var dateTermino = Helper.dateToDateString(vm.rows[i].dtTermino);
+
+                    vm.rows[i].dtInicio = dateInicio;
+                    vm.rows[i].dtTermino = dateTermino;
+                }
             });
         },
         remove(codigo) {

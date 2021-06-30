@@ -109,8 +109,8 @@
                 >
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'btn'">
-                            <a @click.prevent="EditConta(props.row.codigo)" class="btn btn-sm btn-primary mr-3" href="#">Editar</a>
-                            <a @click.prevent="removeConta(props.row.codigo)" class="btn btn-sm btn-danger" href="#">Excluir</a>
+                            <a @click.prevent="editContaBancaria(props)" class="btn btn-sm btn-primary mr-3" href="#">Editar</a>
+                            <a @click.prevent="removeContaBancaria(props)" class="btn btn-sm btn-danger" href="#">Excluir</a>
                         </span>
                     </template>
                 </vue-good-table>
@@ -143,17 +143,21 @@
         <b-modal id="modal-new-contaBancaria" size="xl" title="Cadastrar ContasBancaria" hide-footer>
             <NovaContaBancaria  @emit-contaBancaria="selectContaBancaria" :isModal="true" :codigoEmpresa="entity.codigo" />
         </b-modal>
+
+        <b-modal id="modal-edit-contaBancaria" size="xl" title="Editar ContasBancaria" hide-footer>
+            <NovaContaBancaria  @emit-contaBancaria="selectContaBancaria" :isModal="true" :editContaBancaria="this.contaBancariaToEdit" />
+        </b-modal>
     </div>
 </template>
 
 <script>
 import {CidadesService} from '@/services/cidades.service'
 import {EmpresasService} from '@/services/empresas.service'
-import {ContasBancariasService} from '@/services/contasBancarias.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
 import NovaContaBancaria from '@/components/pages/contasBancarias/Edit.vue'
 import 'vue-good-table/dist/vue-good-table.css'
-import {VueGoodTable} from 'vue-good-table';
+import {VueGoodTable} from 'vue-good-table'
+import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -222,6 +226,10 @@ export default {
                 page: 1,
                 totalRecords: 0
             },
+            contaBancariaToEdit: {},
+            contaBancariaRemovido: [],
+            isEdit: false,
+            indexEdit: -1,
             isSubmiting: false
         }
     },
@@ -232,27 +240,36 @@ export default {
             
             EmpresasService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
+                
+                var dateFundacao = Helper.dateToDateString(vm.entity.dtFundacao);
+                var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
+                var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
+                
+                vm.entity.dtFundacao = dateFundacao;
+                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
+                vm.contasBancarias.rows = vm.entity.contasBancarias;
                 vm.cidadeSelecionada = response.data.cidade.cidade;
-            });
-
-            ContasBancariasService.getByEmpresa(this.entity.codigo).then(function (response) {
-                if(response.data.length > 0) {
-                    vm.contasBancarias.rows = response.data;
-                }
             });
         }
     },
     methods: {
-        selectContaBancaria(entity) {
-            this.contasBancarias.rows.push(entity);
-            this.$bvModal.hide("modal-new-contaBancaria");
-            this.$bvModal.hide("modal-consult-contaBancaria");
-        },
         selectCidade(entity) {
             this.cidadeSelecionada = entity.cidade;
             this.entity.codigoCidade = entity.codigo;
             this.$bvModal.hide("modal-new-cidade");
             this.$bvModal.hide("modal-consult-cidade");
+        },
+        selectContaBancaria(entity) {
+            if (!this.isEdit) {
+                this.contasBancarias.rows.push(entity);
+                this.$bvModal.hide("modal-new-contaBancaria");
+            } else {
+                this.contasBancarias.rows[this.indexEdit] = entity;
+                this.indexEdit = -1;
+                this.isEdit = false;
+                this.$bvModal.hide("modal-edit-contaBancaria");
+            }
         },
         searchCidade() {
             var vm = this;
@@ -273,16 +290,38 @@ export default {
             this.isSubmiting = true;
             const vm = this;
 
-            if(this.entity.codigo == 0) {
-                this.entity.contasBancarias = this.contasBancarias.rows;
-            }
-
+            this.contasBancarias.rows = this.clearContasBancarias(this.contasBancarias.rows.concat(this.contaBancariaRemovido));
+            this.entity.contasBancarias = this.contasBancarias.rows;
             EmpresasService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Empresa " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 vm.$router.push('/app/empresas');
             }); //.catch(function (errors) {Helper.saveErrorCallBack(errors.response)});
+        },
+        editContaBancaria(prop) {
+            this.contaBancariaToEdit = prop.row;
+            this.isEdit = true;
+            this.indexEdit = prop.index;
+            this.$bvModal.show("modal-edit-contaBancaria");
+        },
+        removeContaBancaria(entity) {
+            if (entity.row.codigo > 0) {
+                this.contasBancarias.rows[entity.index].status = "Inativo";
+                this.contaBancariaRemovido.push(this.contasBancarias.rows[entity.index]);
+            }
+            this.contasBancarias.rows.splice(entity.index, 1);
+        },
+        clearContasBancarias(contasBancarias) {
+            if (contasBancarias.length > 0) {
+                for (let i = 0; i < contasBancarias.length; i++) {
+                    var contaBancaria = contasBancarias[i];
+                    this.$delete(contaBancaria, 'dtCadastro');
+                    this.$delete(contaBancaria, 'dtAlteracao');
+                    contasBancarias[i] = contaBancaria;
+                }
+            }
+            return contasBancarias;
         }
     }
 }

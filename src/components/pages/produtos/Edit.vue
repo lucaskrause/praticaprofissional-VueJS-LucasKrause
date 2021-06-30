@@ -85,6 +85,7 @@
 import {CategoriasService} from '@/services/categorias.service'
 import {ProdutosService} from '@/services/produtos.service'
 import ConsultaCategoria from '@/components/pages/categorias/Consult.vue'
+import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -124,6 +125,14 @@ export default {
 
             ProdutosService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
+                
+                var dateUltCompra = Helper.dateToDateString(vm.entity.dtUltimaCompra);
+                var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
+                var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
+
+                vm.entity.dtUltimaCompra = dateUltCompra;
+                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.categoriaSelecionada = response.data.categoria.descricao;
             });
         }

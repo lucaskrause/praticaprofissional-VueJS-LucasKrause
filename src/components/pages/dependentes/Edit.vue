@@ -98,7 +98,7 @@
 
             <div class="col-3">
                 <label>Data de Nascimento</label>
-                <input id="dtNascimento" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtNascimento"/>
+                <input id="dtNascimento" type="date" class="form-control" v-model="entity.dtNascimento"/>
             </div>
         </div>
 
@@ -115,7 +115,7 @@
 
             <div class="col-8">
                 <div class="text-right">
-                    <router-link :to="{name: 'DependentesList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <router-link v-if="!isModal" :to="{name: 'DependentesList'}" class="btn btn-danger mr-3">Voltar</router-link>
                     <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
                 </div>
             </div>
@@ -137,6 +137,7 @@ import {CidadesService} from '@/services/cidades.service'
 import {DependentesService} from '@/services/dependentes.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
 import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
+import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -184,6 +185,14 @@ export default {
         if (this.isModal) {
             if (this.editDependente != null) {
                 this.entity = this.editDependente;
+                
+                var dateNascimento = Helper.dateToDateString(this.entity.dtNascimento);
+                var dateTimeCad = Helper.serverDateToDateTimeString(this.entity.dtCadastro);
+                var dateTimeAlt = Helper.serverDateToDateTimeString(this.entity.dtAlteracao);
+
+                this.entity.dtNascimento = dateNascimento;
+                this.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                this.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 this.cidadeSelecionada = this.entity.cidade.cidade;
             }
         } else {
@@ -193,6 +202,14 @@ export default {
 
                 DependentesService.getById(this.entity.codigo).then(function (response) {
                     vm.entity = response.data;
+                    
+                    var dateNascimento = Helper.dateToDateString(vm.entity.dtNascimento);
+                    var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
+                    var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
+
+                    vm.entity.dtNascimento = dateNascimento;
+                    vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                    vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
                     vm.socioSelecionado = response.data.cliente.nome;
                     vm.cidadeSelecionada = response.data.cidade.cidade;
                 });

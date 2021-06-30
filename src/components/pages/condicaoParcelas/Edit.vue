@@ -62,6 +62,7 @@
 <script>
 import {FormasPagamentoService} from '@/services/formasPagamento.service'
 import ConsultaFormaPagamento from '@/components/pages/formasPagamento/Consult.vue'
+import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -102,10 +103,19 @@ export default {
     },
     created() {
         if (this.isModal) {
+            // new parcela
             if (this.numeroParcela > 0) {
                 this.entity.numeroParcela = this.numeroParcela;
-            } else {
+            } 
+            // edit parcela
+            else {
                 this.entity = this.editParcela;
+
+                var dateTimeCad = Helper.serverDateToDateTimeString(this.entity.dtCadastro);
+                var dateTimeAlt = Helper.serverDateToDateTimeString(this.entity.dtAlteracao);
+                
+                this.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                this.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
             }
         }
     },

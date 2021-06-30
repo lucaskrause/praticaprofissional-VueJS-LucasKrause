@@ -97,6 +97,7 @@ import {CondicoesPagamentoService} from '@/services/condicoesPagamento.service'
 import NovaParcela from '@/components/pages/condicaoParcelas/Edit'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table';
+import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -174,6 +175,12 @@ export default {
             
             CondicoesPagamentoService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
+
+                var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
+                var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
+                
+                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.parcelas.rows = vm.entity.parcelas;
                 vm.numeroParcela += vm.entity.totalParcelas;
             });
@@ -198,7 +205,7 @@ export default {
             this.isSubmiting = true;
             const vm = this;
             
-            this.entity.parcelas = this.parcelas.rows.concat(this.parcelasDeletedas);
+            this.entity.parcelas = this.clearParcelas(this.parcelas.rows.concat(this.parcelasDeletedas));
             CondicoesPagamentoService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Condição de Pagamento " + msg + " com sucesso");
@@ -231,6 +238,17 @@ export default {
             this.orderParcela(entity.index);
             this.entity.totalParcelas--;
             this.numeroParcela--;
+        },
+        clearParcelas(parcelas) {
+            if (parcelas.length > 0) {
+                for (let i = 0; i < parcelas.length; i++) {
+                    var parcela = parcelas[i];
+                    this.$delete(parcela, 'dtCadastro');
+                    this.$delete(parcela, 'dtAlteracao');
+                    parcelas[i] = parcela;
+                }
+            }
+            return parcelas;
         }
     }
 }
