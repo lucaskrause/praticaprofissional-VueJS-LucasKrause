@@ -10,28 +10,41 @@
 
             <div class="col-5">
                 <label>Estado</label> 
-                <input id="estado" type="text" class="form-control" v-uppercase v-model.lazy="entity.estado"/>
+                <input id="estado" type="text" class="form-control" v-uppercase v-model.lazy="entity.estado"
+                    :class="{'is-invalid': $v.entity.estado.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.estado.required">
+                    Estado obrigatório
+                </div>
             </div>
 
-            <div class="col-2">
+            <div class="col-1">
                 <label>UF</label>
-                <input id="uf" type="text" class="form-control" v-uppercase v-model.lazy="entity.uf"/>
+                <input id="uf" type="text" class="form-control" v-uppercase v-model.lazy="entity.uf"
+                    :class="{'is-invalid': $v.entity.uf.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.uf.required">
+                    UF obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.uf.minLength || !$v.entity.uf.maxLength">
+                    UF deve ter entre 2 e 4 caracteres
+                </div>
             </div>
         </div>
 
         <div class="row form-group">
-            <div class="col-1">
-                <label>Código</label> 
-                <input id="codigoPais" type="number" class="form-control" v-model.number="entity.codigoPais" @input="searchPais" />
-            </div>
-
-            <div class="col-4">
+            <div class="col-5">
                 <label>País</label>
                 <div class="input-group">
-                    <input id="pais" type="text" class="form-control" v-model.lazy="paisSelecionado" readonly/>
+                    <input id="codigoPais" type="number" class="form-control" v-model.number="entity.codigoPais" @input="searchPais"
+                        :class="{'is-invalid': $v.entity.codigoPais.$error, 'd-none': isLoading}"/>
+                    <div class="input-group-append">
+                        <input type="text" class="input-group-text" v-model.lazy="paisSelecionado" readonly/>
+                    </div>
                     <span class="input-group-btn">
                         <b-button v-b-modal.modal-consult-pais class="btn btn-info ml-1">Buscar</b-button>
                     </span>
+                    <div class="invalid-feedback" v-if="!$v.entity.codigoPais.minValue">
+                        Selecione um País
+                    </div>
                 </div>
             </div>
         </div>
@@ -63,6 +76,8 @@
 </template>
 
 <script>
+import {validationMixin} from 'vuelidate'
+import {required, minLength, maxLength, minValue} from 'vuelidate/lib/validators'
 import {PaisesService} from '@/services/paises.service'
 import {EstadosService} from '@/services/estados.service'
 import ConsultaPais from '@/components/pages/paises/Consult.vue'
@@ -74,14 +89,31 @@ const notyf = new Notyf();
 
 export default {
     name: "EstadosEdit",
-    components: {
-        ConsultaPais
-    },
+    components: { ConsultaPais },
     props: {
         isModal: {
             type: Boolean,
             default: false
         }
+    },
+    mixins: [validationMixin],
+    validations() {
+        let validation = {
+            entity: {
+                estado: {
+                    required,
+                },
+                uf: {
+                    required,
+                    minLength: minLength(2),
+                    maxLength: maxLength(4),
+                },
+                codigoPais: {
+                    minValue: minValue(1),
+                },
+            }
+        }
+        return validation;
     },
     data() {
         return {
@@ -89,11 +121,16 @@ export default {
                 codigo: 0,
                 estado: null,
                 uf: null,
+                pais: {
+                    codigo: 0,
+                    pais: null,
+                },
                 codigoPais: 0,
                 dtCadastro: null,
                 dtAlteracao: null
             },
             paisSelecionado: null,
+            isLoading: false,
             isSubmiting: false
         }
     },
@@ -138,7 +175,14 @@ export default {
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$v.$touch();
             const vm = this;
+
+            if (this.$v.$invalid) {
+                this.isSubmiting = false;
+                return;
+            }
+
             EstadosService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Estado " + msg + " com sucesso");

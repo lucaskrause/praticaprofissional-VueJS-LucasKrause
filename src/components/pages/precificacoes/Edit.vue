@@ -10,17 +10,29 @@
 
             <div class="col-2">
                 <label>Mín de Pessoas</label>
-                <input id="minPessoas" type="number" class="form-control" v-model.number="entity.minPessoas"/>
+                <input id="minPessoas" type="number" class="form-control" v-model.number="entity.minPessoas"
+                    :class="{'is-invalid': $v.entity.minPessoas.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.minPessoas.required || !$v.entity.minPessoas.minValue || !$v.entity.minPessoas.maxValue">
+                    Mín de Pessoas deve estar entre 1 e 70
+                </div>
             </div>
 
             <div class="col-2">
                 <label>Máx de Pessoas</label>
-                <input id="maxPessoas" type="number" class="form-control" v-model.number="entity.maxPessoas"/>
+                <input id="maxPessoas" type="number" class="form-control" v-model.number="entity.maxPessoas"
+                    :class="{'is-invalid': $v.entity.maxPessoas.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.maxPessoas.required || !$v.entity.maxPessoas.minValue || !$v.entity.maxPessoas.maxValue">
+                    Máx de Pessoas deve estar entre 1 e 70
+                </div>
             </div>
 
             <div class="col-2">
                 <label>Valor</label>
-                <input id="valor" type="number" class="form-control" v-model.number="entity.valor"/>
+                <input id="valor" type="number" class="form-control" v-model.number="entity.valor"
+                    :class="{'is-invalid': $v.entity.valor.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.valor.required">
+                    Valor obrigatório
+                </div>
             </div>
         </div>
 
@@ -46,6 +58,8 @@
 </template>
 
 <script>
+import {validationMixin} from 'vuelidate'
+import {required, minValue, maxValue} from 'vuelidate/lib/validators'
 import {PrecificacoesService} from '@/services/precificacoes.service'
 import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
@@ -55,6 +69,27 @@ const notyf = new Notyf();
 
 export default {
     name: "PrecificacoesEdit",
+    mixins: [validationMixin],
+    validations() {
+        let validation = {
+            entity: {
+                minPessoas: {
+                    required,
+                    minValue: minValue(1),
+                    maxValue: maxValue(70),
+                },
+                maxPessoas: {
+                    required,
+                    minValue: minValue(1),
+                    maxValue: maxValue(70),
+                },
+                valor: {
+                    required,
+                },
+            }
+        }
+        return validation;
+    },
     data() {
         return {
             entity: {
@@ -65,6 +100,7 @@ export default {
                 dtCadastro: null,
                 dtAlteracao: null
             },
+            isLoading: false,
             isSubmiting: false
         }
     },
@@ -88,7 +124,14 @@ export default {
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$v.$touch();
             const vm = this;
+
+            if (this.$v.$invalid) {
+                this.isSubmiting = false;
+                return;
+            }
+
             PrecificacoesService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Preço " + msg + " com sucesso");

@@ -10,12 +10,20 @@
 
             <div class="col-4">
                 <label>Área de Locação</label>
-                <input id="descricao" type="text" class="form-control" v-uppercase v-model.lazy="entity.descricao"/>
+                <input id="descricao" type="text" class="form-control" v-uppercase v-model.lazy="entity.descricao"
+                    :class="{'is-invalid': $v.entity.descricao.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.descricao.required">
+                    Categoria obrigatória
+                </div>
             </div>
 
             <div class="col-2">
                 <label>Valor</label>
-                <input id="valor" type="number" class="form-control" v-model.number="entity.valor"/>
+                <input id="valor" type="number" class="form-control" v-model.number="entity.valor"
+                    :class="{'is-invalid': $v.entity.valor.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.valor.required">
+                    Valor obrigatório
+                </div>
             </div>
         </div>
 
@@ -41,6 +49,8 @@
 </template>
 
 <script>
+import {validationMixin} from 'vuelidate'
+import {required} from 'vuelidate/lib/validators'
 import {AreasLocacaoService} from '@/services/areasLocacao.service'
 import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
@@ -56,6 +66,20 @@ export default {
             default: false
         }
     },
+    mixins: [validationMixin],
+    validations() {
+        let validation = {
+            entity: {
+                descricao: {
+                    required,
+                },
+                valor: {
+                    required,
+                },
+            }
+        }
+        return validation;
+    },
     data() {
         return {
             entity: {
@@ -65,6 +89,7 @@ export default {
                 dtCadastro: null,
                 dtAlteracao: null 
             },
+            isLoading: false,
             isSubmiting: false
         }
     },
@@ -88,7 +113,14 @@ export default {
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$v.$touch();
             const vm = this;
+
+            if (this.$v.$invalid) {
+                this.isSubmiting = false;
+                return;
+            }
+
             AreasLocacaoService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editada" : 'criada';
                 notyf.success("Área " + msg + " com sucesso");

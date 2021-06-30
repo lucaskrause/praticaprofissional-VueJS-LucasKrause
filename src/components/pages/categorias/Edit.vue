@@ -10,7 +10,11 @@
 
             <div class="col-5">
                 <label>Categoria</label> 
-                <input id="descricao" type="text" class="form-control" v-uppercase v-model.lazy.lazy="entity.descricao"/>
+                <input id="descricao" type="text" class="form-control" v-uppercase v-model.lazy.lazy="entity.descricao"
+                    :class="{'is-invalid': $v.entity.descricao.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.descricao.required">
+                    Categoria obrigatória
+                </div>
             </div>
         </div>
 
@@ -36,6 +40,8 @@
 </template>
 
 <script>
+import {validationMixin} from 'vuelidate'
+import {required} from 'vuelidate/lib/validators'
 import {CategoriasService} from '@/services/categorias.service'
 import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
@@ -51,6 +57,17 @@ export default {
             default: false
         }
     },
+    mixins: [validationMixin],
+    validations() {
+        let validation = {
+            entity: {
+                descricao: {
+                    required,
+                },
+            }
+        }
+        return validation;
+    },
     data() {
         return {
             entity: {
@@ -60,6 +77,7 @@ export default {
                 dtAlteracao: null
             },
             estadoSelecionado: null,
+            isLoading: false,
             isSubmiting: false
         }
     },
@@ -83,7 +101,14 @@ export default {
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$v.$touch();
             const vm = this;
+
+            if (this.$v.$invalid) {
+                this.isSubmiting = false;
+                return;
+            }
+
             CategoriasService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Categoria " + msg + " com sucesso");

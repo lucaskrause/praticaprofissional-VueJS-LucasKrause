@@ -10,7 +10,11 @@
 
             <div class="col-5">
                 <label>Forma de Pagamento</label>
-                <input id="descricao" type="text" class="form-control" v-uppercase v-model.lazy="entity.descricao"/>
+                <input id="descricao" type="text" class="form-control" v-uppercase v-model.lazy="entity.descricao"
+                    :class="{'is-invalid': $v.entity.descricao.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.descricao.required">
+                    Forma de Pagamento obrigatório
+                </div>
             </div>
         </div>
 
@@ -36,6 +40,8 @@
 </template>
 
 <script>
+import {validationMixin} from 'vuelidate'
+import {required} from 'vuelidate/lib/validators'
 import {FormasPagamentoService} from '@/services/formasPagamento.service'
 import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
@@ -51,6 +57,17 @@ export default {
             default: false
         }
     },
+    mixins: [validationMixin],
+    validations() {
+        let validation = {
+            entity: {
+                descricao: {
+                    required,
+                },
+            }
+        }
+        return validation;
+    },
     data() {
         return {
             entity: {
@@ -59,6 +76,7 @@ export default {
                 dtCadastro: null,
                 dtAlteracao: null
             },
+            isLoading: false,
             isSubmiting: false
         }
     },
@@ -82,7 +100,14 @@ export default {
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$v.$touch();
             const vm = this;
+
+            if (this.$v.$invalid) {
+                this.isSubmiting = false;
+                return;
+            }
+
             FormasPagamentoService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Forma de Pagamento " + msg + " com sucesso");

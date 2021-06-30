@@ -10,12 +10,20 @@
             
             <div class="col-3 form-group">
                 <label>Quantidade de Pessoas</label>
-                <input id="qtdePessoas" type="number" class="form-control" v-model.number="entity.qtdePessoas" @input="calcValor"/>
+                <input id="qtdePessoas" type="number" class="form-control" v-model.number="entity.qtdePessoas" @input="calcValor"
+                    :class="{'is-invalid': $v.entity.qtdePessoas.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.qtdePessoas.minValue || !$v.entity.qtdePessoas.maxValue">
+                    Quantidade deve estar entre 1 e 70 Pessoas
+                </div>
             </div>
 
             <div class="col-3">
                 <label>Data da Reserva</label>
-                <input id="dtReserva" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtReserva"/>
+                <input id="dtReserva" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtReserva"
+                    :class="{'is-invalid': $v.entity.dtReserva.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.dtReserva.required">
+                    Data da Reserva obrigatória
+                </div>
             </div>
 
             <div class="col-2">
@@ -23,35 +31,39 @@
                 <input id="valor" type="number" class="form-control" v-model.number="entity.valor" disabled/>
             </div>
         </div>
-        
-        <div class="row form-group">
-            <div class="col-1">
-                <label>Código</label>
-                <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="searchCliente"/>
-            </div>
 
-            <div class="col-4">
-                <label>Cliente</label>
+        <div class="row form-group">
+            <div class="col-5">
+                <label>País</label>
                 <div class="input-group">
-                    <input id="cliente" type="text" class="form-control" v-model.lazy="clienteSelecionado" readonly/>
-                    <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-cliente class="btn btn-info ml-1">Buscar</b-button>
-                    </span>
+                   <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="searchCliente"
+                        :class="{'is-invalid': $v.entity.codigoCliente.$error, 'd-none': isLoading}"/>
+                    <div class="input-group-append">
+                        <input id="cliente" type="text" class="form-control" v-model.lazy="clienteSelecionado" readonly/>
+                        <span class="input-group-btn">
+                            <b-button v-b-modal.modal-consult-cliente class="btn btn-info ml-1">Buscar</b-button>
+                        </span>
+                    </div>
+                    <div class="invalid-feedback" v-if="!$v.entity.codigoCliente.minValue">
+                        Selecione um Cliente
+                    </div>
                 </div>
             </div>
-
-            <div class="col-1">
-                <label>Código</label>
-                <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" @input="searchCondicao"/>
-            </div>
             
-            <div class="col-4">
+            <div class="col-5">
                 <label>Condição de Pagamento</label>
                 <div class="input-group">
-                    <input id="condicaoPagamento" type="text" class="form-control" v-uppercase v-model.lazy="condicaoSelecionada" readonly/>
-                    <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-condicaoPagamento class="btn btn-info ml-1">Buscar</b-button>
-                    </span>
+                   <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" @input="searchCondicao"
+                        :class="{'is-invalid': $v.entity.codigoCondicaoPagamento.$error, 'd-none': isLoading}"/>
+                    <div class="input-group-append">
+                        <input id="condicaoPagamento" type="text" class="form-control" v-uppercase v-model.lazy="condicaoSelecionada" readonly/>
+                        <span class="input-group-btn">
+                            <b-button v-b-modal.modal-consult-condicaoPagamento class="btn btn-info ml-1">Buscar</b-button>
+                        </span>
+                    </div>
+                    <div class="invalid-feedback" v-if="!$v.entity.codigoCondicaoPagamento.minValue">
+                        Selecione uma Condição de Pagamento
+                    </div>
                 </div>
             </div>
         </div>
@@ -118,6 +130,8 @@
 </template>
 
 <script>
+import {validationMixin} from 'vuelidate'
+import {required, minValue, maxValue} from 'vuelidate/lib/validators'
 import {ClientesService} from '@/services/clientes.service'
 import {CondicoesPagamentoService} from '@/services/condicoesPagamento.service'
 import {AreasLocacaoService} from '@/services/areasLocacao.service'
@@ -136,6 +150,27 @@ const notyf = new Notyf();
 export default {
     name: "ReservasEdit",
     components: { VueGoodTable, ConsultaCliente, ConsultaCondicaoPagamento },
+    mixins: [validationMixin],
+    validations() {
+        let validation = {
+            entity: {
+                codigoCliente: {
+                    minValue: minValue(1),
+                },
+                qtdePessoas: {
+                    minValue: minValue(1),
+                    maxValue: maxValue(70),
+                },
+                dtReserva: {
+                    required,
+                },
+                codigoCondicaoPagamento: {
+                    minValue: minValue(1),
+                }
+            }
+        }
+        return validation;
+    },
     data() {
         return {
             entity: {
@@ -178,6 +213,7 @@ export default {
             precoPessoas: [],
             valorPessoas: 0,
             valorAreas: 0,
+            isLoading: false,
             isSubmiting: false
         }
     },
@@ -266,7 +302,19 @@ export default {
         save() {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$v.$touch();
+            console.log(this.$v.entity.areasLocacao);
             const vm = this;
+
+            if (this.$v.$invalid) {
+                this.isSubmiting = false;
+                return;
+            }
+
+            if (this.entity.areasLocacao.length == 0) {
+                notyf.error("Selecione pelo menos uma área para locação");
+                return;
+            }
 
             ReservasService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editada" : 'criada';
@@ -277,7 +325,7 @@ export default {
         },
         calcValor() {
             this.valorPessoas = 0;
-            var value = this.entity.qtdePessoas > 70 ? 70 : this.entity.qtdePessoas;
+            var value = this.entity.qtdePessoas;
             for (let i=0; i < this.precoPessoas.length; i++) {
                 var max = this.precoPessoas[i].maxPessoas;
                 if (value > max) {

@@ -10,28 +10,41 @@
 
             <div class="col-5">
                 <label>Cidade</label> 
-                <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="entity.cidade"/>
+                <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="entity.cidade"
+                    :class="{'is-invalid': $v.entity.cidade.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.cidade.required">
+                    Cidade obrigatório
+                </div>
             </div>
 
             <div class="col-2">
                 <label>DDD</label>
-                <input id="ddd" type="text" class="form-control" v-uppercase v-model.lazy="entity.ddd"/>
+                <input id="ddd" type="text" class="form-control" v-uppercase v-model.lazy="entity.ddd"
+                    :class="{'is-invalid': $v.entity.ddd.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.ddd.required">
+                    DDD obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.ddd.minLength || !$v.entity.ddd.maxLength">
+                    DDD deve ter entre 2 e 4 caracteres
+                </div>
             </div>
         </div>
 
         <div class="row form-group">
-            <div class="col-1">
-                <label>Código</label> 
-                <input id="codigoEstado" type="number" class="form-control" v-model.number="entity.codigoEstado" @input="searchEstado"/>
-            </div>
-            
-            <div class="col-4">
+            <div class="col-5">
                 <label>Estado</label>
                 <div class="input-group">
-                    <input id="estado" type="text" class="form-control" v-model.lazy="estadoSelecionado" readonly/>
-                    <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-estado class="btn btn-info ml-1">Buscar</b-button>
-                    </span>
+                    <input id="codigoEstado" type="number" class="form-control" v-model.number="entity.codigoEstado" @input="searchEstado"
+                        :class="{'is-invalid': $v.entity.codigoEstado.$error, 'd-none': isLoading}"/>
+                    <div class="input-group-append">
+                        <input id="estado" type="text" class="form-control" v-model.lazy="estadoSelecionado" readonly/>
+                        <span class="input-group-btn">
+                            <b-button v-b-modal.modal-consult-estado class="btn btn-info ml-1">Buscar</b-button>
+                        </span>
+                    </div>
+                    <div class="invalid-feedback" v-if="!$v.entity.codigoEstado.minValue">
+                        Selecione um Estado
+                    </div>
                 </div>
             </div>
         </div>
@@ -62,6 +75,8 @@
 </template>
 
 <script>
+import {validationMixin} from 'vuelidate'
+import {required, minLength, maxLength, minValue} from 'vuelidate/lib/validators'
 import {EstadosService} from '@/services/estados.service'
 import {CidadesService} from '@/services/cidades.service'
 import ConsultaEstado from '@/components/pages/estados/Consult.vue'
@@ -80,6 +95,25 @@ export default {
             default: false
         }
     },
+    mixins: [validationMixin],
+    validations() {
+        let validation = {
+            entity: {
+                cidade: {
+                    required,
+                },
+                ddd: {
+                    required,
+                    minLength: minLength(2),
+                    maxLength: maxLength(4),
+                },
+                codigoEstado: {
+                    minValue: minValue(1),
+                },
+            }
+        }
+        return validation;
+    },
     data() {
         return {
             entity: {
@@ -91,6 +125,7 @@ export default {
                 dtAlteracao: null
             },
             estadoSelecionado: null,
+            isLoading: false,
             isSubmiting: false
         }
     },
@@ -135,7 +170,14 @@ export default {
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$v.$touch();
             const vm = this;
+
+            if (this.$v.$invalid) {
+                this.isSubmiting = false;
+                return;
+            }
+
             CidadesService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Cidade " + msg + " com sucesso");

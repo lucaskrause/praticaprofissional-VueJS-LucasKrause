@@ -10,17 +10,35 @@
 
             <div class="col-5">
                 <label>País</label>
-                <input id="pais" type="text" class="form-control" v-uppercase v-model.lazy="entity.pais"/>
+                <input id="pais" type="text" class="form-control" v-uppercase v-model.lazy="entity.pais"
+                    :class="{'is-invalid': $v.entity.pais.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.pais.required">
+                    País obrigatório
+                </div>
             </div>
 
             <div class="col-2">
                 <label>Sigla</label>
-                <input id="sigla" type="text" class="form-control" v-uppercase v-model.lazy="entity.sigla"/>
+                <input id="sigla" type="text" class="form-control" v-uppercase v-model.lazy="entity.sigla"
+                    :class="{'is-invalid': $v.entity.sigla.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.sigla.required">
+                    Sigla obrigatória
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.sigla.minLength || !$v.entity.sigla.maxLength">
+                    Sigla deve ter entre 2 e 4 caracteres
+                </div>
             </div>
 
             <div class="col-2">
                 <label>DDI</label>
-                <input id="ddi" type="text" class="form-control" v-uppercase v-model.lazy="entity.ddi"/>
+                <input id="ddi" type="text" class="form-control" v-uppercase v-model.lazy="entity.ddi"
+                    :class="{'is-invalid': $v.entity.ddi.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.ddi.required">
+                    DDI obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.ddi.minLength || !$v.entity.ddi.maxLength">
+                    DDI deve ter entre 2 e 4 caracteres
+                </div>
             </div>
         </div>
 
@@ -46,7 +64,10 @@
 </template>
 
 <script>
+import {validationMixin} from 'vuelidate'
+import {required, minLength, maxLength} from 'vuelidate/lib/validators'
 import {PaisesService} from '@/services/paises.service'
+import Helper from "@/components/helper";
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -60,6 +81,27 @@ export default {
             default: false
         }
     },
+    mixins: [validationMixin],
+    validations() {
+        let validation = {
+            entity: {
+                pais: {
+                    required,
+                },
+                sigla: {
+                    required,
+                    minLength: minLength(2),
+                    maxLength: maxLength(4),
+                },
+                ddi: {
+                    required,
+                    minLength: minLength(2),
+                    maxLength: maxLength(4),
+                },
+            }
+        }
+        return validation;
+    },
     data() {
         return {
             entity: {
@@ -70,6 +112,7 @@ export default {
                 dtCadastro: null,
                 dtAlteracao: null 
             },
+            isLoading: false,
             isSubmiting: false
         }
     },
@@ -80,14 +123,27 @@ export default {
         
             PaisesService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
+
+                var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
+                var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
+                
+                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
             });
         }
     },
     methods: {
         save() {
-            if (this.isSubmiting) return;
+            if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
+            this.$v.$touch();
             const vm = this;
+
+            if (this.$v.$invalid) {
+                this.isSubmiting = false;
+                return;
+            }
+
             PaisesService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("País " + msg + " com sucesso");

@@ -10,29 +10,49 @@
 
             <div class="col-4">
                 <label>Instituição</label>
-                <input id="instituicao" type="text" class="form-control" v-uppercase v-model.lazy="entity.instituicao"/>
+                <input id="instituicao" type="text" class="form-control" v-uppercase v-model.lazy="entity.instituicao"
+                    :class="{'is-invalid': $v.entity.instituicao.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.instituicao.required">
+                    Instituição obrigatória
+                </div>
             </div>
 
             <div class="col-3">
                 <label>Número do Banco</label>
-                <input id="numeroBanco" type="text" class="form-control" v-uppercase v-model.lazy="entity.numeroBanco"/>
+                <input id="numeroBanco" type="text" class="form-control" v-uppercase v-model.lazy="entity.numeroBanco"
+                    :class="{'is-invalid': $v.entity.numeroBanco.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.numeroBanco.required">
+                    Número do Banco obrigatória
+                </div>
             </div>
 
             <div class="col-2">
                 <label>Agência</label>
-                <input id="agencia" type="text" class="form-control" v-uppercase v-model.lazy="entity.agencia"/>
+                <input id="agencia" type="text" class="form-control" v-uppercase v-model.lazy="entity.agencia"
+                    :class="{'is-invalid': $v.entity.agencia.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.agencia.required">
+                    Agência obrigatória
+                </div>
             </div>
 
             <div class="col-2">
                 <label>Conta</label>
-                <input id="conta" type="text" class="form-control" v-uppercase v-model.lazy="entity.conta"/>
+                <input id="conta" type="text" class="form-control" v-uppercase v-model.lazy="entity.conta"
+                    :class="{'is-invalid': $v.entity.conta.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.conta.required">
+                    Conta obrigatória
+                </div>
             </div>
         </div>
 
         <div class="row form-group">
             <div class="col-2">
                 <label>Saldo</label> 
-                <input id="saldo" type="number" class="form-control" v-model.number="entity.saldo"/>
+                <input id="saldo" type="number" class="form-control" v-model.number="entity.saldo"
+                    :class="{'is-invalid': $v.entity.saldo.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.saldo.required">
+                    Saldo obrigatório
+                </div>
             </div>
         </div>
 
@@ -58,6 +78,8 @@
 </template>
 
 <script>
+import {validationMixin} from 'vuelidate'
+import {required} from 'vuelidate/lib/validators'
 import {ContasBancariasService} from '@/services/contasBancarias.service'
 import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
@@ -77,6 +99,29 @@ export default {
             default: null
         }
     },
+    mixins: [validationMixin],
+    validations() {
+        let validation = {
+            entity: {
+                instituicao: {
+                    required,
+                },
+                numeroBanco: {
+                    required,
+                },
+                agencia: {
+                    required,
+                },
+                conta: {
+                    required,
+                },
+                saldo: {
+                    required,
+                },
+            }
+        }
+        return validation;
+    },
     data() {
         return {
             entity: {
@@ -90,6 +135,7 @@ export default {
                 dtCadastro: null,
                 dtAlteracap: null,
             },
+            isLoading: false,
             isSubmiting: false
         }
     },
@@ -123,6 +169,13 @@ export default {
     },
     methods: {
         save() {
+            this.$v.$touch();
+
+            if (this.$v.$invalid) {
+                this.isSubmiting = false;
+                return;
+            }
+            
             if (this.isModal) {
                 this.$emit('emit-contaBancaria', this.entity);
             } else {
