@@ -50,7 +50,7 @@ const Helper = {
         })
     },
 
-    validatorCPF(strCPF) {
+    validadorCPF(strCPF) {
         var Soma;
         var Resto;
         Soma = 0;
@@ -71,7 +71,7 @@ const Helper = {
         return true;
     },
 
-    validarCNPJ(cnpj) {
+    validadorCNPJ(cnpj) {
         if(!cnpj || cnpj == '') return false;
 
         cnpj = cnpj.replace(/[^\d]+/g, '');

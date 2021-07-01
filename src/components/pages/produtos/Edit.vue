@@ -10,49 +10,75 @@
 
             <div class="col-5">
                 <label>Produto</label> 
-                <input id="produto" type="text" class="form-control" v-uppercase v-model.lazy="entity.produto"/>
+                <input id="produto" type="text" class="form-control" v-uppercase v-model.lazy="entity.produto"
+                    :class="{'is-invalid': $v.entity.produto.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.produto.required">
+                    Produto obrigatório
+                </div>
             </div>
 
             <div class="col-2">
                 <label>Unidades</label>
-                <input id="unidades" type="number" class="form-control" v-model.number="entity.unidades"/>
+                <input id="unidades" type="number" class="form-control" v-model.number="entity.unidades"
+                    :class="{'is-invalid': $v.entity.unidades.$error, 'd-none': isLoading}"/>
+                    <div class="invalid-feedback" v-if="!$v.entity.unidades.minValue">
+                        Unidade deve ser no mínimo 1
+                    </div>
             </div>
 
             <div class="col-2">
                 <label>Valor de Custo</label>
-                <input id="valorCusto" type="number" class="form-control" v-model.number="entity.valorCusto"/>
+                <input id="valorCusto" type="number" class="form-control" v-model.number="entity.valorCusto"
+                    :class="{'is-invalid': $v.entity.valorCusto.$error, 'd-none': isLoading}"/>
+                    <div class="invalid-feedback" v-if="!$v.entity.valorCusto.minValue">
+                        Valor de custo obrigatório
+                    </div>
             </div>
 
             <div class="col-2">
                 <label>Estoque</label>
-                <input id="estoque" type="number" class="form-control" v-model.number="entity.estoque"/>
+                <input id="estoque" type="number" class="form-control" v-model.number="entity.estoque"
+                    :class="{'is-invalid': $v.entity.estoque.$error, 'd-none': isLoading}"/>
+                    <div class="invalid-feedback" v-if="!$v.entity.estoque.minValue">
+                        Estoque obrigatório
+                    </div>
             </div>
         </div>
 
         <div class="row form-group">
-            <div class="col-1">
-                <label>Código</label> 
-                <input id="codigoCategoria" type="number" class="form-control" v-model.number="entity.codigoCategoria" @input="searchCategoria"/>
-            </div>
-
-            <div class="col-4">
+            <div class="col-5">
                 <label>Categoria</label>
                 <div class="input-group">
-                    <input id="categoria" type="text" class="form-control" v-model.lazy="categoriaSelecionada" readonly/>
-                    <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-categoria class="btn btn-info ml-1">Buscar</b-button>
-                    </span>
+                    <input id="codigoCategoria" type="number" class="form-control" v-model.number="entity.codigoCategoria" @input="searchCategoria"
+                        :class="{'is-invalid': $v.entity.codigoCategoria.$error, 'd-none': isLoading}"/>
+                    <div class="input-group-append">
+                        <input id="categoria" type="text" class="form-control" v-model.lazy="categoriaSelecionada" readonly/>
+                        <span class="input-group-btn">
+                            <b-button v-b-modal.modal-consult-categoria class="btn btn-info ml-1">Buscar</b-button>
+                        </span>
+                    </div>
+                    <div class="invalid-feedback" v-if="!$v.entity.codigoCategoria.minValue">
+                        Selecione uma Categoria
+                    </div>
                 </div>
             </div>
 
             <div class="col-3">
                 <label>Data da última compra</label> 
-                <input id="dtUltimaCompra" type="date" class="form-control" v-model="entity.dtUltimaCompra"/>
+                <input id="dtUltimaCompra" type="date" class="form-control" v-model="entity.dtUltimaCompra"
+                    :class="{'is-invalid': $v.entity.dtUltimaCompra.$error, 'd-none': isLoading}"/>
+                    <div class="invalid-feedback" v-if="!$v.entity.dtUltimaCompra.required">
+                        Selecione uma Categoria
+                    </div>
             </div>
 
             <div class="col-3">
                 <label>Valor da última compra</label>
-                <input id="valorUltimaCompra" type="number" class="form-control" v-model.number="entity.valorUltimaCompra"/>
+                <input id="valorUltimaCompra" type="number" class="form-control" v-model.number="entity.valorUltimaCompra"
+                    :class="{'is-invalid': $v.entity.valorUltimaCompra.$error, 'd-none': isLoading}"/>
+                    <div class="invalid-feedback" v-if="!$v.entity.valorUltimaCompra.minValue">
+                        Selecione uma Categoria
+                    </div>
             </div>
         </div>
 
@@ -82,6 +108,8 @@
 </template>
 
 <script>
+import {validationMixin} from 'vuelidate'
+import {required, minValue} from 'vuelidate/lib/validators'
 import {CategoriasService} from '@/services/categorias.service'
 import {ProdutosService} from '@/services/produtos.service'
 import ConsultaCategoria from '@/components/pages/categorias/Consult.vue'
@@ -100,21 +128,51 @@ export default {
             default: false
         }
     },
+    mixins: [validationMixin],
+    validations() {
+        let validation = {
+            entity: {
+                produto: {
+                    required,
+                },
+                unidades: {
+                    minValue: minValue(1),
+                },
+                valorCusto: {
+                    minValue: minValue(0.01),
+                },
+                estoque: {
+                    minValue: minValue(1),
+                },
+                codigoCategoria: {
+                    minValue: minValue(1),
+                },
+                dtUltimaCompra: {
+                    required,
+                },
+                valorUltimaCompra: {
+                    minValue: minValue(0.01),
+                },
+            }
+        }
+        return validation;
+    },
     data() {
         return {
             entity: {
                 codigo: 0,
                 produto: null,
                 unidades: 0,
-                valorCusto: null,
-                estoque: null,
+                valorCusto: 0,
+                estoque: 0,
                 codigoCategoria: 0,
                 dtUltimaCompra: null,
-                valorUltimaCompra: null,
+                valorUltimaCompra: 0,
                 dtCadastro: null,
                 dtAlteracao: null
             },
             categoriaSelecionada: null,
+            isLoading: false,
             isSubmiting: false
         }
     },
@@ -161,7 +219,14 @@ export default {
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$v.$touch();
             const vm = this;
+
+            if (this.$v.$invalid) {
+                this.isSubmiting = false;
+                return;
+            }
+
             ProdutosService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Produto " + msg + " com sucesso");
@@ -175,6 +240,6 @@ export default {
                 }
             }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
         }
-    }
+    },
 }
 </script>

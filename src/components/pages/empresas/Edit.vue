@@ -10,7 +10,11 @@
 
             <div class="col-5">
                 <label>Razão Social</label>
-                <input id="razaoSocial" type="text" class="form-control" v-uppercase v-model.lazy="entity.razaoSocial"/>
+                <input id="razaoSocial" type="text" class="form-control" v-uppercase v-model.lazy="entity.razaoSocial"
+                    :class="{'is-invalid': $v.entity.razaoSocial.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.razaoSocial.required">
+                    Data de Fundação obrigatória
+                </div>
             </div>
 
             <div class="col-5">
@@ -22,55 +26,85 @@
         <div class="row form-group">
             <div class="col-4">
                 <label>Logradouro</label>
-                <input id="logradouro" type="text" class="form-control" v-uppercase v-model.lazy="entity.logradouro"/>
+                <input id="logradouro" type="text" class="form-control" v-uppercase v-model.lazy="entity.logradouro"
+                    :class="{'is-invalid': $v.entity.logradouro.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.logradouro.required">
+                    Logradouro obrigatório
+                </div>
             </div>
 
             <div class="col-2">
                 <label>Complemento</label>
                 <input id="complemento" type="text" class="form-control" v-uppercase v-model.lazy="entity.complemento"/>
             </div>
+
             <div class="col-4">
                 <label>Bairro</label>
-                <input id="bairro" type="text" class="form-control" v-uppercase v-model.lazy="entity.bairro"/>
+                <input id="bairro" type="text" class="form-control" v-uppercase v-model.lazy="entity.bairro"
+                    :class="{'is-invalid': $v.entity.bairro.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.bairro.required">
+                    Bairro obrigatório
+                </div>
             </div>
 
             <div class="col-2">
                 <label>CEP</label>
-                <input id="cep" type="text" class="form-control" v-uppercase v-model.lazy="entity.cep"/>
+                <input id="cep" type="text" class="form-control" v-uppercase v-model.lazy="entity.cep"
+                    :class="{'is-invalid': $v.entity.cep.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.cep.required">
+                    CEP obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.cep.minLength || !$v.entity.cep.maxLength">
+                    CEP inválido
+                </div>
             </div>
         </div>
 
         <div class="row form-group">
-            <div class="col-1">
-                <label>Código</label> 
-                <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="searchCidade"/>
-            </div>
-
-            <div class="col-4">
+            <div class="col-5">
                 <label>Cidade</label>
                 <div class="input-group">
-                    <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="cidadeSelecionada" readonly/>
-                    <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-cidade class="btn btn-info ml-1">Buscar</b-button>
-                    </span>
+                    <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="searchCidade"
+                        :class="{'is-invalid': $v.entity.codigoCidade.$error, 'd-none': isLoading}"/>
+                    <div class="input-group-append">
+                        <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="cidadeSelecionada" readonly/>
+                        <span class="input-group-btn">
+                            <b-button v-b-modal.modal-consult-cidade class="btn btn-info ml-1">Buscar</b-button>
+                        </span>
+                    </div>
+                    <div class="invalid-feedback" v-if="!$v.entity.codigoCidade.minValue">
+                        Selecione uma Cidade
+                    </div>
                 </div>
             </div>
 
             <div class="col-3">
                 <label>Telefone</label>
-                <input id="telefone" type="text" class="form-control" v-uppercase v-model.lazy="entity.telefone"/>
+                <input id="telefone" type="text" class="form-control" v-uppercase v-model.lazy="entity.telefone"
+                    :class="{'is-invalid': $v.entity.telefone.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.telefone.required">
+                    Telefone obrigatório
+                </div>
             </div>
 
             <div class="col-4">
                 <label>Email</label>
-                <input id="email" type="text" class="form-control" v-uppercase v-model.lazy="entity.email"/>
+                <input id="email" type="text" class="form-control" v-uppercase v-model.lazy="entity.email"
+                    :class="{'is-invalid': $v.entity.email.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.email.required">
+                    Email obrigatório
+                </div>
             </div>
         </div>
 
         <div class="row form-group">
             <div class="col-3">
                 <label>CNPJ</label>
-                <input id="cnpj" type="text" class="form-control" v-uppercase v-model.lazy="entity.cnpj"/>
+                <input id="cnpj" type="text" class="form-control" v-uppercase v-model.lazy="entity.cnpj"
+                    :class="{'is-invalid': $v.entity.cnpj.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.cnpj.required">
+                    CNPJ obrigatório
+                </div>
             </div>
 
             <div class="col-3">
@@ -80,7 +114,11 @@
 
             <div class="col-3">
                 <label>Data de Fundação</label>
-                <input id="dtFundacao" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtFundacao"/>
+                <input id="dtFundacao" type="date" class="form-control" v-model="entity.dtFundacao"
+                    :class="{'is-invalid': $v.entity.dtFundacao.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.dtFundacao.required">
+                    Data de Fundação obrigatória
+                </div>
             </div>
 
             <div class="col-3">
@@ -151,6 +189,8 @@
 </template>
 
 <script>
+import {validationMixin} from 'vuelidate'
+import {required, minLength, maxLength, minValue} from 'vuelidate/lib/validators'
 import {CidadesService} from '@/services/cidades.service'
 import {EmpresasService} from '@/services/empresas.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
@@ -166,6 +206,43 @@ const notyf = new Notyf();
 export default {
     name: "EmpresasEdit",
     components: { VueGoodTable, ConsultaCidade, NovaContaBancaria },
+    mixins: [validationMixin],
+    validations() {
+        let validation = {
+            entity: {
+                razaoSocial:  {
+                    required,
+                },
+                logradouro: {
+                    required,
+                },
+                bairro: {
+                    required,
+                },
+                cep: {
+                    required,
+                    minLength: minLength(9),
+                    maxLength: maxLength(9),
+                },
+                codigoCidade: {
+                    minValue: minValue(1),
+                },
+                telefone: {
+                    required,
+                },
+                email: {
+                    required,
+                },
+                cnpj: {
+                    required,
+                },
+                dtFundacao: {
+                    required,
+                },
+            }
+        }
+        return validation;
+    },
     data() {
         return {
             entity: {
@@ -230,6 +307,7 @@ export default {
             contaBancariaRemovido: [],
             isEdit: false,
             indexEdit: -1,
+            isLoading: false,
             isSubmiting: false
         }
     },
@@ -288,7 +366,20 @@ export default {
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$v.$touch();
             const vm = this;
+
+            if (this.$v.$invalid) {
+                this.isSubmiting = false;
+                return;
+            }
+            
+            console.log("oi");
+            if (!Helper.validadorCNPJ(this.entity.cnpj)) {
+                console.log("oi");
+                notyf.error("CNPJ inválido");
+                return;
+            }
 
             this.contasBancarias.rows = this.clearContasBancarias(this.contasBancarias.rows.concat(this.contaBancariaRemovido));
             this.entity.contasBancarias = this.contasBancarias.rows;

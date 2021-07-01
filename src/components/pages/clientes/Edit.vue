@@ -11,22 +11,26 @@
             <div class="col-2">
                 <label>Tipo Pessoa</label>
                 <br/>
-                <label class="radio-inline labelRadio"><input type="radio" value="PF" v-uppercase v-model.lazy="entity.tipoPessoa"> Pessoa Física</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="PF" v-model="entity.tipoPessoa" :disabled="entity.codigo > 0"> Pessoa Física</label>
                 <br/>
-                <label class="radio-inline labelRadio"><input type="radio" value="PJ" v-uppercase v-model.lazy="entity.tipoPessoa"> Pessoa Jurídica</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="PJ" v-model="entity.tipoPessoa" :disabled="entity.codigo > 0"> Pessoa Jurídica</label>
             </div>
 
             <div class="col-5">
                 <label>Cliente</label>
-                <input id="nome" type="text" class="form-control" v-uppercase v-model.lazy="entity.nome"/>
+                <input id="nome" type="text" class="form-control" v-uppercase v-model.lazy="entity.nome"
+                    :class="{'is-invalid': $v.entity.nome.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.nome.required">
+                    Cliente obrigatório
+                </div>
             </div>
 
             <div class="col-2">
                 <label>Sexo</label>
                 <br/>
-                <label class="radio-inline labelRadio"><input type="radio" value="Feminino" v-uppercase v-model.lazy="entity.sexo"> Feminino</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="Masculino" v-model="entity.sexo"> Masculino</label>
                 <br/>
-                <label class="radio-inline labelRadio"><input type="radio" value="Masculino" v-uppercase v-model.lazy="entity.sexo"> Masculino</label>
+                <label class="radio-inline labelRadio"><input type="radio" value="Feminino" v-model="entity.sexo"> Feminino</label>
             </div>
 
             <div class="col-2">
@@ -41,81 +45,113 @@
         <div class="row form-group">
             <div class="col-4">
                 <label>Logradouro</label>
-                <input id="logradouro" type="text" class="form-control" v-uppercase v-model.lazy="entity.logradouro"/>
+                <input id="logradouro" type="text" class="form-control" v-uppercase v-model.lazy="entity.logradouro"
+                    :class="{'is-invalid': $v.entity.logradouro.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.logradouro.required">
+                    Logradouro obrigatório
+                </div>
             </div>
 
             <div class="col-2">
                 <label>Complemento</label>
                 <input id="complemento" type="text" class="form-control" v-uppercase v-model.lazy="entity.complemento"/>
             </div>
+            
             <div class="col-4">
                 <label>Bairro</label>
-                <input id="bairro" type="text" class="form-control" v-uppercase v-model.lazy="entity.bairro"/>
+                <input id="bairro" type="text" class="form-control" v-uppercase v-model.lazy="entity.bairro"
+                    :class="{'is-invalid': $v.entity.bairro.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.bairro.required">
+                    Bairro obrigatório
+                </div>
             </div>
 
             <div class="col-2">
                 <label>CEP</label>
-                <input id="cep" type="text" class="form-control" v-uppercase v-model.lazy="entity.cep"/>
+                <input id="cep" type="text" class="form-control" v-uppercase v-model.lazy="entity.cep"
+                    :class="{'is-invalid': $v.entity.cep.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.cep.required">
+                    CEP obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.cep.minLength || !$v.entity.cep.maxLength">
+                    CEP inválido
+                </div>
             </div>
         </div>
 
         <div class="row form-group">
-            <div class="col-1">
-                <label>Código</label>
-                <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="searchCidade"/>
-            </div>
-            
-            <div class="col-4">
+            <div class="col-5">
                 <label>Cidade</label>
                 <div class="input-group">
-                    <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="cidadeSelecionada" readonly/>
-                    <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-cidade class="btn btn-info ml-1">Buscar</b-button>
-                    </span>
+                    <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="searchCidade"
+                        :class="{'is-invalid': $v.entity.codigoCidade.$error, 'd-none': isLoading}"/>
+                    <div class="input-group-append">
+                        <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="cidadeSelecionada" readonly/>
+                        <span class="input-group-btn">
+                            <b-button v-b-modal.modal-consult-cidade class="btn btn-info ml-1">Buscar</b-button>
+                        </span>
+                    </div>
+                    <div class="invalid-feedback" v-if="!$v.entity.codigoCidade.minValue">
+                        Selecione uma Cidade
+                    </div>
                 </div>
             </div>
 
             <div class="col-3">
                 <label>Telefone</label>
-                <input id="telefone" type="text" class="form-control" v-uppercase v-model.lazy="entity.telefone"/>
+                <input id="telefone" type="text" class="form-control" v-uppercase v-model.lazy="entity.telefone"
+                    :class="{'is-invalid': $v.entity.telefone.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.telefone.required">
+                    Telefone obrigatório
+                </div>
             </div>
 
             <div class="col-4">
                 <label>Email</label>
-                <input id="email" type="text" class="form-control" v-uppercase v-model.lazy="entity.email"/>
+                <input id="email" type="text" class="form-control" v-uppercase v-model.lazy="entity.email"
+                    :class="{'is-invalid': $v.entity.email.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.email.required">
+                    Email obrigatório
+                </div>
             </div>
         </div>
 
         <div class="row form-group">
             <div class="col-3">
-                <label>CPF / CNPJ</label>
-                <input id="cpfCnpj" type="text" class="form-control" v-uppercase v-model.lazy="entity.cpfCnpj"/>
+                <label>{{ labels.cpfCnpj }}</label>
+                <input id="cpfCnpj" type="text" class="form-control" v-uppercase v-model.lazy="entity.cpfCnpj"
+                    :class="{'is-invalid': $v.entity.cpfCnpj.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.cpfCnpj.required">
+                    {{ labels.cpfCnpj }} obrigatório
+                </div>
             </div>
 
             <div class="col-3">
-                <label>RG / IE</label>
+                <label>{{ labels.rgIe }}</label>
                 <input id="rgIe" type="text" class="form-control" v-uppercase v-model.lazy="entity.rgIe"/>
             </div>
 
             <div class="col-3">
-                <label>Data de Nascimento / Fundação</label>
-                <input id="dtNascimento" type="date" class="form-control" v-model="entity.dtNascimento"/>
+                <label>{{ labels.dtNascimento }}</label>
+                <input id="dtNascimento" type="date" class="form-control" v-model="entity.dtNascimento"
+                    :class="{'is-invalid': $v.entity.dtNascimento.$error, 'd-none': isLoading}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.dtNascimento.required">
+                    {{ labels.dtNascimento }} obrigatória
+                </div>
             </div>
         </div>
 
         <div class="row form-group">
-            <div class="col-1">
-                <label>Código</label>
-                <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" @input="searchCondicao"/>
-            </div>
-            
-            <div class="col-4">
+            <div class="col-5">
                 <label>Condição de Pagamento</label>
                 <div class="input-group">
-                    <input id="condicaoPagamento" type="text" class="form-control" v-uppercase v-model.lazy="condicaoSelecionada" readonly/>
-                    <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-condicaoPagamento class="btn btn-info ml-1">Buscar</b-button>
-                    </span>
+                    <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" @input="searchCondicao"/>
+                    <div class="input-group-append">
+                        <input id="condicaoPagamento" type="text" class="form-control" v-uppercase v-model.lazy="condicaoSelecionada" readonly/>
+                        <span class="input-group-btn">
+                            <b-button v-b-modal.modal-consult-condicaoPagamento class="btn btn-info ml-1">Buscar</b-button>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -186,6 +222,8 @@
 </template>
 
 <script>
+import {validationMixin} from 'vuelidate'
+import {required, minLength, maxLength, minValue} from 'vuelidate/lib/validators'
 import {CidadesService} from '@/services/cidades.service'
 import {CondicoesPagamentoService} from '@/services/condicoesPagamento.service'
 import {ClientesService} from '@/services/clientes.service'
@@ -213,13 +251,51 @@ export default {
             default: false
         }
     },
+    mixins: [validationMixin],
+    validations() {
+        let validation = {
+            entity: {
+                nome:  {
+                    required,
+                },
+                logradouro: {
+                    required,
+                },
+                bairro: {
+                    required,
+                },
+                cep: {
+                    required,
+                    minLength: minLength(9),
+                    maxLength: maxLength(9),
+                },
+                codigoCidade: {
+                    minValue: minValue(1),
+                },
+                telefone: {
+                    required,
+                },
+                email: {
+                    required,
+                },
+                cpfCnpj: {
+                    required,
+                },
+                dtNascimento: {
+                    required,
+                },
+            }
+        }
+        return validation;
+    },
     data() {
         return {
+            labels: { cpfCnpj: "CPF", rgIe: "RG", dtNascimento: "Data de Nascimento" },
             entity: {
                 codigo: 0,
                 nome: null,
-                sexo: null,
-                tipoPessoa: null,
+                sexo: "Masculino",
+                tipoPessoa: "PF",
                 logradouro: null,
                 complemento: null,
                 bairro: null,
@@ -280,6 +356,7 @@ export default {
             dependenteRemovido: [],
             isEdit: false,
             indexEdit: -1,
+            isLoading: false,
             isSubmiting: false
         }
     },
@@ -363,7 +440,22 @@ export default {
         save() {
             if(this.isSubmiting) return;
             this.isSubmiting = true;
+            this.$v.$touch();
             const vm = this;
+
+            if (this.$v.$invalid) {
+                this.isSubmiting = false;
+                return;
+            }
+            
+            if (this.entity.tipoPessoa == "PF" && !Helper.validadorCPF(this.entity.cpfCnpj)) {
+                notyf.error("CPF inválido");
+                return;
+            }
+            if (this.entity.tipoPessoa == "PJ" && !Helper.validadorCNPJ(this.entity.cpfCnpj)) {
+                notyf.error("CNPJ inválido");
+                return;
+            }
 
             this.dependentes.rows = this.clearDependentes(this.dependentes.rows.concat(this.dependenteRemovido));
             this.entity.dependentes = this.dependentes.rows;
@@ -404,6 +496,15 @@ export default {
                 }
             }
             return dependentes;
+        }
+    },
+    watch: {
+        'entity.tipoPessoa'(value) {
+            if (value == "PF") {
+                this.labels = { cpfCnpj: "CPF", rgIe: "RG", dtNascimento: "Data de Nascimento" };
+            } else {
+                this.labels = { cpfCnpj: "CNPJ", rgIe: "Inscrição Estadual", dtNascimento: "Data de Fundação" };
+            }
         }
     }
 }
