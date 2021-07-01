@@ -5,7 +5,7 @@
                 <div class="row">
                     <div class="col-12 company-name">
                         <router-link :to="{name: 'app'}" class="itemMenu">
-                            <img src="./../../assets/logo.png" class="rounded-circle" style="backgroundColor: white;" alt="">
+                            <img src="./../../assets/logo.png" class="rounded-circle" style="backgroundColor: white;" alt="Logo Sincofoz">
                             {{ NameCompany }}
                         </router-link>
                     </div>
@@ -46,7 +46,7 @@ export default {
     components: { BIconBuilding, BIconCart3, BIconCreditCard, BIconGeoAlt },
     data () {
         return {
-            NameCompany: "CLUBE SINCOFOZ",
+            NameCompany: "SINCOFOZ",
             groups: [
                 {id: 1, label: "Empresas",  icon: "BIconBuilding"},
                 {id: 2, label: "Geral", icon: "BIconCart3"},
@@ -103,7 +103,7 @@ export default {
 
 img {
     max-width: 100%;
-    max-width: 50px;
+    max-width: 70px;
     height: auto;
 }
 
