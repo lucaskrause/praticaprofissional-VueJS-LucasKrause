@@ -17,9 +17,9 @@
             </div>
 
             <div class="col-5">
-                <label>Cliente</label>
+                <label>Cliente</label><span class="isRequired"> *</span>
                 <input id="nome" type="text" class="form-control" v-uppercase v-model.lazy="entity.nome"
-                    :class="{'is-invalid': $v.entity.nome.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.nome.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.nome.required">
                     Cliente obrigatório
                 </div>
@@ -44,9 +44,9 @@
 
         <div class="row form-group">
             <div class="col-4">
-                <label>Logradouro</label>
+                <label>Logradouro</label><span class="isRequired"> *</span>
                 <input id="logradouro" type="text" class="form-control" v-uppercase v-model.lazy="entity.logradouro"
-                    :class="{'is-invalid': $v.entity.logradouro.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.logradouro.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.logradouro.required">
                     Logradouro obrigatório
                 </div>
@@ -58,18 +58,18 @@
             </div>
             
             <div class="col-4">
-                <label>Bairro</label>
+                <label>Bairro</label><span class="isRequired"> *</span>
                 <input id="bairro" type="text" class="form-control" v-uppercase v-model.lazy="entity.bairro"
-                    :class="{'is-invalid': $v.entity.bairro.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.bairro.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.bairro.required">
                     Bairro obrigatório
                 </div>
             </div>
 
             <div class="col-2">
-                <label>CEP</label>
+                <label>CEP</label><span class="isRequired"> *</span>
                 <input id="cep" type="text" class="form-control" v-uppercase v-model.lazy="entity.cep"
-                    :class="{'is-invalid': $v.entity.cep.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.cep.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.cep.required">
                     CEP obrigatório
                 </div>
@@ -81,10 +81,10 @@
 
         <div class="row form-group">
             <div class="col-5">
-                <label>Cidade</label>
+                <label>Cidade</label><span class="isRequired"> *</span>
                 <div class="input-group">
                     <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="searchCidade"
-                        :class="{'is-invalid': $v.entity.codigoCidade.$error, 'd-none': isLoading}"/>
+                        :class="{'is-invalid': $v.entity.codigoCidade.$error}"/>
                     <div class="input-group-append">
                         <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="cidadeSelecionada" readonly/>
                         <span class="input-group-btn">
@@ -98,18 +98,18 @@
             </div>
 
             <div class="col-3">
-                <label>Telefone</label>
+                <label>Telefone</label><span class="isRequired"> *</span>
                 <input id="telefone" type="text" class="form-control" v-uppercase v-model.lazy="entity.telefone"
-                    :class="{'is-invalid': $v.entity.telefone.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.telefone.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.telefone.required">
                     Telefone obrigatório
                 </div>
             </div>
 
             <div class="col-4">
-                <label>Email</label>
+                <label>Email</label><span class="isRequired"> *</span>
                 <input id="email" type="text" class="form-control" v-uppercase v-model.lazy="entity.email"
-                    :class="{'is-invalid': $v.entity.email.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.email.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.email.required">
                     Email obrigatório
                 </div>
@@ -118,9 +118,9 @@
 
         <div class="row form-group">
             <div class="col-3">
-                <label>{{ labels.cpfCnpj }}</label>
+                <label>{{ labels.cpfCnpj }}</label><span class="isRequired"> *</span>
                 <input id="cpfCnpj" type="text" class="form-control" v-uppercase v-model.lazy="entity.cpfCnpj"
-                    :class="{'is-invalid': $v.entity.cpfCnpj.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.cpfCnpj.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.cpfCnpj.required">
                     {{ labels.cpfCnpj }} obrigatório
                 </div>
@@ -132,9 +132,9 @@
             </div>
 
             <div class="col-3">
-                <label>{{ labels.dtNascimento }}</label>
+                <label>{{ labels.dtNascimento }}</label><span class="isRequired"> *</span>
                 <input id="dtNascimento" type="date" class="form-control" v-model="entity.dtNascimento"
-                    :class="{'is-invalid': $v.entity.dtNascimento.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.dtNascimento.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.dtNascimento.required">
                     {{ labels.dtNascimento }} obrigatória
                 </div>
@@ -187,12 +187,12 @@
         <div class="row form-group align-items-end mt-5">
             <div class="col-2">
                 <label>Data de Cadastro</label>
-                <input id="dataCadastro" type="text" class="form-control" v-model="entity.dtCadastro" readonly/>
+                <input id="dataCadastro" type="text" class="form-control" v-model="dtCad" readonly/>
             </div>
             
             <div class="col-2">
                 <label>Data de Alteração</label>
-                <input id="dataAlteracao" type="text" class="form-control" v-model="entity.dtAlteracao" readonly/>
+                <input id="dataAlteracao" type="text" class="form-control" v-model="dtAlt" readonly/>
             </div>
 
             <div class="col-8">
@@ -313,6 +313,8 @@ export default {
             },
             cidadeSelecionada: null,
             condicaoSelecionada: null,
+            dtCad: null,
+            dtAlt: null,
             dependentes: {
                 columns: [
                     {
@@ -373,8 +375,8 @@ export default {
                 var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
 
                 vm.entity.dtNascimento = dateNascimento;
-                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
-                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
+                vm.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.cidadeSelecionada = vm.entity.cidade.cidade;
                 vm.condicaoSelecionada = vm.entity.condicaoPagamento.descricao;
                 vm.dependentes.rows = vm.entity.dependentes ? vm.entity.dependentes : []; 
@@ -410,35 +412,43 @@ export default {
             }
         },
         searchCidade() {
+            this.isLoading = true;
             var vm = this;
             if (vm.entity.codigoCidade > 0) {
                 CidadesService.getById(vm.entity.codigoCidade).then(function (response) {
                     vm.cidadeSelecionada = response.data.cidade;
+                    vm.isLoading = false;
                 }).catch(function() {
                     vm.entity.codigoCidade = 0;
                     vm.cidadeSelecionada = null;
+                    vm.isLoading = false;
                     notyf.error("Cidade não encontrada");
                 });
             } else {
                 vm.cidadeSelecionada = null;
+                vm.isLoading = false;
             }
         },
         searchCondicao() {
+            this.isLoading = true;
             var vm = this;
             if (vm.entity.codigoCondicaoPagamento > 0) {
                 CondicoesPagamentoService.getById(vm.entity.codigoCondicaoPagamento).then(function (response) {
                     vm.condicaoSelecionada = response.data.descricao;
+                    vm.isLoading = false;
                 }).catch(function() {
                     vm.entity.codigoCondicaoPagamento = 0;
                     vm.condicaoSelecionada = null;
+                    vm.isLoading = false;
                     notyf.error("Condição de Pagamento não encontrada");
                 });
             } else {
                 vm.condicaoSelecionada = null;
+                vm.isLoading = false;
             }
         },
         save() {
-            if(this.isSubmiting) return;
+            if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
             this.$v.$touch();
             const vm = this;

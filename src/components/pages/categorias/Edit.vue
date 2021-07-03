@@ -9,9 +9,9 @@
             </div>
 
             <div class="col-5">
-                <label>Categoria</label> 
+                <label>Categoria</label><span class="isRequired"> *</span>
                 <input id="descricao" type="text" class="form-control" v-uppercase v-model.lazy.lazy="entity.descricao"
-                    :class="{'is-invalid': $v.entity.descricao.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.descricao.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.descricao.required">
                     Categoria obrigatória
                 </div>
@@ -21,12 +21,12 @@
         <div class="row form-group align-items-end mt-5">
             <div class="col-2">
                 <label>Data de Cadastro</label>
-                <input id="dataCadastro" type="text" class="form-control" v-model="entity.dtCadastro" readonly/>
+                <input id="dataCadastro" type="text" class="form-control" v-model="dtCad" readonly/>
             </div>
             
             <div class="col-2">
                 <label>Data de Alteração</label>
-                <input id="dataAlteracao" type="text" class="form-control" v-model="entity.dtAlteracao" readonly/>
+                <input id="dataAlteracao" type="text" class="form-control" v-model="dtAlt" readonly/>
             </div>
 
             <div class="col-8">
@@ -76,6 +76,8 @@ export default {
                 dtCadastro: null,
                 dtAlteracao: null
             },
+            dtCad: null,
+            dtAlt: null,
             estadoSelecionado: null,
             isLoading: false,
             isSubmiting: false
@@ -92,14 +94,14 @@ export default {
                 var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
                 var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
 
-                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
-                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
+                vm.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
             });
         }
     },
     methods: {
         save() {
-            if(this.isSubmiting) return;
+            if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
             this.$v.$touch();
             const vm = this;

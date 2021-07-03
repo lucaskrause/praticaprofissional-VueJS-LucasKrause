@@ -9,27 +9,27 @@
             </div>
 
             <div class="col-2">
-                <label>Mín de Pessoas</label>
+                <label>Mín de Pessoas</label><span class="isRequired"> *</span>
                 <input id="minPessoas" type="number" class="form-control" v-model.number="entity.minPessoas"
-                    :class="{'is-invalid': $v.entity.minPessoas.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.minPessoas.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.minPessoas.required || !$v.entity.minPessoas.minValue || !$v.entity.minPessoas.maxValue">
                     Mín de Pessoas deve estar entre 1 e 70
                 </div>
             </div>
 
             <div class="col-2">
-                <label>Máx de Pessoas</label>
+                <label>Máx de Pessoas</label><span class="isRequired"> *</span>
                 <input id="maxPessoas" type="number" class="form-control" v-model.number="entity.maxPessoas"
-                    :class="{'is-invalid': $v.entity.maxPessoas.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.maxPessoas.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.maxPessoas.required || !$v.entity.maxPessoas.minValue || !$v.entity.maxPessoas.maxValue">
                     Máx de Pessoas deve estar entre 1 e 70
                 </div>
             </div>
 
             <div class="col-2">
-                <label>Valor</label>
+                <label>Valor</label><span class="isRequired"> *</span>
                 <input id="valor" type="number" class="form-control" v-model.number="entity.valor"
-                    :class="{'is-invalid': $v.entity.valor.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.valor.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.valor.required">
                     Valor obrigatório
                 </div>
@@ -39,12 +39,12 @@
         <div class="row form-group align-items-end mt-5">
             <div class="col-2">
                 <label>Data de Cadastro</label>
-                <input id="dataCadastro" type="text" class="form-control" v-model="entity.dtCadastro" readonly/>
+                <input id="dataCadastro" type="text" class="form-control" v-model="dtCad" readonly/>
             </div>
             
             <div class="col-2">
                 <label>Data de Alteração</label>
-                <input id="dataAlteracao" type="text" class="form-control" v-model="entity.dtAlteracao" readonly/>
+                <input id="dataAlteracao" type="text" class="form-control" v-model="dtAlt" readonly/>
             </div>
 
             <div class="col-8">
@@ -100,6 +100,8 @@ export default {
                 dtCadastro: null,
                 dtAlteracao: null
             },
+            dtCad: null,
+            dtAlt: null,
             isLoading: false,
             isSubmiting: false
         }
@@ -115,14 +117,14 @@ export default {
                 var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
                 var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
                 
-                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
-                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
+                vm.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
             });
         }
     },
     methods: {
         save() {
-            if (this.isSubmiting) return;
+            if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
             this.$v.$touch();
             const vm = this;

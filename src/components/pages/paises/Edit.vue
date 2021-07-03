@@ -9,18 +9,18 @@
             </div>
 
             <div class="col-5">
-                <label>País</label>
+                <label>País</label><span class="isRequired"> *</span>
                 <input id="pais" type="text" class="form-control" v-uppercase v-model.lazy="entity.pais"
-                    :class="{'is-invalid': $v.entity.pais.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.pais.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.pais.required">
                     País obrigatório
                 </div>
             </div>
 
             <div class="col-2">
-                <label>Sigla</label>
+                <label>Sigla</label><span class="isRequired"> *</span>
                 <input id="sigla" type="text" class="form-control" v-uppercase v-model.lazy="entity.sigla"
-                    :class="{'is-invalid': $v.entity.sigla.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.sigla.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.sigla.required">
                     Sigla obrigatória
                 </div>
@@ -30,9 +30,9 @@
             </div>
 
             <div class="col-2">
-                <label>DDI</label>
+                <label>DDI</label><span class="isRequired"> *</span>
                 <input id="ddi" type="text" class="form-control" v-uppercase v-model.lazy="entity.ddi"
-                    :class="{'is-invalid': $v.entity.ddi.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.ddi.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.ddi.required">
                     DDI obrigatório
                 </div>
@@ -45,12 +45,12 @@
         <div class="row form-group align-items-end mt-5">
             <div class="col-2">
                 <label>Data de Cadastro</label>
-                <input id="dataCadastro" type="text" class="form-control" v-model="entity.dtCadastro" readonly/>
+                <input id="dataCadastro" type="text" class="form-control" v-model="dtCad" readonly/>
             </div>
             
             <div class="col-2">
                 <label>Data de Alteração</label>
-                <input id="dataAlteracao" type="text" class="form-control" v-model="entity.dtAlteracao" readonly/>
+                <input id="dataAlteracao" type="text" class="form-control" v-model="dtAlt" readonly/>
             </div>
 
             <div class="col-8">
@@ -112,6 +112,8 @@ export default {
                 dtCadastro: null,
                 dtAlteracao: null 
             },
+            dtCad: null,
+            dtAlt: null,
             isLoading: false,
             isSubmiting: false
         }
@@ -127,8 +129,8 @@ export default {
                 var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
                 var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
                 
-                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
-                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
+                vm.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
             });
         }
     },
@@ -155,7 +157,10 @@ export default {
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit('emit-pais', vm.entity);
                 }
-            }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
+            }).catch((response) => console.log(response));
+            //     // notyf.error(errors.data.message);
+            //     // vm.isSubmiting = false;
+            // });
         }
     }
 }

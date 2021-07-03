@@ -9,18 +9,18 @@
             </div>
 
             <div class="col-5">
-                <label>Estado</label> 
+                <label>Estado</label><span class="isRequired"> *</span>
                 <input id="estado" type="text" class="form-control" v-uppercase v-model.lazy="entity.estado"
-                    :class="{'is-invalid': $v.entity.estado.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.estado.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.estado.required">
                     Estado obrigatório
                 </div>
             </div>
 
             <div class="col-1">
-                <label>UF</label>
+                <label>UF</label><span class="isRequired"> *</span>
                 <input id="uf" type="text" class="form-control" v-uppercase v-model.lazy="entity.uf"
-                    :class="{'is-invalid': $v.entity.uf.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.uf.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.uf.required">
                     UF obrigatório
                 </div>
@@ -32,10 +32,10 @@
 
         <div class="row form-group">
             <div class="col-5">
-                <label>País</label>
+                <label>País</label><span class="isRequired"> *</span>
                 <div class="input-group">
                     <input id="codigoPais" type="number" class="form-control" v-model.number="entity.codigoPais" @input="searchPais"
-                        :class="{'is-invalid': $v.entity.codigoPais.$error, 'd-none': isLoading}"/>
+                        :class="{'is-invalid': $v.entity.codigoPais.$error}"/>
                     <div class="input-group-append">
                         <input type="text" class="input-group-text" v-model.lazy="paisSelecionado" readonly/>
                     </div>
@@ -52,12 +52,12 @@
         <div class="row form-group align-items-end mt-5">
             <div class="col-2">
                 <label>Data de Cadastro</label>
-                <input id="dataCadastro" type="text" class="form-control" v-model="entity.dtCadastro" readonly/>
+                <input id="dataCadastro" type="text" class="form-control" v-model="dtCad" readonly/>
             </div>
             
             <div class="col-2">
                 <label>Data de Alteração</label>
-                <input id="dataAlteracao" type="text" class="form-control" v-model="entity.dtAlteracao" readonly/>
+                <input id="dataAlteracao" type="text" class="form-control" v-model="dtAlt" readonly/>
             </div>
 
             <div class="col-8">
@@ -121,15 +121,13 @@ export default {
                 codigo: 0,
                 estado: null,
                 uf: null,
-                pais: {
-                    codigo: 0,
-                    pais: null,
-                },
                 codigoPais: 0,
                 dtCadastro: null,
                 dtAlteracao: null
             },
             paisSelecionado: null,
+            dtCad: null,
+            dtAlt: null,
             isLoading: false,
             isSubmiting: false
         }
@@ -145,8 +143,8 @@ export default {
                 var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
                 var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
                 
-                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
-                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
+                vm.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.paisSelecionado = response.data.pais.pais;
             });
         }
@@ -159,21 +157,25 @@ export default {
             this.$bvModal.hide("modal-consult-pais");
         },
         searchPais() {
+            this.isLoading = true;
             var vm = this;
             if (vm.entity.codigoPais > 0) {
                 PaisesService.getById(vm.entity.codigoPais).then(function (response) {
                     vm.paisSelecionado = response.data.pais;
+                    vm.isLoading = false;
                 }).catch(function() {
                     vm.entity.codigoPais = 0;
                     vm.paisSelecionado = null;
+                    vm.isLoading = false;
                     notyf.error("País não encontrado");
                 });
             } else {
                 vm.paisSelecionado = null;
+                vm.isLoading = false;
             }
         },
         save() {
-            if (this.isSubmiting) return;
+            if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
             this.$v.$touch();
             const vm = this;

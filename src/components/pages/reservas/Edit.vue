@@ -9,18 +9,18 @@
             </div>
             
             <div class="col-3 form-group">
-                <label>Quantidade de Pessoas</label>
+                <label>Quantidade de Pessoas</label><span class="isRequired"> *</span>
                 <input id="qtdePessoas" type="number" class="form-control" v-model.number="entity.qtdePessoas" @input="calcValor"
-                    :class="{'is-invalid': $v.entity.qtdePessoas.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.qtdePessoas.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.qtdePessoas.minValue || !$v.entity.qtdePessoas.maxValue">
                     Quantidade deve estar entre 1 e 70 Pessoas
                 </div>
             </div>
 
             <div class="col-3">
-                <label>Data da Reserva</label>
+                <label>Data da Reserva</label><span class="isRequired"> *</span>
                 <input id="dtReserva" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtReserva"
-                    :class="{'is-invalid': $v.entity.dtReserva.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.dtReserva.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.dtReserva.required">
                     Data da Reserva obrigatória
                 </div>
@@ -34,10 +34,10 @@
 
         <div class="row form-group">
             <div class="col-5">
-                <label>País</label>
+                <label>Cliente</label><span class="isRequired"> *</span>
                 <div class="input-group">
                    <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="searchCliente"
-                        :class="{'is-invalid': $v.entity.codigoCliente.$error, 'd-none': isLoading}"/>
+                        :class="{'is-invalid': $v.entity.codigoCliente.$error}"/>
                     <div class="input-group-append">
                         <input id="cliente" type="text" class="form-control" v-model.lazy="clienteSelecionado" readonly/>
                         <span class="input-group-btn">
@@ -51,10 +51,10 @@
             </div>
             
             <div class="col-5">
-                <label>Condição de Pagamento</label>
+                <label>Condição de Pagamento</label><span class="isRequired"> *</span>
                 <div class="input-group">
                    <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" @input="searchCondicao"
-                        :class="{'is-invalid': $v.entity.codigoCondicaoPagamento.$error, 'd-none': isLoading}"/>
+                        :class="{'is-invalid': $v.entity.codigoCondicaoPagamento.$error}"/>
                     <div class="input-group-append">
                         <input id="condicaoPagamento" type="text" class="form-control" v-uppercase v-model.lazy="condicaoSelecionada" readonly/>
                         <span class="input-group-btn">
@@ -69,8 +69,12 @@
         </div>
 
         <div class="row">
-            <div class="col-3">
+            <div class="col-4">
                 <label>Áreas de Locação</label>
+            </div>
+            
+            <div class="col-4">
+                <small v-if="entity.areasLocacao.length == '0'" class="invalid">Selecione pelo menos uma área para locação</small>
             </div>
         </div>
         <div class="row mt-1">
@@ -103,12 +107,12 @@
         <div class="row form-group align-items-end mt-5">
             <div class="col-2">
                 <label>Data de Cadastro</label>
-                <input id="dataCadastro" type="text" class="form-control" v-model="entity.dtCadastro" readonly/>
+                <input id="dataCadastro" type="text" class="form-control" v-model="dtCad" readonly/>
             </div>
             
             <div class="col-2">
                 <label>Data de Alteração</label>
-                <input id="dataAlteracao" type="text" class="form-control" v-model="entity.dtAlteracao" readonly/>
+                <input id="dataAlteracao" type="text" class="form-control" v-model="dtAlt" readonly/>
             </div>
 
             <div class="col-8">
@@ -186,6 +190,8 @@ export default {
             },
             clienteSelecionado: null,
             condicaoSelecionada: null,
+            dtCad: null,
+            dtAlt: null,
             areasLocacao: {
                 columns: [
                     {
@@ -246,8 +252,8 @@ export default {
                 var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
 
                 vm.entity.dtReserva = dateReserva;
-                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
-                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
+                vm.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.clienteSelecionado = vm.entity.cliente.nome;
                 vm.condicaoSelecionada = vm.entity.condicaoPagamento.descricao;
                 
@@ -272,35 +278,43 @@ export default {
             this.$bvModal.hide("modal-consult-condicaoPagamento");
         },
         searchCliente() {
+            this.isLoading = true;
             var vm = this;
             if (vm.entity.codigoCliente > 0) {
                 ClientesService.getById(vm.entity.codigoCliente).then(function (response) {
                     vm.clienteSelecionado = response.data.nome;
+                    vm.isLoading = false;
                 }).catch(function() {
                     vm.entity.codigoCliente = 0;
                     vm.clienteSelecionado = null;
+                    vm.isLoading = false;
                     notyf.error("Cliente não encontrada");
                 });
             } else {
                 vm.clienteSelecionado = null;
+                vm.isLoading = false;
             }
         },
         searchCondicao() {
+            this.isLoading = true;
             var vm = this;
             if (vm.entity.codigoCondicaoPagamento > 0) {
                 CondicoesPagamentoService.getById(vm.entity.codigoCondicaoPagamento).then(function (response) {
                     vm.condicaoSelecionada = response.data.descricao;
+                    vm.isLoading = false;
                 }).catch(function() {
                     vm.entity.codigoCondicaoPagamento = 0;
                     vm.condicaoSelecionada = null;
+                    vm.isLoading = false;
                     notyf.error("Condição de Pagamento não encontrada");
                 });
             } else {
                 vm.condicaoSelecionada = null;
+                vm.isLoading = false;
             }
         },
         save() {
-            if (this.isSubmiting) return;
+            if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
             this.$v.$touch();
             console.log(this.$v.entity.areasLocacao);
@@ -338,7 +352,7 @@ export default {
             this.entity.valor = this.valorPessoas + this.valorAreas;
         },
         selecionarAreas(areas) {
-            if (this.isCreate) {
+            if (!this.isCreate) {
                 var selecionadas = areas.selectedRows;
                 this.entity.areasLocacao = selecionadas;
                 this.valorAreas = 0;
@@ -353,3 +367,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.invalid{
+    color: red
+}
+</style>

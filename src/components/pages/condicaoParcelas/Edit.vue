@@ -9,27 +9,40 @@
             </div>
 
             <div class="col-2">
-                <label>Numero de Dias</label>
-                <input id="numeroDias" type="number" class="form-control" v-model.number="entity.numeroDias"/>
+                <label>Número de Dias</label><span class="isRequired"> *</span>
+                <input id="numeroDias" type="number" class="form-control" v-model.number="entity.numeroDias"
+                    :class="{'is-invalid': $v.entity.numeroDias.$error}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.numeroDias.required || !$v.entity.numeroDias.minValue">
+                    Número de Dias obrigatório
+                </div>
             </div>
 
             <div class="col-2">
-                <label>Porcentagem (%)</label>
-                <input id="porcentagem" type="number" class="form-control" v-model.number="entity.porcentagem"/>
+                <label>Porcentagem (%)</label><span class="isRequired"> *</span>
+                <input id="porcentagem" type="number" class="form-control" v-model.number="entity.porcentagem"
+                    :class="{'is-invalid': $v.entity.porcentagem.$error}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.porcentagem.required">
+                    Porcentagem obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.porcentagem.minValue || !$v.entity.porcentagem.maxValue">
+                    Porcentagem deve ser entre 0.0001 e {{ this.porcentagem }}
+                </div>
             </div>
 
-            <div class="col-1">
-                <label>Código</label>
-                <input id="codigoFormaPagamento" type="number" class="form-control" v-model.number="entity.codigoFormaPagamento" @input="searchForma"/>
-            </div>
-            
-            <div class="col-4">
-                <label>Forma de Pagamento</label>
+            <div class="col-5">
+                <label>Forma de Pagamento</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="formaPagamento" type="text" class="form-control" v-uppercase v-model.lazy="entity.formaPagamento.descricao" readonly/>
-                    <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-formaPagamento class="btn btn-info ml-1">Buscar</b-button>
-                    </span>
+                    <input id="codigoFormaPagamento" type="number" class="form-control" v-model.number="entity.codigoFormaPagamento" @input="searchForma"
+                        :class="{'is-invalid': $v.entity.codigoFormaPagamento.$error}"/>
+                    <div class="input-group-append">
+                        <input id="formaPagamento" type="text" class="form-control" v-uppercase v-model.lazy="entity.formaPagamento.descricao" readonly/>
+                        <span class="input-group-btn">
+                            <b-button v-b-modal.modal-consult-formaPagamento class="btn btn-info ml-1">Buscar</b-button>
+                        </span>
+                    </div>
+                    <div class="invalid-feedback" v-if="!$v.entity.codigoFormaPagamento.minValue">
+                        Selecione um Forma de Pagamento
+                    </div>
                 </div>
             </div>
         </div>
@@ -37,12 +50,12 @@
         <div class="row form-group align-items-end mt-5">
             <div class="col-2">
                 <label>Data de Cadastro</label>
-                <input id="dataCadastro" type="text" class="form-control" v-model="entity.dtCadastro" readonly/>
+                <input id="dataCadastro" type="text" class="form-control" v-model="dtCad" readonly/>
             </div>
             
             <div class="col-2">
                 <label>Data de Alteração</label>
-                <input id="dataAlteracao" type="text" class="form-control" v-model="entity.dtAlteracao" readonly/>
+                <input id="dataAlteracao" type="text" class="form-control" v-model="dtAlt" readonly/>
             </div>
 
             <div class="col-8">
@@ -60,6 +73,8 @@
 </template>
 
 <script>
+import {validationMixin} from 'vuelidate'
+import {required, minValue, maxValue} from 'vuelidate/lib/validators'
 import {FormasPagamentoService} from '@/services/formasPagamento.service'
 import ConsultaFormaPagamento from '@/components/pages/formasPagamento/Consult.vue'
 import Helper from '@/components/helper'
@@ -70,6 +85,7 @@ const notyf = new Notyf();
 
 export default {
     name: "ParcelasEdit",
+    components: { ConsultaFormaPagamento },
     props: {
         isModal: {
             type: Boolean,
@@ -82,9 +98,33 @@ export default {
         editParcela: {
             type: Object,
             default: null
+        },
+        porcentagem: {
+            type: Number,
+            default: 100
         }
     },
-    components: { ConsultaFormaPagamento },
+    mixins: [validationMixin],
+    validations() {
+        let validation = {
+            entity: {
+                numeroDias: {
+                    required,
+                    minValue: minValue(1),
+                },
+                porcentagem: {
+                    required,
+                    minValue: minValue(0.0001),
+                    maxValue: maxValue(this.porcentagem),
+                },
+                codigoFormaPagamento: {
+                    required,
+                    minValue: minValue(1),
+                },
+            }
+        }
+        return validation;
+    },
     data() {
         return {
             entity: {
@@ -98,6 +138,9 @@ export default {
                     descricao: null
                 }
             },
+            dtCad: null,
+            dtAlt: null,
+            isLoading: false,
             isSubmiting: false
         }
     },
@@ -111,11 +154,13 @@ export default {
             else {
                 this.entity = this.editParcela;
 
-                var dateTimeCad = Helper.serverDateToDateTimeString(this.entity.dtCadastro);
-                var dateTimeAlt = Helper.serverDateToDateTimeString(this.entity.dtAlteracao);
-                
-                this.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
-                this.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
+                if (this.entity.codigo) {
+                    var dateTimeCad = Helper.serverDateToDateTimeString(this.entity.dtCadastro);
+                    var dateTimeAlt = Helper.serverDateToDateTimeString(this.entity.dtAlteracao);
+
+                    this.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
+                    this.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
+                }
             }
         }
     },
@@ -128,22 +173,34 @@ export default {
             this.$bvModal.hide("modal-consult-formaPagamento");
         },
         searchForma() {
+            this.isLoading = true;
             var vm = this;
             if (vm.entity.codigoFormaPagamento > 0) {
                 FormasPagamentoService.getById(vm.entity.codigoFormaPagamento).then(function (response) {
                     vm.entity.formaPagamento.codigo = response.data.codigo;
                     vm.entity.formaPagamento.descricao = response.data.descricao;
+                    vm.isLoading = false;
                 }).catch(function() {
                     vm.entity.codigoFormaPagamento = 0;
                     vm.entity.formaPagamento.codigo = 0;
                     vm.entity.formaPagamento.descricao = null;
+                    vm.isLoading = false;
                     notyf.error("Forma de Pagamento não encontrada");
                 });
             } else {
                 vm.entity.formaPagamento.descricao = null;
+                vm.isLoading = false;
             }
         },
         save() {
+            if (this.isSubmiting || this.isLoading) return;
+            this.$v.$touch();
+
+            if (this.$v.$invalid) {
+                this.isSubmiting = false;
+                return;
+            }
+
             this.entity.formaPagamento.codigo = this.entity.codigoFormaPagamento;
             this.$emit('emit-parcela', this.entity);
         }

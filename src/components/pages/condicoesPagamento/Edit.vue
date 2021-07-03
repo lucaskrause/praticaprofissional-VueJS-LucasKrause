@@ -9,23 +9,39 @@
             </div>
 
             <div class="col-3">
-                <label>Condição de Pagamento</label>
-                <input id="valor" type="text" class="form-control" v-uppercase v-model.lazy="entity.descricao"/>
+                <label>Condição de Pagamento</label><span class="isRequired"> *</span>
+                <input id="descricao" type="text" class="form-control" v-uppercase v-model.lazy="entity.descricao"
+                    :class="{'is-invalid': $v.entity.descricao.$error}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.descricao.required">
+                    Condição de Pagamento obrigatório
+                </div>
             </div>
 
             <div class="col-2">
-                <label>Juros (%)</label>
-                <input id="juros" type="number" class="form-control" v-model.number="entity.juros"/>
+                <label>Juros (%)</label><span class="isRequired"> *</span>
+                <input id="juros" type="number" class="form-control" v-model.number="entity.juros"
+                    :class="{'is-invalid': $v.entity.juros.$error}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.juros.required || !$v.entity.juros.minValue">
+                    Juros obrigatório
+                </div>
             </div>
 
             <div class="col-2">
-                <label>Multa (%)</label>
-                <input id="multa" type="number" class="form-control" v-model.number="entity.multa"/>
+                <label>Multa (%)</label><span class="isRequired"> *</span>
+                <input id="multa" type="number" class="form-control" v-model.number="entity.multa"
+                    :class="{'is-invalid': $v.entity.multa.$error}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.multa.required || !$v.entity.multa.minValue">
+                    Multa obrigatório
+                </div>
             </div>
 
             <div class="col-2">
-                <label>Desconto (%)</label>
-                <input id="desconto" type="number" class="form-control" v-model.number="entity.desconto"/>
+                <label>Desconto (%)</label><span class="isRequired"> *</span>
+                <input id="desconto" type="number" class="form-control" v-model.number="entity.desconto"
+                    :class="{'is-invalid': $v.entity.desconto.$error}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.desconto.required || !$v.entity.desconto.minValue">
+                    Desconto obrigatório
+                </div>
             </div>
 
             <div class="col-2">
@@ -35,11 +51,16 @@
         </div>
 
         <div class="row">
-            <div class="col-3">
+            <div class="col-4">
                 <label>Parcelas</label>
             </div>
 
-            <div class="col-9 text-right">
+            <div class="col-4">
+                <small v-if="parcelas.porcentagem < 0" class="invalid">{{ parcelas.porcentagem }}%, remova parcelas ou altere-as</small>
+                <small v-if="parcelas.porcentagem > 0" class="invalid">Está sobrando {{ parcelas.porcentagem }}%, adicione parcelas ou altere-as</small>
+            </div>
+
+            <div class="col-4 text-right">
                 <b-button v-b-modal.modal-new-parcela class="btn btn-success btn-sm">Nova Parcela</b-button>
             </div>
         </div>
@@ -66,12 +87,12 @@
         <div class="row form-group align-items-end mt-5">
             <div class="col-2">
                 <label>Data de Cadastro</label>
-                <input id="dataCadastro" type="text" class="form-control" v-model="entity.dtCadastro" readonly/>
+                <input id="dataCadastro" type="text" class="form-control" v-model="dtCad" readonly/>
             </div>
             
             <div class="col-2">
                 <label>Data de Alteração</label>
-                <input id="dataAlteracao" type="text" class="form-control" v-model="entity.dtAlteracao" readonly/>
+                <input id="dataAlteracao" type="text" class="form-control" v-model="dtAlt" readonly/>
             </div>
 
             <div class="col-8">
@@ -83,16 +104,18 @@
         </div>
 
         <b-modal id="modal-new-parcela" size="xl" title="Cadastrar Parcela" hide-footer>
-            <NovaParcela @emit-parcela="selectParcela" :isModal="true" :numeroParcela="numeroParcela" />
+            <NovaParcela @emit-parcela="selectParcela" :isModal="true" :numeroParcela="numeroParcela" :porcentagem="parseFloat(this.parcelas.porcentagem)" />
         </b-modal>
 
         <b-modal id="modal-edit-parcela" size="xl" title="Editar Parcela" hide-footer>
-            <NovaParcela @emit-parcela="selectParcela" :isModal="true" :editParcela="this.parcelaToEdit" />
+            <NovaParcela @emit-parcela="selectParcela" :isModal="true" :editParcela="this.parcelaToEdit"  :porcentagem="parseFloat(this.parcelas.porcentagem)"/>
         </b-modal>
     </div>
 </template>
 
 <script>
+import {validationMixin} from 'vuelidate'
+import {required, minValue} from 'vuelidate/lib/validators'
 import {CondicoesPagamentoService} from '@/services/condicoesPagamento.service'
 import NovaParcela from '@/components/pages/condicaoParcelas/Edit'
 import 'vue-good-table/dist/vue-good-table.css'
@@ -105,25 +128,50 @@ const notyf = new Notyf();
 
 export default {
     name: "CondicoesPagamentosEdit",
+    components: { VueGoodTable, NovaParcela },
     props: {
         isModal: {
             type: Boolean,
             default: false
         }
     },
-    components: { VueGoodTable, NovaParcela },
+    mixins: [validationMixin],
+    validations() {
+        let validation = {
+            entity: {
+                descricao: {
+                    required,
+                },
+                juros: {
+                    required,
+                    minValue: minValue(0.01),
+                },
+                multa: {
+                    required,
+                    minValue: minValue(0.01),
+                },
+                desconto: {
+                    required,
+                    minValue: minValue(0.01),
+                },
+            }
+        }
+        return validation;
+    },
     data() {
         return {
             entity: {
                 codigo: 0,
                 descricao: null,
-                multa: null,
-                juros: null,
-                desconto: null,
+                juros: 0,
+                multa: 0,
+                desconto: 0,
                 totalParcelas: 0,
                 dtCadastro: null,
                 dtAlteracao: null
             },
+            dtCad: null,
+            dtAlt: null,
             parcelas: {
                 columns: [
                     {
@@ -158,13 +206,15 @@ export default {
                 ],
                 rows: [],
                 page: 1,
-                totalRecords: 0
+                totalRecords: 0,
+                porcentagem: 100
             },
             parcelasDeletedas:[],
             numeroParcela: 1,
             parcelaToEdit: {},
             isEdit: false,
             indexEdit: -1,
+            isLoading: false,
             isSubmiting: false
         }
     },
@@ -179,8 +229,8 @@ export default {
                 var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
                 var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
                 
-                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
-                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
+                vm.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.parcelas.rows = vm.entity.parcelas;
                 vm.numeroParcela += vm.entity.totalParcelas;
             });
@@ -189,11 +239,15 @@ export default {
     methods: {
         selectParcela(entity) {
             if (!this.isEdit) {
+                this.parcelas.porcentagem = (parseFloat(this.parcelas.porcentagem) - parseFloat(entity.porcentagem)).toFixed(4);
+                
                 this.parcelas.rows.push(entity);
                 this.entity.totalParcelas = this.numeroParcela;
                 this.numeroParcela++;
                 this.$bvModal.hide("modal-new-parcela");
             } else {
+                this.parcelas.porcentagem = (parseFloat(this.parcelas.porcentagem) - parseFloat(entity.porcentagem)).toFixed(4);
+
                 this.parcelas.rows[this.indexEdit] = entity;
                 this.indexEdit = -1;
                 this.isEdit = false;
@@ -201,10 +255,26 @@ export default {
             }
         },
         save() {
-            if (this.isSubmiting) return;
+            if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
+            this.$v.$touch();
             const vm = this;
-            
+
+            if (this.$v.$invalid) {
+                this.isSubmiting = false;
+                return;
+            }
+            if (this.parcelas.porcentagem > 0) {
+                notyf.error("Parcelas incorretas, está sobrando " + this.parcelas.porcentagem + "%");
+                this.isSubmiting = false;
+                return;
+            }
+            if (this.parcelas.porcentagem < 0) {
+                notyf.error("Parcelas incorretas, retire " + this.parcelas.porcentagem + "%");
+                this.isSubmiting = false;
+                return;
+            }
+
             this.entity.parcelas = this.clearParcelas(this.parcelas.rows.concat(this.parcelasDeletedas));
             CondicoesPagamentoService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
@@ -220,6 +290,7 @@ export default {
         },
         editParcela(prop) {
             this.parcelaToEdit = prop.row;
+            this.parcelas.porcentagem = (parseFloat(this.parcelas.porcentagem) + parseFloat(this.parcelaToEdit.porcentagem)).toFixed(4);
             this.isEdit = true;
             this.indexEdit = prop.index;
             this.$bvModal.show("modal-edit-parcela");
@@ -234,6 +305,8 @@ export default {
                 this.parcelas.rows[entity.index].status = "Inativo";
                 this.parcelasDeletedas.push(this.parcelas.rows[entity.index]);
             }
+            this.parcelas.porcentagem = (parseFloat(this.parcelas.porcentagem) + parseFloat(this.parcelas.rows[entity.index].porcentagem)).toFixed(4);
+
             this.parcelas.rows.splice(entity.index, 1);
             this.orderParcela(entity.index);
             this.entity.totalParcelas--;
@@ -253,3 +326,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.invalid{
+    color: red
+}
+</style>

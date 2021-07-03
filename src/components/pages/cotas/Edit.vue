@@ -9,10 +9,10 @@
             </div>
 
             <div class="col-5">
-                <label>Cliente</label>
+                <label>Cliente</label><span class="isRequired"> *</span>
                 <div class="input-group">
                     <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="searchCliente"
-                        :class="{'is-invalid': $v.entity.codigoCliente.$error, 'd-none': isLoading}"/>
+                        :class="{'is-invalid': $v.entity.codigoCliente.$error}"/>
                     <div class="input-group-append">
                         <input id="cliente" type="text" class="form-control" v-uppercase v-model.lazy="clienteSelecionado" readonly/>
                         <span class="input-group-btn">
@@ -26,9 +26,9 @@
             </div>
 
             <div class="col-2 form-group">
-                <label>Valor</label>
+                <label>Valor</label><span class="isRequired"> *</span>
                 <input id="" type="number" class="form-control" v-model.number="entity.valor"
-                    :class="{'is-invalid': $v.entity.valor.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.valor.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.valor.required">
                     Valor obrigatório
                 </div>
@@ -37,18 +37,18 @@
 
         <div class="row form-group">
             <div class="col-3">
-                <label>Data de Início</label>
+                <label>Data de Início</label><span class="isRequired"> *</span>
                 <input id="dtInicio" type="date" class="form-control" v-model="entity.dtInicio"
-                    :class="{'is-invalid': $v.entity.dtInicio.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.dtInicio.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.dtInicio.required">
                     Data de Início obrigatória
                 </div>
             </div>
 
             <div class="col-3">
-                <label>Data de Término</label>
+                <label>Data de Término</label><span class="isRequired"> *</span>
                 <input id="dtTermino" type="date" class="form-control" v-model="entity.dtTermino"
-                    :class="{'is-invalid': $v.entity.dtTermino.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.dtTermino.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.dtTermino.required">
                     Data de Término obrigatória
                 </div>
@@ -58,12 +58,12 @@
         <div class="row form-group align-items-end mt-5">
             <div class="col-2">
                 <label>Data de Cadastro</label>
-                <input id="dataCadastro" type="text" class="form-control" v-model="entity.dtCadastro" readonly/>
+                <input id="dataCadastro" type="text" class="form-control" v-model="dtCad" readonly/>
             </div>
             
             <div class="col-2">
                 <label>Data de Alteração</label>
-                <input id="dataAlteracao" type="text" class="form-control" v-model="entity.dtAlteracao" readonly/>
+                <input id="dataAlteracao" type="text" class="form-control" v-model="dtAlt" readonly/>
             </div>
 
             <div class="col-8">
@@ -127,6 +127,8 @@ export default {
                 dtAlteracao: null
             },
             clienteSelecionado: null,
+            dtCad: null,
+            dtAlt: null,
             isLoading: false,
             isSubmiting: false
         }
@@ -145,8 +147,8 @@ export default {
 
                 vm.entity.dtInicio = dateInicio;
                 vm.entity.dtTermino = dateTermino;
-                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
-                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
+                vm.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.clienteSelecionado = vm.entity.cliente.nome;
             });
         }
@@ -159,21 +161,25 @@ export default {
             this.$bvModal.hide("modal-consult-cliente");
         },
         searchCliente() {
+            this.isLoading = true;
             var vm = this;
             if (vm.entity.codigoCliente > 0) {
                 ClientesService.getById(vm.entity.codigoCliente).then(function (response) {
                     vm.clienteSelecionado = response.data.nome;
+                    vm.isLoading = false;
                 }).catch(function() {
                     vm.entity.codigoCliente = 0;
                     vm.clienteSelecionado = null;
+                    vm.isLoading = false;
                     notyf.error("Cliente não encontrado");
                 });
             } else {
                 vm.clienteSelecionado = null;
+                vm.isLoading = false;
             }
         },
         save() {
-            if (this.isSubmiting) return;
+            if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
             this.$v.$touch();
             const vm = this;

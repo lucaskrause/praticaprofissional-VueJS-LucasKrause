@@ -9,18 +9,18 @@
             </div>
 
             <div class="col-5">
-                <label>Cidade</label> 
+                <label>Cidade</label><span class="isRequired"> *</span>
                 <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="entity.cidade"
-                    :class="{'is-invalid': $v.entity.cidade.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.cidade.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.cidade.required">
                     Cidade obrigatório
                 </div>
             </div>
 
             <div class="col-2">
-                <label>DDD</label>
+                <label>DDD</label><span class="isRequired"> *</span>
                 <input id="ddd" type="text" class="form-control" v-uppercase v-model.lazy="entity.ddd"
-                    :class="{'is-invalid': $v.entity.ddd.$error, 'd-none': isLoading}"/>
+                    :class="{'is-invalid': $v.entity.ddd.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.ddd.required">
                     DDD obrigatório
                 </div>
@@ -32,10 +32,10 @@
 
         <div class="row form-group">
             <div class="col-5">
-                <label>Estado</label>
+                <label>Estado</label><span class="isRequired"> *</span>
                 <div class="input-group">
                     <input id="codigoEstado" type="number" class="form-control" v-model.number="entity.codigoEstado" @input="searchEstado"
-                        :class="{'is-invalid': $v.entity.codigoEstado.$error, 'd-none': isLoading}"/>
+                        :class="{'is-invalid': $v.entity.codigoEstado.$error}"/>
                     <div class="input-group-append">
                         <input id="estado" type="text" class="form-control" v-model.lazy="estadoSelecionado" readonly/>
                         <span class="input-group-btn">
@@ -52,12 +52,12 @@
         <div class="row form-group align-items-end mt-5">
             <div class="col-2">
                 <label>Data de Cadastro</label>
-                <input id="dataCadastro" type="text" class="form-control" v-model="entity.dtCadastro" readonly/>
+                <input id="dataCadastro" type="text" class="form-control" v-model="dtCad" readonly/>
             </div>
             
             <div class="col-2">
                 <label>Data de Alteração</label>
-                <input id="dataAlteracao" type="text" class="form-control" v-model="entity.dtAlteracao" readonly/>
+                <input id="dataAlteracao" type="text" class="form-control" v-model="dtAlt" readonly/>
             </div>
 
             <div class="col-8">
@@ -125,6 +125,8 @@ export default {
                 dtAlteracao: null
             },
             estadoSelecionado: null,
+            dtCad: null,
+            dtAlt: null,
             isLoading: false,
             isSubmiting: false
         }
@@ -140,8 +142,8 @@ export default {
                 var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
                 var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
 
-                vm.entity.dtCadastro = dateTimeCad.date + " " + dateTimeCad.hour;
-                vm.entity.dtAlteracao = dateTimeAlt.date + " " + dateTimeAlt.hour;
+                vm.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
+                vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.estadoSelecionado = response.data.estado.estado;
             });
         }
@@ -154,21 +156,25 @@ export default {
             this.$bvModal.hide("modal-consult-estado");
         },
         searchEstado() {
+            this.isLoading = true;
             var vm = this;
             if (vm.entity.codigoEstado > 0) {
                 EstadosService.getById(vm.entity.codigoEstado).then(function (response) {
                     vm.estadoSelecionado = response.data.estado;
+                    vm.isLoading = false;
                 }).catch(function() {
                     vm.entity.codigoEstado = 0;
                     vm.estadoSelecionado = null;
+                    vm.isLoading = false;
                     notyf.error("Estado não encontrado");
                 });
             } else {
                 vm.estadoSelecionado = null;
+                vm.isLoading = false;
             }
         },
         save() {
-            if(this.isSubmiting) return;
+            if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
             this.$v.$touch();
             const vm = this;

@@ -21,3 +21,9 @@ export default {
     },
 }
 </script>
+
+<style>
+    .isRequired{
+        color: red;
+    }
+</style>
