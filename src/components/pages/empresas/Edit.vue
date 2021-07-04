@@ -392,7 +392,10 @@ export default {
                 notyf.success("Empresa " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 vm.$router.push('/app/empresas');
-            }); //.catch(function (errors) {Helper.saveErrorCallBack(errors.response)});
+            }).catch(function (errors){
+                notyf.error(errors.response.data.message);
+                vm.isSubmiting = false;
+            });
         },
         editContaBancaria(prop) {
             this.contaBancariaToEdit = prop.row;

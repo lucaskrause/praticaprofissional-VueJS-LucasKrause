@@ -372,7 +372,10 @@ export default {
                     notyf.success("Dependente " + msg + " com sucesso");
                     vm.isSubmiting = false;
                     vm.$router.push('/app/dependentes');
-                }); //.catch(function (errors) {Helper.saveErrorCallBack(errors.response)});
+                }).catch(function (errors){
+                    notyf.error(errors.response.data.message);
+                    vm.isSubmiting = false;
+                });
             }
         }
     }

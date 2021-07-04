@@ -335,7 +335,10 @@ export default {
                 notyf.success("Reserva " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 vm.$router.push('/app/reservas');
-            }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
+            }).catch(function (errors){
+                notyf.error(errors.response.data.message);
+                vm.isSubmiting = false;
+            });
         },
         calcValor() {
             this.valorPessoas = 0;

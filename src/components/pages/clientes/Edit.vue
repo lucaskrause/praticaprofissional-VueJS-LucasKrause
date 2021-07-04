@@ -479,7 +479,10 @@ export default {
                 } else {
                     vm.$router.push('/app/clientes');
                 }
-            }); //.catch(function (errors) {Helper.saveErrorCallBack(errors.response)});
+            }).catch(function (errors){
+                notyf.error(errors.response.data.message);
+                vm.isSubmiting = false;
+            });
         },
         editDependente(prop) {
             this.dependenteToEdit = prop.row;

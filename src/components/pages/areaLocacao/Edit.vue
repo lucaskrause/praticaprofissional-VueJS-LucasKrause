@@ -134,7 +134,10 @@ export default {
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit('emit-area', vm.entity);
                 }
-            }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
+            }).catch(function (errors){
+                notyf.error(errors.response.data.message);
+                vm.isSubmiting = false;
+            });
         }
     }
 }

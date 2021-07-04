@@ -183,7 +183,10 @@ export default {
                     notyf.success("Conta Bancaria " + msg + " com sucesso");
                     vm.isSubmiting = false;
                     vm.$router.push('/app/contasBancarias');
-                }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
+                }).catch(function (errors){
+                    notyf.error(errors.response.data.message);
+                    vm.isSubmiting = false;
+                });
             }
         }
     }

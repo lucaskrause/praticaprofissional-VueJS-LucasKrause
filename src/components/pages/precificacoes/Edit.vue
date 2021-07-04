@@ -139,7 +139,10 @@ export default {
                 notyf.success("Preço " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 vm.$router.push('/app/precificacoes');
-            }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
+            }).catch(function (errors){
+                notyf.error(errors.response.data.message);
+                vm.isSubmiting = false;
+            });
         }
     }
 }

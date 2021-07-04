@@ -21,7 +21,7 @@
                 <label>Juros (%)</label><span class="isRequired"> *</span>
                 <input id="juros" type="number" class="form-control" v-model.number="entity.juros"
                     :class="{'is-invalid': $v.entity.juros.$error}"/>
-                <div class="invalid-feedback" v-if="!$v.entity.juros.required || !$v.entity.juros.minValue">
+                <div class="invalid-feedback" v-if="!$v.entity.juros.required">
                     Juros obrigatório
                 </div>
             </div>
@@ -30,7 +30,7 @@
                 <label>Multa (%)</label><span class="isRequired"> *</span>
                 <input id="multa" type="number" class="form-control" v-model.number="entity.multa"
                     :class="{'is-invalid': $v.entity.multa.$error}"/>
-                <div class="invalid-feedback" v-if="!$v.entity.multa.required || !$v.entity.multa.minValue">
+                <div class="invalid-feedback" v-if="!$v.entity.multa.required">
                     Multa obrigatório
                 </div>
             </div>
@@ -39,7 +39,7 @@
                 <label>Desconto (%)</label><span class="isRequired"> *</span>
                 <input id="desconto" type="number" class="form-control" v-model.number="entity.desconto"
                     :class="{'is-invalid': $v.entity.desconto.$error}"/>
-                <div class="invalid-feedback" v-if="!$v.entity.desconto.required || !$v.entity.desconto.minValue">
+                <div class="invalid-feedback" v-if="!$v.entity.desconto.required">
                     Desconto obrigatório
                 </div>
             </div>
@@ -58,10 +58,11 @@
             <div class="col-4">
                 <small v-if="parcelas.porcentagem < 0" class="invalid">{{ parcelas.porcentagem }}%, remova parcelas ou altere-as</small>
                 <small v-if="parcelas.porcentagem > 0" class="invalid">Está sobrando {{ parcelas.porcentagem }}%, adicione parcelas ou altere-as</small>
+                <small v-if="parcelas.porcentagem == 0" class="valid">A(s) parcela(s) atingiu(ram) 100%</small>
             </div>
 
             <div class="col-4 text-right">
-                <b-button v-b-modal.modal-new-parcela class="btn btn-success btn-sm">Nova Parcela</b-button>
+                <b-button v-b-modal.modal-new-parcela class="btn btn-success btn-sm" :disabled="parcelas.porcentagem <= 0">Nova Parcela</b-button>
             </div>
         </div>
 
@@ -115,7 +116,7 @@
 
 <script>
 import {validationMixin} from 'vuelidate'
-import {required, minValue} from 'vuelidate/lib/validators'
+import {required} from 'vuelidate/lib/validators'
 import {CondicoesPagamentoService} from '@/services/condicoesPagamento.service'
 import NovaParcela from '@/components/pages/condicaoParcelas/Edit'
 import 'vue-good-table/dist/vue-good-table.css'
@@ -144,15 +145,12 @@ export default {
                 },
                 juros: {
                     required,
-                    minValue: minValue(0.01),
                 },
                 multa: {
                     required,
-                    minValue: minValue(0.01),
                 },
                 desconto: {
                     required,
-                    minValue: minValue(0.01),
                 },
             }
         }
@@ -231,8 +229,12 @@ export default {
                 
                 vm.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
                 vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
-                vm.parcelas.rows = vm.entity.parcelas;
                 vm.numeroParcela += vm.entity.totalParcelas;
+                vm.parcelas.rows = vm.entity.parcelas;
+
+                for (let i=0; i < vm.parcelas.rows.length; i++) {
+                    vm.parcelas.porcentagem = (parseFloat(vm.parcelas.porcentagem) - parseFloat(vm.parcelas.rows[i].porcentagem)).toFixed(4);
+                }
             });
         }
     },
@@ -286,7 +288,10 @@ export default {
                 } else {
                     vm.$router.push('/app/condicoesPagamento');
                 }
-            }); // .catch((errors) => Helper.saveErrorCallBack(errors.response));
+            }).catch(function (errors){
+                notyf.error(errors.response.data.message);
+                vm.isSubmiting = false;
+            });
         },
         editParcela(prop) {
             this.parcelaToEdit = prop.row;
@@ -330,5 +335,8 @@ export default {
 <style scoped>
 .invalid{
     color: red
+}
+.valid{
+    color: green
 }
 </style>

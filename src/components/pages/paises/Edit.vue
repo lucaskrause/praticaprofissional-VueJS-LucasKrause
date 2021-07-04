@@ -157,10 +157,10 @@ export default {
                     vm.entity.codigo = response.data.codigo;
                     vm.$emit('emit-pais', vm.entity);
                 }
-            }).catch((response) => console.log(response));
-            //     // notyf.error(errors.data.message);
-            //     // vm.isSubmiting = false;
-            // });
+            }).catch(function (errors){
+                notyf.error(errors.response.data.message);
+                vm.isSubmiting = false;
+            });
         }
     }
 }
