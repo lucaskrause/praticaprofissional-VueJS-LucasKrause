@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import Helper from '@/components/helper'
 import {ServicosService} from '@/services/servicos.service'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table';
@@ -57,7 +58,6 @@ export default {
                 {
                     label: "Valor",
                     field: "valor",
-                    type: "decimal", 
                     width: "150px",
                 },
                 {
@@ -82,6 +82,10 @@ export default {
             ServicosService.getAll().then(function (response) {
                 vm.totalRecords = response.data.length;
                 vm.rows = response.data;
+
+                for (var i=0; i < vm.rows.length; i++) {
+                    vm.rows[i].valor = Helper.number_format(vm.rows[i].valor);
+                }
             });
         },
         remove(codigo) {
