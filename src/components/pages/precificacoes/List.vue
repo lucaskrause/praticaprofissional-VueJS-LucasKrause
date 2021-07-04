@@ -63,7 +63,6 @@ export default {
                 {
                     label: "Valor",
                     field: "valor",
-                    type: "decimal",
                     width: "160px",
                 },
                 {

@@ -10,28 +10,40 @@
 
             <div class="col-2">
                 <label>Mín de Pessoas</label><span class="isRequired"> *</span>
-                <input id="minPessoas" type="number" class="form-control" v-model.number="entity.minPessoas"
+                <the-mask id="minPessoas" class="form-control" v-model.number="entity.minPessoas"
+                    mask="##" :masked="true"
                     :class="{'is-invalid': $v.entity.minPessoas.$error}"/>
-                <div class="invalid-feedback" v-if="!$v.entity.minPessoas.required || !$v.entity.minPessoas.minValue || !$v.entity.minPessoas.maxValue">
+                <div class="invalid-feedback" v-if="!$v.entity.minPessoas.required">
+                    Mín de Pessoas obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.minPessoas.minValue || !$v.entity.minPessoas.maxValue">
                     Mín de Pessoas deve estar entre 1 e 70
                 </div>
             </div>
 
             <div class="col-2">
                 <label>Máx de Pessoas</label><span class="isRequired"> *</span>
-                <input id="maxPessoas" type="number" class="form-control" v-model.number="entity.maxPessoas"
+                <the-mask id="maxPessoas" class="form-control" v-model.number="entity.maxPessoas"
+                    mask="##" :masked="true"
                     :class="{'is-invalid': $v.entity.maxPessoas.$error}"/>
-                <div class="invalid-feedback" v-if="!$v.entity.maxPessoas.required || !$v.entity.maxPessoas.minValue || !$v.entity.maxPessoas.maxValue">
-                    Máx de Pessoas deve estar entre 1 e 70
+                <div class="invalid-feedback" v-if="!$v.entity.maxPessoas.required">
+                    Máx de Pessoas obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.maxPessoas.minValue || !$v.entity.maxPessoas.maxValue">
+                    Máx de Pessoas deve estar entre {{ entity.minPessoas }} e 70
                 </div>
             </div>
 
             <div class="col-2">
                 <label>Valor</label><span class="isRequired"> *</span>
-                <input id="valor" type="number" class="form-control" v-model.number="entity.valor"
-                    :class="{'is-invalid': $v.entity.valor.$error}"/>
+                <money id="valor" class="form-control text-right" v-model="entity.valor"
+                    v-bind="money"
+                    :class="{'is-invalid': $v.entity.valor.$error}"></money>
                 <div class="invalid-feedback" v-if="!$v.entity.valor.required">
                     Valor obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.valor.minValue || !$v.entity.valor.maxValue">
+                    Valor deve ser entre 0.01 e 99,999,999.99
                 </div>
             </div>
         </div>
@@ -60,8 +72,10 @@
 <script>
 import {validationMixin} from 'vuelidate'
 import {required, minValue, maxValue} from 'vuelidate/lib/validators'
-import {PrecificacoesService} from '@/services/precificacoes.service'
+import {TheMask} from 'vue-the-mask'
+import {Money} from 'v-money'
 import Helper from '@/components/helper'
+import {PrecificacoesService} from '@/services/precificacoes.service'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -69,6 +83,7 @@ const notyf = new Notyf();
 
 export default {
     name: "PrecificacoesEdit",
+    components: { TheMask, Money },
     mixins: [validationMixin],
     validations() {
         let validation = {
@@ -80,11 +95,13 @@ export default {
                 },
                 maxPessoas: {
                     required,
-                    minValue: minValue(1),
+                    minValue: minValue(this.entity.minPessoas),
                     maxValue: maxValue(70),
                 },
                 valor: {
                     required,
+                    minValue: minValue(0.01),
+                    maxValue: maxValue(99999999.99),
                 },
             }
         }
@@ -94,14 +111,22 @@ export default {
         return {
             entity: {
                 codigo: 0,
-                minPessoas: null,
-                maxPessoas: null,
-                valor: null,
+                minPessoas: 0,
+                maxPessoas: 0,
+                valor: 0,
                 dtCadastro: null,
                 dtAlteracao: null
             },
             dtCad: null,
             dtAlt: null,
+            money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: 'R$ ',
+                suffix: '',
+                precision: 2,
+                masked: false
+            },
             isLoading: false,
             isSubmiting: false
         }
