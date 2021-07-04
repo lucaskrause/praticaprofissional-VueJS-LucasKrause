@@ -15,6 +15,9 @@
                 <div class="invalid-feedback" v-if="!$v.entity.descricao.required">
                     Categoria obrigatória
                 </div>
+                <div class="invalid-feedback" v-if="!$v.entity.descricao.maxLength">
+                    Categoria deve ter no máximo 50 caracteres
+                </div>
             </div>
         </div>
 
@@ -41,7 +44,7 @@
 
 <script>
 import {validationMixin} from 'vuelidate'
-import {required} from 'vuelidate/lib/validators'
+import {required, maxLength} from 'vuelidate/lib/validators'
 import {CategoriasService} from '@/services/categorias.service'
 import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
@@ -63,6 +66,7 @@ export default {
             entity: {
                 descricao: {
                     required,
+                    maxLength: maxLength(50),
                 },
             }
         }
