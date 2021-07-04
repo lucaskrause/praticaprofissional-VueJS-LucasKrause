@@ -15,11 +15,16 @@
                 <div class="invalid-feedback" v-if="!$v.entity.estado.required">
                     Estado obrigatório
                 </div>
+                <div class="invalid-feedback" v-if="!$v.entity.estado.maxLength">
+                    Estado deve ter no máximo 50 caracteres
+                </div>
             </div>
 
-            <div class="col-1">
+            <div class="col-2">
                 <label>UF</label><span class="isRequired"> *</span>
-                <input id="uf" type="text" class="form-control" v-uppercase v-model.lazy="entity.uf"
+                <the-mask id="uf" class="form-control" v-uppercase v-model.lazy="entity.uf"
+                    mask="AAAA"
+                    :masked="false"
                     :class="{'is-invalid': $v.entity.uf.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.uf.required">
                     UF obrigatório
@@ -78,10 +83,11 @@
 <script>
 import {validationMixin} from 'vuelidate'
 import {required, minLength, maxLength, minValue} from 'vuelidate/lib/validators'
+import {TheMask} from 'vue-the-mask'
+import Helper from '@/components/helper'
 import {PaisesService} from '@/services/paises.service'
 import {EstadosService} from '@/services/estados.service'
 import ConsultaPais from '@/components/pages/paises/Consult.vue'
-import Helper from "@/components/helper";
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -89,7 +95,7 @@ const notyf = new Notyf();
 
 export default {
     name: "EstadosEdit",
-    components: { ConsultaPais },
+    components: { TheMask, ConsultaPais },
     props: {
         isModal: {
             type: Boolean,
@@ -102,6 +108,7 @@ export default {
             entity: {
                 estado: {
                     required,
+                    maxLength: maxLength(50),
                 },
                 uf: {
                     required,
