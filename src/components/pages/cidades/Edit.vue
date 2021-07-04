@@ -15,11 +15,16 @@
                 <div class="invalid-feedback" v-if="!$v.entity.cidade.required">
                     Cidade obrigatório
                 </div>
+                <div class="invalid-feedback" v-if="!$v.entity.cidade.maxLength">
+                    Cidade deve ter no máximo 50 caracteres
+                </div>
             </div>
 
             <div class="col-2">
                 <label>DDD</label><span class="isRequired"> *</span>
-                <input id="ddd" type="text" class="form-control" v-uppercase v-model.lazy="entity.ddd"
+                <the-mask id="ddd" class="form-control" v-model="entity.ddd"
+                    mask="####"
+                    :masked="false"
                     :class="{'is-invalid': $v.entity.ddd.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.ddd.required">
                     DDD obrigatório
@@ -77,10 +82,11 @@
 <script>
 import {validationMixin} from 'vuelidate'
 import {required, minLength, maxLength, minValue} from 'vuelidate/lib/validators'
+import {TheMask} from 'vue-the-mask'
+import Helper from '@/components/helper'
 import {EstadosService} from '@/services/estados.service'
 import {CidadesService} from '@/services/cidades.service'
 import ConsultaEstado from '@/components/pages/estados/Consult.vue'
-import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -88,7 +94,7 @@ const notyf = new Notyf();
 
 export default {
     name: "CidadesEdit",
-    components: { ConsultaEstado },
+    components: { TheMask, ConsultaEstado },
     props: {
         isModal: {
             type: Boolean,
@@ -101,6 +107,7 @@ export default {
             entity: {
                 cidade: {
                     required,
+                    maxLength: maxLength(50),
                 },
                 ddd: {
                     required,
