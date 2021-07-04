@@ -13,16 +13,23 @@
                 <input id="descricao" type="text" class="form-control" v-uppercase v-model.lazy="entity.descricao"
                     :class="{'is-invalid': $v.entity.descricao.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.descricao.required">
-                    Categoria obrigatória
+                    Área de Locação obrigatória
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.descricao.maxLength">
+                    Área de Locação deve ter no máximo 50 caracteres
                 </div>
             </div>
 
             <div class="col-2">
                 <label>Valor</label><span class="isRequired"> *</span>
-                <input id="valor" type="number" class="form-control" v-model.number="entity.valor"
-                    :class="{'is-invalid': $v.entity.valor.$error}"/>
+                <money id="valor" class="form-control text-right" v-model="entity.valor"
+                    v-bind="money"
+                    :class="{'is-invalid': $v.entity.valor.$error}"></money>
                 <div class="invalid-feedback" v-if="!$v.entity.valor.required">
                     Valor obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.valor.minValue || !$v.entity.valor.maxValue">
+                    Valor deve ser entre 0,01 e 99,999,999.99
                 </div>
             </div>
         </div>
@@ -50,9 +57,10 @@
 
 <script>
 import {validationMixin} from 'vuelidate'
-import {required} from 'vuelidate/lib/validators'
-import {AreasLocacaoService} from '@/services/areasLocacao.service'
+import {required, maxLength, minValue, maxValue} from 'vuelidate/lib/validators'
+import {Money} from 'v-money'
 import Helper from '@/components/helper'
+import {AreasLocacaoService} from '@/services/areasLocacao.service'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -60,6 +68,7 @@ const notyf = new Notyf();
 
 export default {
     name: "AreasLocacaoEdit",
+    components: { Money },
     props: {
         isModal: {
             type: Boolean,
@@ -72,9 +81,12 @@ export default {
             entity: {
                 descricao: {
                     required,
+                    maxLength: maxLength(50)
                 },
                 valor: {
                     required,
+                    minValue: minValue(0.01),
+                    maxValue: maxValue(99999999.99)
                 },
             }
         }
@@ -91,6 +103,14 @@ export default {
             },
             dtCad: null,
             dtAlt: null,
+            money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: 'R$ ',
+                suffix: '',
+                precision: 2,
+                masked: false
+            },
             isLoading: false,
             isSubmiting: false
         }
