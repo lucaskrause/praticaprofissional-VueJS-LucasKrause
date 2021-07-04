@@ -15,23 +15,30 @@
                 <div class="invalid-feedback" v-if="!$v.entity.pais.required">
                     País obrigatório
                 </div>
+                <div class="invalid-feedback" v-if="!$v.entity.pais.maxLength">
+                    País deve ter no máximo 50 caracteres
+                </div>
             </div>
 
             <div class="col-2">
                 <label>Sigla</label><span class="isRequired"> *</span>
-                <input id="sigla" type="text" class="form-control" v-uppercase v-model.lazy="entity.sigla"
+                <the-mask id="sigla" class="form-control" v-uppercase v-model.lazy="entity.sigla"
+                    mask="AAA"
+                    :masked="false"
                     :class="{'is-invalid': $v.entity.sigla.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.sigla.required">
                     Sigla obrigatória
                 </div>
                 <div class="invalid-feedback" v-if="!$v.entity.sigla.minLength || !$v.entity.sigla.maxLength">
-                    Sigla deve ter entre 2 e 4 caracteres
+                    Sigla deve ter entre 2 e 3 caracteres
                 </div>
             </div>
 
             <div class="col-2">
                 <label>DDI</label><span class="isRequired"> *</span>
-                <input id="ddi" type="text" class="form-control" v-uppercase v-model.lazy="entity.ddi"
+                <the-mask id="ddi" class="form-control" v-model="entity.ddi"
+                    mask="+###" 
+                    :masked="true"
                     :class="{'is-invalid': $v.entity.ddi.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.ddi.required">
                     DDI obrigatório
@@ -66,8 +73,9 @@
 <script>
 import {validationMixin} from 'vuelidate'
 import {required, minLength, maxLength} from 'vuelidate/lib/validators'
+import {TheMask} from 'vue-the-mask'
+import Helper from '@/components/helper'
 import {PaisesService} from '@/services/paises.service'
-import Helper from "@/components/helper";
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -75,6 +83,7 @@ const notyf = new Notyf();
 
 export default {
     name: "PaisesEdit",
+    components: { TheMask },
     props: {
         isModal: {
             type: Boolean,
@@ -87,11 +96,12 @@ export default {
             entity: {
                 pais: {
                     required,
+                    maxLength: maxLength(50),
                 },
                 sigla: {
                     required,
                     minLength: minLength(2),
-                    maxLength: maxLength(4),
+                    maxLength: maxLength(3),
                 },
                 ddi: {
                     required,
