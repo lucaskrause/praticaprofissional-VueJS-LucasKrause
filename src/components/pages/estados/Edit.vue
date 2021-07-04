@@ -42,7 +42,7 @@
                     <input id="codigoPais" type="number" class="form-control" v-model.number="entity.codigoPais" @input="searchPais"
                         :class="{'is-invalid': $v.entity.codigoPais.$error}"/>
                     <div class="input-group-append">
-                        <input type="text" class="input-group-text" v-model.lazy="paisSelecionado" readonly/>
+                        <input type="text" class="form-control" v-model.lazy="paisSelecionado" readonly/>
                     </div>
                     <span class="input-group-btn">
                         <b-button v-b-modal.modal-consult-pais class="btn btn-info ml-1">Buscar</b-button>
