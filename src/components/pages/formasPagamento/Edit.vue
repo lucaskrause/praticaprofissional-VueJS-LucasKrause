@@ -15,6 +15,9 @@
                 <div class="invalid-feedback" v-if="!$v.entity.descricao.required">
                     Forma de Pagamento obrigatório
                 </div>
+                <div class="invalid-feedback" v-if="!$v.entity.descricao.maxLength">
+                    Forma de Pagamento deve ter no máximo 50 caracteres
+                </div>
             </div>
         </div>
 
@@ -31,7 +34,7 @@
 
             <div class="col-8">
                 <div class="text-right">
-                    <router-link v-if="!isModal" :to="{name: 'PaisesList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <router-link v-if="!isModal" :to="{name: 'FormasPagamentoList'}" class="btn btn-danger mr-3">Voltar</router-link>
                     <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
                 </div>
             </div>
@@ -41,7 +44,7 @@
 
 <script>
 import {validationMixin} from 'vuelidate'
-import {required} from 'vuelidate/lib/validators'
+import {required, maxLength} from 'vuelidate/lib/validators'
 import {FormasPagamentoService} from '@/services/formasPagamento.service'
 import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
@@ -63,6 +66,7 @@ export default {
             entity: {
                 descricao: {
                     required,
+                    maxLength: maxLength(50),
                 },
             }
         }
