@@ -126,36 +126,39 @@ const Helper = {
 
     //formato esperado 2020-01-31
     dateStringToDate(str) {
+        if (str == "" || str == null) return null;
         let aux = str.split("-");
         aux[1]--;
         return new Date(...aux);
     },
 
     brToUsDate(str) {
+        if (str == "" || str == null) return null;
         let aux = str.split("/");
         return [aux[2], aux[1], aux[0]].join('-');
     },
 
     usToBrDate(str) {
-        if(!str) return "";
+        if (str == "" || str == null) return null;
         let aux = str.split("-");
         return [aux[2], aux[1], aux[0]].join('/');
     },
 
     serverDateToDateString(str, withHour = false) {
-        if(!str) return '';
+        if (str == "" || str == null) return null;
         if(!withHour) return this.usToBrDate(str.split('T')[0]);
         let aux = str.split('T');
         return {date: aux[0], hour: aux[1].split(".")[0]}
     },
 
     serverDateToDateTimeString(str) {
-        if(!str) return '';
+        if (str == "" || str == null) return null;
         let aux = str.split('T');
         return {date: this.usToBrDate(aux[0]), hour: aux[1].split(".")[0]}
     },
 
     dateToDateString(date) {
+        if (date == "" || date == null) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),

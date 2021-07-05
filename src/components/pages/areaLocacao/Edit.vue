@@ -29,7 +29,7 @@
                     Valor obrigatório
                 </div>
                 <div class="invalid-feedback" v-if="!$v.entity.valor.minValue || !$v.entity.valor.maxValue">
-                    Valor deve ser entre 0,01 e 99,999,999.99
+                    Valor deve ser entre 0,01 e 99.999.999,99
                 </div>
             </div>
         </div>

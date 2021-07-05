@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import Helper from '@/components/helper'
 import {PrecificacoesService} from '@/services/precificacoes.service'
 import {VueGoodTable} from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
@@ -63,7 +64,7 @@ export default {
                 {
                     label: "Valor",
                     field: "valor",
-                    width: "160px",
+                    width: "150px",
                 },
                 {
                     label:"Ação",
@@ -87,6 +88,10 @@ export default {
             PrecificacoesService.getAll().then(function (response) {
                 vm.totalRecords = response.data.length;
                 vm.rows = response.data;
+
+                for (var i=0; i < vm.rows.length; i++) {
+                    vm.rows[i].valor = Helper.number_format(vm.rows[i].valor);
+                }
             });
         },
         remove(codigo) {
