@@ -20,15 +20,19 @@
             <div class="col-3">
                 <label>Data da Reserva</label><span class="isRequired"> *</span>
                 <input id="dtReserva" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtReserva"
-                    :class="{'is-invalid': $v.entity.dtReserva.$error}"/>
+                    :class="{'is-invalid': $v.entity.dtReserva.$error || dtInvalid}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.dtReserva.required">
                     Data da Reserva obrigatória
+                </div>
+                <div class="invalid-feedback" v-if="dtInvalid">
+                    Data da Reserva deve ter no mínimo 3 dias de antecedência
                 </div>
             </div>
 
             <div class="col-2">
                 <label>Valor</label>
-                <input id="valor" type="number" class="form-control" v-model.number="entity.valor" disabled/>
+                <money id="valor" class="form-control text-right" v-model="entity.valor" v-model.number="entity.valor" disabled
+                    v-bind="money"></money>
             </div>
         </div>
 
@@ -68,7 +72,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row mt-3">
             <div class="col-4">
                 <label>Áreas de Locação</label>
             </div>
@@ -77,7 +81,7 @@
                 <small v-if="entity.areasLocacao.length == '0'" class="invalid">Selecione pelo menos uma área para locação</small>
             </div>
         </div>
-        <div class="row mt-1">
+        <div class="row">
             <div class="col-12">
                 <vue-good-table compactMode ref="areas"
                     :name="areasLocacao"
@@ -94,12 +98,6 @@
                             <input type="checkbox" />
                         </span>
                     </template>
-                    <!-- <template slot="table-row" slot-scope="props">
-                        <span v-if="props.column.field == 'btn'">
-                            <a @click.prevent="EditConta(props.row.codigo)" class="btn btn-sm btn-primary mr-3" href="#">Editar</a>
-                            <a @click.prevent="removeConta(props.row.codigo)" class="btn btn-sm btn-danger" href="#">Excluir</a>
-                        </span>
-                    </template> -->
                 </vue-good-table>
             </div>
         </div>
@@ -136,6 +134,8 @@
 <script>
 import {validationMixin} from 'vuelidate'
 import {required, minValue, maxValue} from 'vuelidate/lib/validators'
+import {Money} from 'v-money'
+import Helper from '@/components/helper'
 import {ClientesService} from '@/services/clientes.service'
 import {CondicoesPagamentoService} from '@/services/condicoesPagamento.service'
 import {AreasLocacaoService} from '@/services/areasLocacao.service'
@@ -145,7 +145,6 @@ import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
 import ConsultaCondicaoPagamento from '@/components/pages/condicoesPagamento/Consult.vue'
 import {VueGoodTable} from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
-import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -153,7 +152,7 @@ const notyf = new Notyf();
 
 export default {
     name: "ReservasEdit",
-    components: { VueGoodTable, ConsultaCliente, ConsultaCondicaoPagamento },
+    components: { Money, VueGoodTable, ConsultaCliente, ConsultaCondicaoPagamento },
     mixins: [validationMixin],
     validations() {
         let validation = {
@@ -192,6 +191,15 @@ export default {
             condicaoSelecionada: null,
             dtCad: null,
             dtAlt: null,
+            dtInvalid: false,
+            money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: 'R$ ',
+                suffix: '',
+                precision: 2,
+                masked: false
+            },
             areasLocacao: {
                 columns: [
                     {
@@ -206,8 +214,7 @@ export default {
                     },
                     {
                         label: "Valor",
-                        field: "valor",
-                        type: "decimal", 
+                        field: "valorAux",
                         width: "150px",
                     },
                 ],
@@ -235,6 +242,10 @@ export default {
 
         AreasLocacaoService.getAll().then(function (response) {
             vm.areasLocacao.rows = response.data;
+
+            for (let i = 0; i < vm.areasLocacao.rows.length; i++) {
+                vm.areasLocacao.rows[i].valorAux = Helper.number_format(vm.areasLocacao.rows[i].valor);
+            }
 
             if (vm.entity.codigo) {
                 vm.getReserva(vm.entity.codigo);
@@ -317,16 +328,27 @@ export default {
             if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
             this.$v.$touch();
-            console.log(this.$v.entity.areasLocacao);
             const vm = this;
 
-            if (this.$v.$invalid) {
-                this.isSubmiting = false;
+            if (vm.$v.$invalid) {
+                vm.isSubmiting = false;
                 return;
             }
 
-            if (this.entity.areasLocacao.length == 0) {
+            var dateNow = Date.now();
+            dateNow = Helper.addDays(dateNow, 3);
+            dateNow = Helper.dateToDateString(dateNow);
+            if (vm.entity.dtReserva < dateNow) {
+                console.log(dateNow);
+                vm.dtInvalid = true;
+                document.getElementById('dtReserva').focus();
+                vm.isSubmiting = false;
+                return;
+            }
+
+            if (vm.entity.areasLocacao.length == 0) {
                 notyf.error("Selecione pelo menos uma área para locação");
+                vm.isSubmiting = false;
                 return;
             }
 
@@ -370,9 +392,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-.invalid{
-    color: red
-}
-</style>
