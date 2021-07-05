@@ -15,6 +15,9 @@
                 <div class="invalid-feedback" v-if="!$v.entity.produto.required">
                     Produto obrigatório
                 </div>
+                <div class="invalid-feedback" v-if="!$v.entity.produto.maxLength">
+                    Produto deve ter no máximo 50 caracteres
+                </div>
             </div>
 
             <div class="col-2">
@@ -22,17 +25,18 @@
                 <input id="unidades" type="number" class="form-control" v-model.number="entity.unidades"
                     :class="{'is-invalid': $v.entity.unidades.$error}"/>
                     <div class="invalid-feedback" v-if="!$v.entity.unidades.minValue">
-                        Unidade deve ser no mínimo 1
+                        Unidades deve ser no mínimo 1
                     </div>
             </div>
 
             <div class="col-2">
                 <label>Valor de Custo</label><span class="isRequired"> *</span>
-                <input id="valorCusto" type="number" class="form-control" v-model.number="entity.valorCusto"
-                    :class="{'is-invalid': $v.entity.valorCusto.$error}"/>
-                    <div class="invalid-feedback" v-if="!$v.entity.valorCusto.minValue">
-                        Valor de custo obrigatório
-                    </div>
+                <money id="valorCusto" class="form-control text-right" v-model="entity.valorCusto"
+                    v-bind="money"
+                    :class="{'is-invalid': $v.entity.valorCusto.$error}"></money>
+                <div class="invalid-feedback" v-if="!$v.entity.valorCusto.minValue || !$v.entity.valorCusto.maxValue">
+                    Valor de custo deve ser entre 0,01 e 99.999.999,99
+                </div>
             </div>
 
             <div class="col-2">
@@ -40,7 +44,7 @@
                 <input id="estoque" type="number" class="form-control" v-model.number="entity.estoque"
                     :class="{'is-invalid': $v.entity.estoque.$error}"/>
                     <div class="invalid-feedback" v-if="!$v.entity.estoque.minValue">
-                        Estoque obrigatório
+                        Estoque deve ser no mínimo 1
                     </div>
             </div>
         </div>
@@ -53,24 +57,29 @@
                         :class="{'is-invalid': $v.entity.codigoCategoria.$error}"/>
                     <div class="input-group-append">
                         <input id="categoria" type="text" class="form-control" v-model.lazy="categoriaSelecionada" readonly/>
-                        <span class="input-group-btn">
-                            <b-button v-b-modal.modal-consult-categoria class="btn btn-info ml-1">Buscar</b-button>
-                        </span>
                     </div>
+                    <span class="input-group-btn">
+                        <b-button v-b-modal.modal-consult-categoria class="btn btn-info ml-1">Buscar</b-button>
+                    </span>
                     <div class="invalid-feedback" v-if="!$v.entity.codigoCategoria.minValue">
                         Selecione uma Categoria
                     </div>
                 </div>
             </div>
 
-            <div class="col-3">
-                <label>Data da última compra</label> 
+            <div class="col-2">
+                <label>Data da últ. compra</label> 
                 <input id="dtUltimaCompra" type="date" class="form-control" v-model="entity.dtUltimaCompra"/>
             </div>
 
-            <div class="col-3">
-                <label>Valor da última compra</label>
-                <input id="valorUltimaCompra" type="number" class="form-control" v-model.number="entity.valorUltimaCompra"/>
+            <div class="col-2">
+                <label>Valor da últ. compra</label>
+                <money id="valorUltimaCompra" class="form-control text-right" v-model="entity.valorUltimaCompra"
+                    v-bind="money"
+                    :class="{'is-invalid': $v.entity.valorUltimaCompra.$error}"></money>
+                <div class="invalid-feedback" v-if="!$v.entity.valorCusto.minValue || !$v.entity.valorCusto.maxValue">
+                    Valor de custo deve ser no máximo 99.999.999,99
+                </div>
             </div>
         </div>
 
@@ -101,7 +110,8 @@
 
 <script>
 import {validationMixin} from 'vuelidate'
-import {required, minValue} from 'vuelidate/lib/validators'
+import {required, maxLength, minValue, maxValue} from 'vuelidate/lib/validators'
+import {Money} from 'v-money'
 import {CategoriasService} from '@/services/categorias.service'
 import {ProdutosService} from '@/services/produtos.service'
 import ConsultaCategoria from '@/components/pages/categorias/Consult.vue'
@@ -113,7 +123,7 @@ const notyf = new Notyf();
 
 export default {
     name: "ProdutosEdit",
-    components: { ConsultaCategoria },
+    components: { Money, ConsultaCategoria },
     props: {
         isModal: {
             type: Boolean,
@@ -126,18 +136,25 @@ export default {
             entity: {
                 produto: {
                     required,
+                    maxLength: maxLength(50),
                 },
                 unidades: {
                     minValue: minValue(1),
                 },
                 valorCusto: {
+                    required,
                     minValue: minValue(0.01),
+                    maxValue: maxValue(99999999.99),
                 },
                 estoque: {
                     minValue: minValue(1),
                 },
                 codigoCategoria: {
                     minValue: minValue(1),
+                },
+                valorUltimaCompra: {
+                    minValue: minValue(0.00),
+                    maxValue: maxValue(99999999.99),
                 },
             }
         }
@@ -160,6 +177,14 @@ export default {
             categoriaSelecionada: null,
             dtCad: null,
             dtAlt: null,
+            money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: 'R$ ',
+                suffix: '',
+                precision: 2,
+                masked: false
+            },
             isLoading: false,
             isSubmiting: false
         }
