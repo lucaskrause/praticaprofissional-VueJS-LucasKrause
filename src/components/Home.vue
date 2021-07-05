@@ -23,7 +23,13 @@ export default {
 </script>
 
 <style>
-    .isRequired{
-        color: red;
-    }
+.isRequired{
+    color: #dc3545;
+}
+.invalid{
+    color: #dc3545
+}
+.valid{
+    color: green
+}
 </style>

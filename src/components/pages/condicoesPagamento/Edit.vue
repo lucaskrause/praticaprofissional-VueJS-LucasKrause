@@ -331,12 +331,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-.invalid{
-    color: red
-}
-.valid{
-    color: green
-}
-</style>
