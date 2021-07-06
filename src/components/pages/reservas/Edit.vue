@@ -339,7 +339,6 @@ export default {
             dateNow = Helper.addDays(dateNow, 3);
             dateNow = Helper.dateToDateString(dateNow);
             if (vm.entity.dtReserva < dateNow) {
-                console.log(dateNow);
                 vm.dtInvalid = true;
                 document.getElementById('dtReserva').focus();
                 vm.isSubmiting = false;

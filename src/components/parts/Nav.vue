@@ -1,7 +1,7 @@
 <template>
-    <div class="custom-nav col-12 col-sm-5 col-md-4 col-lg-3 col-xl-2">
+    <div class="custom-nav col-sm-5 col-md-3 col-lg-2 col-xl-2">
         <div class="row">
-            <div class="col-md-12 col-6 logo">
+            <div class="col-12 logo">
                 <div class="row">
                     <div class="col-12 company-name">
                         <router-link :to="{name: 'app'}" class="itemMenu">
@@ -12,7 +12,7 @@
                 </div>
                 <hr/>
                 <div class="row">
-                    <div class="col-md-12 col-6 menu">
+                    <div class="col-11 menu">
                         <ul>
                             <li v-for="(group) in groups" :key="group.id">
                                 <a href="#" class="itemMenu" @click.prevent="() => true" v-b-toggle="'accord-menu-'+group.id">
@@ -48,7 +48,7 @@ export default {
         return {
             NameCompany: "SINCOFOZ",
             groups: [
-                {id: 1, label: "Empresas",  icon: "BIconBuilding"},
+                {id: 1, label: "Empresa",  icon: "BIconBuilding"},
                 {id: 2, label: "Geral", icon: "BIconCart3"},
                 {id: 3, label: "Pagamentos", icon: "BIconCreditCard"},
                 {id: 4, label: "Regiões", icon: "BIconGeoAlt"},

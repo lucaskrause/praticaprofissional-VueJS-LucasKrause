@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         <Nav/>
-        <div class="col-md-9 col-lg-9 col-xl-10 col-sm-8 pt-3">
+        <div class="col-sm-6 col-md-9 col-lg-10 col-xl-10 pt-3">
             <div class="row">
                 <router-view></router-view>
             </div>
