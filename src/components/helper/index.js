@@ -50,6 +50,23 @@ const Helper = {
         })
     },
 
+    validadorEmail(email) {
+        var usuario = email.substring(0, email.indexOf("@"));
+        var dominio = email.substring(email.indexOf("@")+ 1, email.length);
+        if ((usuario.length >=1) &&
+            (dominio.length >=3) &&
+            (usuario.search("@")==-1) &&
+            (dominio.search("@")==-1) &&
+            (usuario.search(" ")==-1) &&
+            (dominio.search(" ")==-1) &&
+            (dominio.search(".")!=-1) &&
+            (dominio.indexOf(".") >=1)&&
+            (dominio.lastIndexOf(".") < dominio.length - 1)) {
+            return true;
+        }
+        return false;
+    },
+
     validadorCPF(strCPF) {
         var Soma;
         var Resto;
@@ -122,6 +139,10 @@ const Helper = {
         if (resultado != digitos.charAt(1))
             return false;
         return true;
+    },
+
+    addMaskCNPJ(cnpj) {
+        return cnpj.replace(/\D/g, '').replace(/^(\d{2})(\d{3})?(\d{3})?(\d{4})?(\d{2})?/, "$1.$2.$3/$4-$5");
     },
 
     //formato esperado 2020-01-31

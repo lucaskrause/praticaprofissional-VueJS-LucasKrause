@@ -13,7 +13,10 @@
                 <input id="razaoSocial" type="text" class="form-control" v-uppercase v-model.lazy="entity.razaoSocial"
                     :class="{'is-invalid': $v.entity.razaoSocial.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.razaoSocial.required">
-                    Data de Fundação obrigatória
+                    Razão Social obrigatória
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.razaoSocial.maxLength">
+                    Razão Social deve ter no máximo 50 caracteres
                 </div>
             </div>
 
@@ -31,6 +34,9 @@
                 <div class="invalid-feedback" v-if="!$v.entity.logradouro.required">
                     Logradouro obrigatório
                 </div>
+                <div class="invalid-feedback" v-if="!$v.entity.logradouro.maxLength">
+                    Logradouro deve ter no máximo 50 caracteres
+                </div>
             </div>
 
             <div class="col-2">
@@ -45,12 +51,16 @@
                 <div class="invalid-feedback" v-if="!$v.entity.bairro.required">
                     Bairro obrigatório
                 </div>
+                <div class="invalid-feedback" v-if="!$v.entity.bairro.maxLength">
+                    Bairro deve ter no máximo 50 caracteres
+                </div>
             </div>
 
             <div class="col-2">
                 <label>CEP</label><span class="isRequired"> *</span>
-                <input id="cep" type="text" class="form-control" v-uppercase v-model.lazy="entity.cep"
-                    :class="{'is-invalid': $v.entity.cep.$error}"/>
+                <the-mask id="cep" class="form-control" v-model="entity.cep"
+                    mask="#####-###" :masked="true"
+                    :class="{'is-invalid': $v.entity.cep.$error}"/>                    
                 <div class="invalid-feedback" v-if="!$v.entity.cep.required">
                     CEP obrigatório
                 </div>
@@ -80,19 +90,26 @@
 
             <div class="col-3">
                 <label>Telefone</label><span class="isRequired"> *</span>
-                <input id="telefone" type="text" class="form-control" v-uppercase v-model.lazy="entity.telefone"
+                <the-mask id="telefone" class="form-control" v-model="entity.telefone"
+                    :mask="['(##) ####-####', '(##) #####-####']" :masked="true"
                     :class="{'is-invalid': $v.entity.telefone.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.telefone.required">
                     Telefone obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.telefone.minLength || !$v.entity.telefone.maxLength">
+                    Telefone inválido
                 </div>
             </div>
 
             <div class="col-4">
                 <label>Email</label><span class="isRequired"> *</span>
                 <input id="email" type="text" class="form-control" v-uppercase v-model.lazy="entity.email"
-                    :class="{'is-invalid': $v.entity.email.$error}"/>
+                    :class="{'is-invalid': $v.entity.email.$error || emailInvalid}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.email.required">
                     Email obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="emailInvalid">
+                    Email inválido
                 </div>
             </div>
         </div>
@@ -100,10 +117,14 @@
         <div class="row form-group">
             <div class="col-3">
                 <label>CNPJ</label><span class="isRequired"> *</span>
-                <input id="cnpj" type="text" class="form-control" v-uppercase v-model.lazy="entity.cnpj"
-                    :class="{'is-invalid': $v.entity.cnpj.$error}"/>
+                <the-mask id="cnpj" class="form-control" v-model="entity.cnpj"
+                    mask="##.###.###/####-##" :masked="false"
+                    :class="{'is-invalid': $v.entity.cnpj.$error || cnpjInvalid}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.cnpj.required">
                     CNPJ obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.cnpj.minLength || !$v.entity.cnpj.maxLength || cnpjInvalid">
+                    CNPJ inválido
                 </div>
             </div>
 
@@ -115,9 +136,12 @@
             <div class="col-3">
                 <label>Data de Fundação</label><span class="isRequired"> *</span>
                 <input id="dtFundacao" type="date" class="form-control" v-model="entity.dtFundacao"
-                    :class="{'is-invalid': $v.entity.dtFundacao.$error}"/>
+                    :class="{'is-invalid': $v.entity.dtFundacao.$error || dtInvalid}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.dtFundacao.required">
                     Data de Fundação obrigatória
+                </div>
+                <div class="invalid-feedback" v-if="dtInvalid">
+                    Data de Fundação deve ser no máximo a data de hoje
                 </div>
             </div>
 
@@ -191,13 +215,14 @@
 <script>
 import {validationMixin} from 'vuelidate'
 import {required, minLength, maxLength, minValue} from 'vuelidate/lib/validators'
+import {TheMask} from 'vue-the-mask'
+import Helper from '@/components/helper'
 import {CidadesService} from '@/services/cidades.service'
 import {EmpresasService} from '@/services/empresas.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
 import NovaContaBancaria from '@/components/pages/contasBancarias/Edit.vue'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table'
-import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -205,19 +230,22 @@ const notyf = new Notyf();
 
 export default {
     name: "EmpresasEdit",
-    components: { VueGoodTable, ConsultaCidade, NovaContaBancaria },
+    components: { TheMask, VueGoodTable, ConsultaCidade, NovaContaBancaria },
     mixins: [validationMixin],
     validations() {
         let validation = {
             entity: {
                 razaoSocial:  {
                     required,
+                    maxLength: maxLength(50),
                 },
                 logradouro: {
                     required,
+                    maxLength: maxLength(50),
                 },
                 bairro: {
                     required,
+                    maxLength: maxLength(50),
                 },
                 cep: {
                     required,
@@ -229,12 +257,16 @@ export default {
                 },
                 telefone: {
                     required,
+                    minLength: minLength(14),
+                    maxLength: maxLength(15),
                 },
                 email: {
                     required,
                 },
                 cnpj: {
                     required,
+                    minLength: minLength(14),
+                    maxLength: maxLength(14),
                 },
                 dtFundacao: {
                     required,
@@ -266,6 +298,9 @@ export default {
             cidadeSelecionada: null,
             dtCad: null,
             dtAlt: null,
+            emailInvalid: false,
+            cnpjInvalid: false,
+            dtInvalid: false,
             contasBancarias: {
                 columns: [
                     {
@@ -372,6 +407,9 @@ export default {
         save() {
             if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
+            this.emailInvalid = false;
+            this.cnpjInvalid = false;
+            this.dtInvalid = false;
             this.$v.$touch();
             const vm = this;
 
@@ -380,20 +418,40 @@ export default {
                 return;
             }
             
+            if (!Helper.validadorEmail(this.entity.email)) {
+                vm.emailInvalid = true;
+                document.getElementById('email').focus();
+                vm.isSubmiting = false;
+                return;
+            }
+            
             if (!Helper.validadorCNPJ(this.entity.cnpj)) {
-                notyf.error("CNPJ inválido");
+                vm.cnpjInvalid = true;
+                document.getElementById('cnpj').focus();
+                vm.isSubmiting = false;
                 return;
             }
 
-            this.contasBancarias.rows = this.clearContasBancarias(this.contasBancarias.rows.concat(this.contaBancariaRemovido));
-            this.entity.contasBancarias = this.contasBancarias.rows;
-            EmpresasService.save(this.entity).then(function () {
+            var dateNow = Date.now();
+            dateNow = Helper.dateToDateString(dateNow);
+            if (vm.entity.dtFundacao > dateNow) {
+                vm.dtInvalid = true;
+                document.getElementById('dtFundacao').focus();
+                vm.isSubmiting = false;
+                return;
+            }
+
+            var contasAux = vm.contasBancarias.rows;
+            vm.contasBancarias.rows = vm.clearContasBancarias(vm.contasBancarias.rows.concat(vm.contaBancariaRemovido));
+            vm.entity.contasBancarias = vm.contasBancarias.rows;
+            EmpresasService.save(vm.entity).then(function () {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Empresa " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 vm.$router.push('/app/empresas');
             }).catch(function (errors){
                 notyf.error(errors.response.data.message);
+                vm.contasBancarias.rows = contasAux;
                 vm.isSubmiting = false;
             });
         },
