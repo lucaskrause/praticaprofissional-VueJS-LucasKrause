@@ -207,7 +207,6 @@ export default {
                 totalRecords: 0,
                 porcentagem: 100
             },
-            parcelasDeletedas:[],
             numeroParcela: 1,
             parcelaToEdit: {},
             isEdit: false,
@@ -277,7 +276,7 @@ export default {
                 return;
             }
 
-            this.entity.parcelas = this.clearParcelas(this.parcelas.rows.concat(this.parcelasDeletedas));
+            this.entity.parcelas = this.clearParcelas(this.parcelas.rows);
             CondicoesPagamentoService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Condição de Pagamento " + msg + " com sucesso");
@@ -306,12 +305,7 @@ export default {
             }
         },
         removeParcela(entity) {
-            if (this.parcelas.rows[entity.index].codigo > 0) {
-                this.parcelas.rows[entity.index].status = "Inativo";
-                this.parcelasDeletedas.push(this.parcelas.rows[entity.index]);
-            }
             this.parcelas.porcentagem = (parseFloat(this.parcelas.porcentagem) + parseFloat(this.parcelas.rows[entity.index].porcentagem)).toFixed(4);
-
             this.parcelas.rows.splice(entity.index, 1);
             this.orderParcela(entity.index);
             this.entity.totalParcelas--;
@@ -321,8 +315,6 @@ export default {
             if (parcelas.length > 0) {
                 for (let i = 0; i < parcelas.length; i++) {
                     var parcela = parcelas[i];
-                    this.$delete(parcela, 'dtCadastro');
-                    this.$delete(parcela, 'dtAlteracao');
                     parcelas[i] = parcela;
                 }
             }

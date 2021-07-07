@@ -94,10 +94,10 @@ export default {
             if(remove){
                 CondicoesPagamentoService.delete(codigo).then(function (response) {
                     if(response.data){
-                        notyf.success("PReço excluído com sucesso");
+                        notyf.success("Condição de Pagamento excluído com sucesso");
                         vm.loadData();
                     } else {
-                        notyf.error("Não foi possível excluir o preço");
+                        notyf.error("Não foi possível excluir a Condição de Pagamento");
                     }
                 });
             }

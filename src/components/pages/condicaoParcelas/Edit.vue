@@ -48,17 +48,7 @@
         </div>
 
         <div class="row form-group align-items-end mt-5">
-            <div class="col-2">
-                <label>Data de Cadastro</label>
-                <input id="dataCadastro" type="text" class="form-control" v-model="dtCad" readonly/>
-            </div>
-            
-            <div class="col-2">
-                <label>Data de Alteração</label>
-                <input id="dataAlteracao" type="text" class="form-control" v-model="dtAlt" readonly/>
-            </div>
-
-            <div class="col-8">
+            <div class="col-12">
                 <div class="text-right">
                     <router-link v-if="!isModal" :to="{name: 'ParcelasList'}" class="btn btn-danger mr-3">Voltar</router-link>
                     <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
@@ -77,7 +67,6 @@ import {validationMixin} from 'vuelidate'
 import {required, minValue, maxValue} from 'vuelidate/lib/validators'
 import {FormasPagamentoService} from '@/services/formasPagamento.service'
 import ConsultaFormaPagamento from '@/components/pages/formasPagamento/Consult.vue'
-import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -128,7 +117,6 @@ export default {
     data() {
         return {
             entity: {
-                codigo: 0,
                 numeroParcela: 0,
                 numeroDias: null,
                 porcentagem: null,
@@ -138,8 +126,6 @@ export default {
                     descricao: null
                 }
             },
-            dtCad: null,
-            dtAlt: null,
             isLoading: false,
             isSubmiting: false
         }
@@ -153,14 +139,6 @@ export default {
             // edit parcela
             else {
                 this.entity = this.editParcela;
-
-                if (this.entity.codigo) {
-                    var dateTimeCad = Helper.serverDateToDateTimeString(this.entity.dtCadastro);
-                    var dateTimeAlt = Helper.serverDateToDateTimeString(this.entity.dtAlteracao);
-
-                    this.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
-                    this.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
-                }
             }
         }
     },

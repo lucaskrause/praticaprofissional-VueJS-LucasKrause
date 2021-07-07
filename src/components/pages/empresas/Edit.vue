@@ -108,6 +108,9 @@
                 <div class="invalid-feedback" v-if="!$v.entity.email.required">
                     Email obrigatório
                 </div>
+                <div class="invalid-feedback" v-if="!$v.entity.email.maxLength">
+                    Email deve ter no máximo 50 caracteres
+                </div>
                 <div class="invalid-feedback" v-if="emailInvalid">
                     Email inválido
                 </div>
@@ -262,6 +265,7 @@ export default {
                 },
                 email: {
                     required,
+                    maxLength: maxLength(50),
                 },
                 cnpj: {
                     required,
