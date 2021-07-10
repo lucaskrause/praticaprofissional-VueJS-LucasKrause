@@ -23,6 +23,9 @@
                 <div class="invalid-feedback" v-if="!$v.entity.nome.required">
                     Fornercedor obrigatório
                 </div>
+                <div class="invalid-feedback" v-if="!$v.entity.nome.maxLength">
+                    Fornercedor deve ter no máximo 50 caracteres
+                </div>
             </div>
 
             <div class="col-2">
@@ -42,6 +45,9 @@
                 <div class="invalid-feedback" v-if="!$v.entity.logradouro.required">
                     Logradouro obrigatório
                 </div>
+                <div class="invalid-feedback" v-if="!$v.entity.logradouro.maxLength">
+                    Logradouro deve ter no máximo 50 caracteres
+                </div>
             </div>
 
             <div class="col-2">
@@ -56,12 +62,16 @@
                 <div class="invalid-feedback" v-if="!$v.entity.bairro.required">
                     Bairro obrigatório
                 </div>
+                <div class="invalid-feedback" v-if="!$v.entity.bairro.maxLength">
+                    Bairro deve ter no máximo 50 caracteres
+                </div>
             </div>
 
             <div class="col-2">
                 <label>CEP</label><span class="isRequired"> *</span>
-                <input id="cep" type="text" class="form-control" v-uppercase v-model.lazy="entity.cep"
-                    :class="{'is-invalid': $v.entity.cep.$error}"/>
+                <the-mask id="cep" class="form-control" v-model="entity.cep"
+                    mask="#####-###" :masked="true"
+                    :class="{'is-invalid': $v.entity.cep.$error}"/>                    
                 <div class="invalid-feedback" v-if="!$v.entity.cep.required">
                     CEP obrigatório
                 </div>
@@ -91,19 +101,29 @@
 
             <div class="col-3">
                 <label>Telefone</label><span class="isRequired"> *</span>
-                <input id="telefone" type="text" class="form-control" v-uppercase v-model.lazy="entity.telefone"
+                <the-mask id="telefone" class="form-control" v-model="entity.telefone"
+                    :mask="['(##) ####-####', '(##) #####-####']" :masked="true"
                     :class="{'is-invalid': $v.entity.telefone.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.telefone.required">
                     Telefone obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.telefone.minLength || !$v.entity.telefone.maxLength">
+                    Telefone inválido
                 </div>
             </div>
 
             <div class="col-4">
                 <label>Email</label><span class="isRequired"> *</span>
                 <input id="email" type="text" class="form-control" v-uppercase v-model.lazy="entity.email"
-                    :class="{'is-invalid': $v.entity.email.$error}"/>
+                    :class="{'is-invalid': $v.entity.email.$error || emailInvalid}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.email.required">
                     Email obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.email.maxLength">
+                    Email deve ter no máximo 50 caracteres
+                </div>
+                <div class="invalid-feedback" v-if="emailInvalid">
+                    Email inválido
                 </div>
             </div>
         </div>
@@ -111,10 +131,14 @@
         <div class="row form-group">
             <div class="col-3">
                 <label>{{ labels.cpfCnpj }}</label><span class="isRequired"> *</span>
-                <input id="cpfCnpj" type="text" class="form-control" v-uppercase v-model.lazy="entity.cpfCnpj"
-                    :class="{'is-invalid': $v.entity.cpfCnpj.$error}"/>
+                <the-mask id="cpfCnpj" class="form-control" v-model="entity.cpfCnpj"
+                    :mask="['###.###.###-##', '##.###.###/####-##']" :masked="false"
+                    :class="{'is-invalid': $v.entity.cpfCnpj.$error || cpfCnpjInvalid}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.cpfCnpj.required">
                     {{ labels.cpfCnpj }} obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.cpfCnpj.minLength || !$v.entity.cpfCnpj.maxLength || cpfCnpjInvalid">
+                    {{ labels.cpfCnpj }} inválido
                 </div>
             </div>
 
@@ -124,11 +148,14 @@
             </div>
 
             <div class="col-3">
-                <label>{{ labels.dtNascimento }}</label><span class="isRequired"> *</span>
+                <label>{{ labels.dtNascFundacao }}</label><span class="isRequired"> *</span>
                 <input id="dtNascimento" type="date" class="form-control" v-model="entity.dtNascimento"
-                    :class="{'is-invalid': $v.entity.dtNascimento.$error}"/>
+                    :class="{'is-invalid': $v.entity.dtNascimento.$error || dtInvalid}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.dtNascimento.required">
                     {{ labels.dtNascimento }} obrigatória
+                </div>
+                <div class="invalid-feedback" v-if="dtInvalid">
+                    {{ dtError }}
                 </div>
             </div>
         </div>
@@ -161,10 +188,11 @@
 <script>
 import {validationMixin} from 'vuelidate'
 import {required, minLength, maxLength, minValue} from 'vuelidate/lib/validators'
+import {TheMask} from 'vue-the-mask'
+import Helper from '@/components/helper'
 import {CidadesService} from '@/services/cidades.service'
 import {FornecedoresService} from '@/services/fornecedores.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
-import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -172,7 +200,7 @@ const notyf = new Notyf();
 
 export default {
     name: "FornecedoresEdit",
-    components: { ConsultaCidade },
+    components: { TheMask, ConsultaCidade },
     props: {
         isModal: {
             type: Boolean,
@@ -185,12 +213,15 @@ export default {
             entity: {
                 nome:  {
                     required,
+                    maxLength: maxLength(50),
                 },
                 logradouro: {
                     required,
+                    maxLength: maxLength(50),
                 },
                 bairro: {
                     required,
+                    maxLength: maxLength(50),
                 },
                 cep: {
                     required,
@@ -202,12 +233,17 @@ export default {
                 },
                 telefone: {
                     required,
+                    minLength: minLength(14),
+                    maxLength: maxLength(15),
                 },
                 email: {
                     required,
+                    maxLength: maxLength(50),
                 },
                 cpfCnpj: {
                     required,
+                    minLength: minLength(11),
+                    maxLength: maxLength(14),
                 },
                 dtNascimento: {
                     required,
@@ -218,17 +254,17 @@ export default {
     },
     data() {
         return {
-            labels: { cpfCnpj: "CPF", rgIe: "RG", dtNascimento: "Data de Nascimento" },
+            labels: { cpfCnpj: "CPF", rgIe: "RG", dtNascFundacao: "Data de Nascimento" },
             entity: {
                 codigo: 0,
                 nome: null,
                 tipoPessoa: "PF",
-                cpfcnpj: null,
-                rgie: null,
+                cpfCnpj: null,
+                rgIe: null,
                 sexo: "Masculino",
                 telefone: null,
                 email: null,
-                dtNascFundacao: null,
+                dtNascimento: null,
                 codigoCidade: 0,
                 logradouro: null,
                 complemento: null,
@@ -240,6 +276,10 @@ export default {
             cidadeSelecionada: null,
             dtCad: null,
             dtAlt: null,
+            emailInvalid: false,
+            cpfCnpjInvalid: false,
+            dtInvalid: false,
+            dtError: null,
             isLoading: false,
             isSubmiting: false
         }
@@ -252,11 +292,11 @@ export default {
             FornecedoresService.getById(this.entity.codigo).then(function (response) {
                 vm.entity = response.data;
 
-                var dateAniversario = Helper.dateToDateString(vm.entity.dtCadastro);
+                var dateAniversario = Helper.dateToDateString(vm.entity.dtNascimento);
                 var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
                 var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
                 
-                vm.entity.dtNascFundacao = dateAniversario;
+                vm.entity.dtNascimento = dateAniversario;
                 vm.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
                 vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.cidadeSelecionada = response.data.cidade.cidade;
@@ -291,6 +331,9 @@ export default {
         save() {
             if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
+            this.emailInvalid = false;
+            this.cpfCnpjInvalid = false;
+            this.dtInvalid = false;
             this.$v.$touch();
             const vm = this;
 
@@ -299,15 +342,47 @@ export default {
                 return;
             }
             
-            if (this.entity.tipoPessoa == "PF" && !Helper.validadorCPF(this.entity.cpfCnpj)) {
-                notyf.error("CPF inválido");
+            if (!Helper.validadorEmail(this.entity.email)) {
+                vm.emailInvalid = true;
+                document.getElementById('email').focus();
+                vm.isSubmiting = false;
                 return;
             }
-            if (this.entity.tipoPessoa == "PJ" && !Helper.validadorCNPJ(this.entity.cpfCnpj)) {
-                notyf.error("CNPJ inválido");
-                return;
-            }
+            
+            if (this.entity.tipoPessoa == "PF") {
+                if(!Helper.validadorCPF(this.entity.cpfCnpj)) {
+                    vm.cpfCnpjInvalid = true;
+                    document.getElementById('cpfCnpj').focus();
+                    vm.isSubmiting = false;
+                    return;
+                }
+                
+                if (Helper.calculaIdade(vm.entity.dtNascimento) < 18) {
+                    vm.dtInvalid = true;
+                    vm.dtError = "Idade deve ser no mínimo 18 anos";
+                    document.getElementById('dtNascimento').focus();
+                    vm.isSubmiting = false;
+                    return;
+                }
+            } else {
+                if (!Helper.validadorCNPJ(this.entity.cpfCnpj)) {
+                    vm.cpfCnpjInvalid = true;
+                    document.getElementById('cpfCnpj').focus();
+                    vm.isSubmiting = false;
+                    return;
+                }
 
+                var dateNow = Date.now();
+                dateNow = Helper.dateToDateString(dateNow);
+                if (vm.entity.dtFundacao > dateNow) {
+                    vm.dtInvalid = true;
+                    vm.dtError = vm.labels.dtdtNascFundacao + " deve ser no máximo a data de hoje";
+                    document.getElementById('dtNascimento').focus();
+                    vm.isSubmiting = false;
+                    return;
+                }
+            }
+            
             FornecedoresService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Fornecedor " + msg + " com sucesso");
@@ -322,9 +397,9 @@ export default {
     watch: {
         'entity.tipoPessoa'(value) {
             if (value == "PF") {
-                this.labels = { cpfCnpj: "CPF", rgIe: "RG", dtNascimento: "Data de Nascimento" };
+                this.labels = { cpfCnpj: "CPF", rgIe: "RG", dtNascFundacao: "Data de Nascimento" };
             } else {
-                this.labels = { cpfCnpj: "CNPJ", rgIe: "Inscrição Estadual", dtNascimento: "Data de Fundação" };
+                this.labels = { cpfCnpj: "CNPJ", rgIe: "Inscrição Estadual", dtNascFundacao: "Data de Fundação" };
             }
         }
     }

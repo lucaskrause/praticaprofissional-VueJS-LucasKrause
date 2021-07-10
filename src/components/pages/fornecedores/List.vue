@@ -56,7 +56,7 @@ export default {
                 },
                 {
                     label: "CPF / CNPJ",
-                    field: "cpfcnpj", 
+                    field: "cpfCnpj", 
                     width: "180px",
                 },
                 {

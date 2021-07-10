@@ -13,7 +13,10 @@
                 <input id="dependente" type="text" class="form-control" v-uppercase v-model.lazy="entity.nome"
                     :class="{'is-invalid': $v.entity.nome.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.nome.required">
-                    Dependente obrigatório
+                    Dependente obrigatória
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.nome.maxLength">
+                    Dependente deve ter no máximo 50 caracteres
                 </div>
             </div>
 
@@ -51,6 +54,9 @@
                 <div class="invalid-feedback" v-if="!$v.entity.logradouro.required">
                     Logradouro obrigatório
                 </div>
+                <div class="invalid-feedback" v-if="!$v.entity.logradouro.maxLength">
+                    Logradouro deve ter no máximo 50 caracteres
+                </div>
             </div>
 
             <div class="col-2">
@@ -65,11 +71,15 @@
                 <div class="invalid-feedback" v-if="!$v.entity.bairro.required">
                     Bairro obrigatório
                 </div>
+                <div class="invalid-feedback" v-if="!$v.entity.bairro.maxLength">
+                    Bairro deve ter no máximo 50 caracteres
+                </div>
             </div>
 
             <div class="col-2">
                 <label>CEP</label><span class="isRequired"> *</span>
-                <input id="cep" type="text" class="form-control" v-uppercase v-model.lazy="entity.cep"
+                <the-mask id="cep" class="form-control" v-model="entity.cep"
+                    mask="#####-###" :masked="true"
                     :class="{'is-invalid': $v.entity.cep.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.cep.required">
                     CEP obrigatório
@@ -89,7 +99,7 @@
                     <div class="input-group-append">
                         <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="cidadeSelecionada" readonly/>
                         <span class="input-group-btn">
-                            <b-button v-b-modal.modal-consult-cidade-dependente class="btn btn-info ml-1">Buscar</b-button>
+                            <b-button v-b-modal.modal-consult-cidade class="btn btn-info ml-1">Buscar</b-button>
                         </span>
                     </div>
                     <div class="invalid-feedback" v-if="!$v.entity.codigoCidade.minValue">
@@ -100,19 +110,29 @@
 
             <div class="col-3">
                 <label>Telefone</label><span class="isRequired"> *</span>
-                <input id="telefone" type="text" class="form-control" v-uppercase v-model.lazy="entity.telefone"
+                <the-mask id="telefone" class="form-control" v-model="entity.telefone"
+                    :mask="['(##) ####-####', '(##) #####-####']" :masked="true"
                     :class="{'is-invalid': $v.entity.telefone.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.telefone.required">
                     Telefone obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.telefone.minLength || !$v.entity.telefone.maxLength">
+                    Telefone inválido
                 </div>
             </div>
 
             <div class="col-4">
                 <label>Email</label><span class="isRequired"> *</span>
                 <input id="email" type="text" class="form-control" v-uppercase v-model.lazy="entity.email"
-                    :class="{'is-invalid': $v.entity.email.$error}"/>
+                    :class="{'is-invalid': $v.entity.email.$error || emailInvalid}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.email.required">
                     Email obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.email.maxLength">
+                    Email deve ter no máximo 50 caracteres
+                </div>
+                <div class="invalid-feedback" v-if="emailInvalid">
+                    Email inválido
                 </div>
             </div>
         </div>
@@ -120,10 +140,14 @@
         <div class="row form-group">
             <div class="col-3">
                 <label>CPF</label><span class="isRequired"> *</span>
-                <input id="cpf" type="text" class="form-control" v-uppercase v-model.lazy="entity.cpf"
-                    :class="{'is-invalid': $v.entity.cpf.$error}"/>
+                <the-mask id="cpf" class="form-control" v-model="entity.cpf"
+                    mask="###.###.###-##" :masked="false"
+                    :class="{'is-invalid': $v.entity.cpf.$error || cpfInvalid}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.cpf.required">
                     CPF obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.cpf.minLength || !$v.entity.cpf.maxLength || cpfInvalid">
+                    CPF inválido
                 </div>
             </div>
 
@@ -135,9 +159,12 @@
             <div class="col-3">
                 <label>Data de Nascimento</label><span class="isRequired"> *</span>
                 <input id="dtNascimento" type="date" class="form-control" v-model="entity.dtNascimento"
-                    :class="{'is-invalid': $v.entity.dtNascimento.$error}"/>
+                    :class="{'is-invalid': $v.entity.dtNascimento.$error || dtInvalid}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.dtNascimento.required">
                     Data de Nascimento obrigatória
+                </div>
+                <div class="invalid-feedback" v-if="dtInvalid">
+                    Idade mínima de 1 anos
                 </div>
             </div>
         </div>
@@ -174,12 +201,13 @@
 <script>
 import {validationMixin} from 'vuelidate'
 import {required, minLength, maxLength, minValue} from 'vuelidate/lib/validators'
+import {TheMask} from 'vue-the-mask'
+import Helper from '@/components/helper'
 import {ClientesService} from '@/services/clientes.service'
 import {CidadesService} from '@/services/cidades.service'
 import {DependentesService} from '@/services/dependentes.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
 import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
-import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
 import 'notyf/notyf.min.css';
 
@@ -187,7 +215,7 @@ const notyf = new Notyf();
 
 export default {
     name: "DependentesEdit",
-    components: { ConsultaCidade, ConsultaCliente },
+    components: { TheMask, ConsultaCidade, ConsultaCliente },
     props: {
         isModal: {
             type: Boolean,
@@ -204,12 +232,15 @@ export default {
             entity: {
                 nome:  {
                     required,
+                    maxLength: maxLength(50),
                 },
                 logradouro: {
                     required,
+                    maxLength: maxLength(50),
                 },
                 bairro: {
                     required,
+                    maxLength: maxLength(50),
                 },
                 cep: {
                     required,
@@ -221,12 +252,17 @@ export default {
                 },
                 telefone: {
                     required,
+                    minLength: minLength(14),
+                    maxLength: maxLength(15),
                 },
                 email: {
                     required,
+                    maxLength: maxLength(50),
                 },
                 cpf: {
                     required,
+                    minLength: minLength(11),
+                    maxLength: maxLength(11),
                 },
                 dtNascimento: {
                     required,
@@ -260,6 +296,9 @@ export default {
             cidadeSelecionada: null,
             dtCad: null,
             dtAlt: null,
+            emailInvalid: false,
+            cpfInvalid: false,
+            dtInvalid: false,
             isLoading: false,
             isSubmiting: false
         }
@@ -349,6 +388,9 @@ export default {
             }
         },
         save() {
+            this.emailInvalid = false;
+            this.cpfInvalid = false;
+            this.dtInvalid = false;
             this.$v.$touch();
             if (this.$v.$invalid) {
                 this.isSubmiting = false;
@@ -356,7 +398,16 @@ export default {
             }
             
             if (!Helper.validadorCPF(this.entity.cpf)) {
-                notyf.errro("CPF inválido");
+                this.cpfInvalid = true;
+                document.getElementById('cpf').focus();
+                this.isSubmiting = false;
+                return;
+            }
+
+            if (Helper.calculaIdade(this.entity.dtNascimento) < 1) {
+                this.dtInvalid = true;
+                document.getElementById('dtNascimento').focus();
+                this.isSubmiting = false;
                 return;
             }
             

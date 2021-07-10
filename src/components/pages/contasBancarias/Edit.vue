@@ -15,12 +15,15 @@
                 <div class="invalid-feedback" v-if="!$v.entity.instituicao.required">
                     Instituição obrigatória
                 </div>
+                <div class="invalid-feedback" v-if="!$v.entity.instituicao.maxLength">
+                    Instituição deve ter no máximo 50 caracteres
+                </div>
             </div>
 
             <div class="col-3">
                 <label>Número do Banco</label><span class="isRequired"> *</span>
-                <input id="numeroBanco" type="text" class="form-control" v-uppercase v-model.lazy="entity.numeroBanco"
-                    :class="{'is-invalid': $v.entity.numeroBanco.$error}"/>
+                <the-mask id="numeroBanco" class="form-control" v-model="entity.numeroBanco"
+                    mask="###" :class="{'is-invalid': $v.entity.numeroBanco.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.numeroBanco.required">
                     Número do Banco obrigatória
                 </div>
@@ -28,27 +31,39 @@
 
             <div class="col-2">
                 <label>Agência</label><span class="isRequired"> *</span>
-                <input id="agencia" type="text" class="form-control" v-uppercase v-model.lazy="entity.agencia"
+                <the-mask id="agencia" class="form-control" v-model="entity.agencia"
+                    :mask="['###', '###-#', '###-##']" :masked="true"
                     :class="{'is-invalid': $v.entity.agencia.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.agencia.required">
                     Agência obrigatória
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.agencia.minValue || !$v.entity.agencia.maxValue">
+                    Agência tem de 3 a 6 digitos
                 </div>
             </div>
 
             <div class="col-2">
                 <label>Conta</label><span class="isRequired"> *</span>
-                <input id="conta" type="text" class="form-control" v-uppercase v-model.lazy="entity.conta"
+                <the-mask id="conta" class="form-control" v-model="entity.conta"
+                    :mask="['###-#', '####-#', '#####-#', '######-#']" :masked="true"
                     :class="{'is-invalid': $v.entity.conta.$error}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.conta.required">
                     Conta obrigatória
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.conta.minLength || !$v.entity.conta.maxLength">
+                    Conta deve ter entre 5 e 8 digitos
                 </div>
             </div>
         </div>
 
         <div class="row form-group">
             <div class="col-2">
-                <label>Saldo</label> 
-                <input id="saldo" type="number" class="form-control" v-model.number="entity.saldo"/>
+                <label>Saldo</label>
+                <money id="saldo" class="form-control text-right" v-model="entity.saldo"
+                    v-bind="money" :class="{'is-invalid': $v.entity.saldo.$error}"></money>
+                <div class="invalid-feedback" v-if="!$v.entity.saldo.minValue || !$v.entity.saldo.maxValue">
+                    Valor deve ser entre 0,01 e 99.999.999,99
+                </div>
             </div>
         </div>
 
@@ -75,7 +90,9 @@
 
 <script>
 import {validationMixin} from 'vuelidate'
-import {required} from 'vuelidate/lib/validators'
+import {required, minLength, maxLength, minValue, maxValue} from 'vuelidate/lib/validators'
+import {TheMask} from 'vue-the-mask'
+import {Money} from 'v-money'
 import {ContasBancariasService} from '@/services/contasBancarias.service'
 import Helper from '@/components/helper'
 import {Notyf} from 'notyf';
@@ -85,6 +102,7 @@ const notyf = new Notyf();
 
 export default {
     name: "ContasBancariasEdit",
+    components: { TheMask, Money },
     props: {
         isModal: {
             type: Boolean,
@@ -101,16 +119,27 @@ export default {
             entity: {
                 instituicao: {
                     required,
+                    maxLength: maxLength(50),
                 },
                 numeroBanco: {
                     required,
+                    minLength: minLength(3),
+                    maxLength: maxLength(3),
                 },
                 agencia: {
                     required,
+                    minLength: minLength(3),
+                    maxLength: maxLength(6),
                 },
                 conta: {
                     required,
+                    minLength: minLength(5),
+                    maxLength: maxLength(8),
                 },
+                saldo: {
+                    minValue: minValue(0.01),
+                    maxValue: maxValue(99999999.99),
+                }
             }
         }
         return validation;
@@ -130,6 +159,14 @@ export default {
             },
             dtCad: null,
             dtAlt: null,
+            money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: 'R$ ',
+                suffix: '',
+                precision: 2,
+                masked: false
+            },
             isLoading: false,
             isSubmiting: false
         }

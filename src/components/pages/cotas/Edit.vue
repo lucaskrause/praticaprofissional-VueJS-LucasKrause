@@ -27,10 +27,14 @@
 
             <div class="col-2 form-group">
                 <label>Valor</label><span class="isRequired"> *</span>
-                <input id="" type="number" class="form-control" v-model.number="entity.valor"
-                    :class="{'is-invalid': $v.entity.valor.$error}"/>
+                <money id="valor" class="form-control text-right" v-model="entity.valor"
+                    v-bind="money"
+                    :class="{'is-invalid': $v.entity.valor.$error}"></money>
                 <div class="invalid-feedback" v-if="!$v.entity.valor.required">
                     Valor obrigatório
+                </div>
+                <div class="invalid-feedback" v-if="!$v.entity.valor.minValue || !$v.entity.valor.maxValue">
+                    Valor deve ser entre 0,01 e 99.999.999,99
                 </div>
             </div>
         </div>
@@ -39,18 +43,24 @@
             <div class="col-3">
                 <label>Data de Início</label><span class="isRequired"> *</span>
                 <input id="dtInicio" type="date" class="form-control" v-model="entity.dtInicio"
-                    :class="{'is-invalid': $v.entity.dtInicio.$error}"/>
+                    :class="{'is-invalid': $v.entity.dtInicio.$error || dtInicioInvalid}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.dtInicio.required">
                     Data de Início obrigatória
+                </div>
+                <div class="invalid-feedback" v-if="dtInicioInvalid">
+                    Data de Início deve ser no minimo o dia de hoje
                 </div>
             </div>
 
             <div class="col-3">
                 <label>Data de Término</label><span class="isRequired"> *</span>
                 <input id="dtTermino" type="date" class="form-control" v-model="entity.dtTermino"
-                    :class="{'is-invalid': $v.entity.dtTermino.$error}"/>
+                    :class="{'is-invalid': $v.entity.dtTermino.$error || dtTerminoInvalid}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.dtTermino.required">
                     Data de Término obrigatória
+                </div>
+                <div class="invalid-feedback" v-if="!dtTerminoInvalid">
+                    Data de Término deve ser maior que a data de inicio
                 </div>
             </div>
         </div>
@@ -82,7 +92,8 @@
 
 <script>
 import {validationMixin} from 'vuelidate'
-import {required, minValue} from 'vuelidate/lib/validators'
+import {required, minValue, maxValue} from 'vuelidate/lib/validators'
+import {Money} from 'v-money'
 import {ClientesService} from '@/services/clientes.service'
 import {CotasService} from '@/services/cotas.service'
 import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
@@ -94,7 +105,7 @@ const notyf = new Notyf();
 
 export default {
     name: "CotasEdit",
-    components: { ConsultaCliente },
+    components: { Money, ConsultaCliente },
     mixins: [validationMixin],
     validations() {
         let validation = {
@@ -104,6 +115,8 @@ export default {
                 },
                 valor: {
                     required,
+                    minValue: minValue(0.01),
+                    maxValue: maxValue(99999999.99)
                 },
                 dtInicio: {
                     required,
@@ -120,7 +133,7 @@ export default {
             entity: {
                 codigo: 0,
                 codigoCliente: 0,
-                valor: null,
+                valor: 0,
                 dtInicio: null,
                 dtTermino: null,
                 dtCadastro: null,
@@ -129,6 +142,16 @@ export default {
             clienteSelecionado: null,
             dtCad: null,
             dtAlt: null,
+            dtInicioInvalid: false,
+            dtTerminoInvalid: false,
+            money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: 'R$ ',
+                suffix: '',
+                precision: 2,
+                masked: false
+            },
             isLoading: false,
             isSubmiting: false
         }
@@ -186,6 +209,22 @@ export default {
 
             if (this.$v.$invalid) {
                 this.isSubmiting = false;
+                return;
+            }
+            
+            var dateNow = Date.now();
+            dateNow = Helper.dateToDateString(dateNow);
+            if (vm.entity.dtInicio < dateNow) {
+                vm.dtInicioInvalid = true;
+                document.getElementById('dtInicio').focus();
+                vm.isSubmiting = false;
+                return;
+            }
+
+            if (vm.entity.dtInicio >= vm.entity.dtTermino) {
+                vm.dtTerminoInvalid = true;
+                document.getElementById('dtTermino').focus();
+                vm.isSubmiting = false;
                 return;
             }
 
