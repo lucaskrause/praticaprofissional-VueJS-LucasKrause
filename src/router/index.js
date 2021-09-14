@@ -25,8 +25,8 @@ const ClienteEdit = () => import("@/components/pages/clientes/Edit");
 const DependenteList = () => import("@/components/pages/dependentes/List");
 const DependenteEdit = () => import("@/components/pages/dependentes/Edit");
 
-const ReservaList = () => import("@/components/pages/reservas/List");
-const ReservaEdit = () => import("@/components/pages/reservas/Edit");
+const LocacaoList = () => import("@/components/pages/locacoes/List");
+const LocacaoEdit = () => import("@/components/pages/locacoes/Edit");
 
 const PrecoList = () => import("@/components/pages/precificacoes/List");
 const PrecoEdit = () => import("@/components/pages/precificacoes/Edit");
@@ -51,6 +51,9 @@ const CategoriaEdit = () => import("@/components/pages/categorias/Edit");
 
 const ProdutoList = () => import("@/components/pages/produtos/List");
 const ProdutoEdit = () => import("@/components/pages/produtos/Edit");
+
+const CompraList = () => import("@/components/pages/compras/List");
+const CompraEdit = () => import("@/components/pages/compras/Edit");
 
 const PaisList = () => import("@/components/pages/paises/List");
 const PaisEdit = () => import("@/components/pages/paises/Edit");
@@ -242,29 +245,29 @@ const routes = [
                 },
             },
             
-            // RESERVAS
+            // LOCAÇÕES
             {
-                path: 'reservas',
-                name: 'ReservasList',
-                component: ReservaList,
+                path: 'locacoes',
+                name: 'LocacoesList',
+                component: LocacaoList,
                 meta: {
-                    label: "Reservas"
+                    label: "Locações"
                 },
             },
             {
-                path: 'reservas/cadastrar',
-                name: 'ReservasCad',
-                component: ReservaEdit,
+                path: 'locacoes/cadastrar',
+                name: 'LocacoesCad',
+                component: LocacaoEdit,
                 meta: {
-                    label: "Reservar"
+                    label: "Locação"
                 },
             },
             {
-                path: 'reservas/editar/:codigo',
-                name: 'ReservasEdit',
-                component: ReservaEdit,
+                path: 'locacoes/editar/:codigo',
+                name: 'LocacoesEdit',
+                component: LocacaoEdit,
                 meta: {
-                    label: "Reserva"
+                    label: "Locação"
                 },
             },
             
@@ -473,6 +476,32 @@ const routes = [
                 component: ProdutoEdit,
                 meta: {
                     label: "Produto"
+                },
+            },
+            
+            // COMPRAS
+            {
+                path: 'compras',
+                name: 'ComprasList',
+                component: CompraList,
+                meta: {
+                    label: "Compras"
+                },
+            },
+            {
+                path: 'compras/cadastrar',
+                name: 'ComprasCad',
+                component: CompraEdit,
+                meta: {
+                    label: "Compra"
+                },
+            },
+            {
+                path: 'compras/editar/:codigo',
+                name: 'ComprasEdit',
+                component: CompraEdit,
+                meta: {
+                    label: "Compra"
                 },
             },
             
