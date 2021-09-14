@@ -1,9 +1,9 @@
 <template>
     <div class="col-12">
         <div class="row">
-            <div class="col-6 text-left"><h2>Reservas</h2></div>
+            <div class="col-6 text-left"><h2>Locações</h2></div>
             <div class="col-6 text-right pt-2">
-                <router-link :to="{name: 'ReservasCad'}" class="btn btn-success">Nova Reserva</router-link>
+                <router-link :to="{name: 'LocacoesCad'}" class="btn btn-success">Nova Locação</router-link>
             </div>
         </div>
 
@@ -19,7 +19,7 @@
                 >
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'btn'">
-                            <router-link :to="{name: 'ReservasEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Editar</router-link>
+                            <router-link :to="{name: 'LocacoesEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Editar</router-link>
                             <a @click.prevent="remove(props.row.codigo)" class="btn btn-sm btn-danger" href="#">Excluir</a>
                         </span>
                     </template>
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import {ReservasService} from '@/services/reservas.service'
+import {LocacoesService} from '@/services/locacoes.service'
 import {VueGoodTable} from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
 import Helper from '@/components/helper'
@@ -88,7 +88,7 @@ export default {
     methods: {
         loadData() {
             const vm = this;
-            ReservasService.getAll().then(function (response) {
+            LocacoesService.getAll().then(function (response) {
                 vm.totalRecords = response.data.length;
                 vm.rows = response.data;
                 for (let i = 0; i < vm.totalRecords; i++) {
@@ -101,7 +101,7 @@ export default {
             var vm = this;
             var remove = confirm("Deseja realmente excluir?");
             if(remove){
-                ReservasService.delete(codigo).then(function (response) {
+                LocacoesService.delete(codigo).then(function (response) {
                     if(response.data){
                         notyf.success("Cota excluída com sucesso");
                         vm.loadData();

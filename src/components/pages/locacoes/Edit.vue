@@ -1,10 +1,10 @@
 <template>
     <div class="col-12">
-        <h2>Reservar</h2>
+        <h2>Alocar</h2>
         <hr/>
         <div class="row form-group">
             <div class="col-2">
-                <label>Código da Reserva</label>
+                <label>Código</label>
                 <input id="codigo" type="number" class="form-control" v-model.number="entity.codigo" readonly/>
             </div>
             
@@ -19,13 +19,20 @@
 
             <div class="col-3">
                 <label>Data da Reserva</label><span class="isRequired"> *</span>
-                <input id="dtReserva" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtReserva"
-                    :class="{'is-invalid': $v.entity.dtReserva.$error || dtInvalid}"/>
-                <div class="invalid-feedback" v-if="!$v.entity.dtReserva.required">
-                    Data da Reserva obrigatória
-                </div>
-                <div class="invalid-feedback" v-if="dtInvalid">
-                    Data da Reserva deve ter no mínimo 3 dias de antecedência
+                <div class="input-group">
+                    <input id="dtReserva" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtReserva" disabled
+                        :class="{'is-invalid': $v.entity.dtReserva.$error || dtInvalid}"/>
+                    <div class="input-group-append">
+                        <span class="input-group-btn">
+                            <b-button v-b-modal.modal-agendamento class="btn btn-success ml-1">Selecionar</b-button>
+                        </span>
+                    </div>
+                    <div class="invalid-feedback" v-if="!$v.entity.dtReserva.required">
+                        Data da Reserva obrigatória
+                    </div>
+                    <div class="invalid-feedback" v-if="dtInvalid">
+                        Data da Reserva deve ter no mínimo 3 dias de antecedência
+                    </div>
                 </div>
             </div>
 
@@ -37,7 +44,7 @@
         </div>
 
         <div class="row form-group">
-            <div class="col-5">
+            <div class="col-4">
                 <label>Cliente</label><span class="isRequired"> *</span>
                 <div class="input-group">
                    <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="searchCliente"
@@ -54,7 +61,7 @@
                 </div>
             </div>
             
-            <div class="col-5">
+            <div class="col-4">
                 <label>Condição de Pagamento</label><span class="isRequired"> *</span>
                 <div class="input-group">
                    <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" @input="searchCondicao"
@@ -115,11 +122,15 @@
 
             <div class="col-8">
                 <div class="text-right">
-                    <router-link :to="{name: 'ReservasList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <router-link :to="{name: 'LocacoesList'}" class="btn btn-danger mr-3">Voltar</router-link>
                     <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
                 </div>
             </div>
         </div>
+
+        <b-modal id="modal-agendamento" size="xl" title="Consultar Agendamentos" hide-footer>
+            <Agendamento @emit-data="selectDia" />
+        </b-modal>
 
         <b-modal id="modal-consult-cliente" size="xl" title="Consultar Cliente" hide-footer>
             <ConsultaCliente @emit-cliente="selectCliente" />
@@ -140,7 +151,8 @@ import {ClientesService} from '@/services/clientes.service'
 import {CondicoesPagamentoService} from '@/services/condicoesPagamento.service'
 import {AreasLocacaoService} from '@/services/areasLocacao.service'
 import {PrecificacoesService} from '@/services/precificacoes.service'
-import {ReservasService} from '@/services/reservas.service'
+import {LocacoesService} from '@/services/locacoes.service'
+import Agendamento from '@/components/pages/agendamento/Agenda.vue'
 import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
 import ConsultaCondicaoPagamento from '@/components/pages/condicoesPagamento/Consult.vue'
 import {VueGoodTable} from 'vue-good-table'
@@ -151,8 +163,8 @@ import 'notyf/notyf.min.css';
 const notyf = new Notyf();
 
 export default {
-    name: "ReservasEdit",
-    components: { Money, VueGoodTable, ConsultaCliente, ConsultaCondicaoPagamento },
+    name: "LocacoesEdit",
+    components: { Money, VueGoodTable, Agendamento, ConsultaCliente, ConsultaCondicaoPagamento },
     mixins: [validationMixin],
     validations() {
         let validation = {
@@ -255,7 +267,7 @@ export default {
     methods: {
         getReserva(id) {
             var vm = this;
-            ReservasService.getById(id).then(function (response) {
+            LocacoesService.getById(id).then(function (response) {
                 vm.entity = response.data;
                 
                 var dateReserva = Helper.dateToDateString(vm.entity.dtReserva);
@@ -275,6 +287,10 @@ export default {
                 });
                 vm.isCreate = false;
             });
+        },
+        selectDia(date) {
+            this.entity.dtReserva = date;
+            this.$bvModal.hide("modal-agendamento");
         },
         selectCliente(entity) {
             this.clienteSelecionado = entity.nome;
@@ -351,11 +367,11 @@ export default {
                 return;
             }
 
-            ReservasService.save(this.entity).then(function () {
+            LocacoesService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editada" : 'criada';
                 notyf.success("Reserva " + msg + " com sucesso");
                 vm.isSubmiting = false;
-                vm.$router.push('/app/reservas');
+                vm.$router.push('/app/locacoes');
             }).catch(function (errors){
                 notyf.error(errors.response.data.message);
                 vm.isSubmiting = false;

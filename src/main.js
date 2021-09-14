@@ -6,10 +6,13 @@ import {BootstrapVue} from 'bootstrap-vue'
 import ApiService from '@/services/api.service'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import VCalendar from 'v-calendar'
 
 Vue.use(Vuelidate)
 
 Vue.use(BootstrapVue)
+
+Vue.use(VCalendar)
 
 Vue.config.productionTip = false
 
