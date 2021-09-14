@@ -30,7 +30,7 @@
 <script>
 import {PaisesService} from '@/services/paises.service'
 import NovoPais from '@/components/pages/paises/Edit.vue'
-import {VueGoodTable} from 'vue-good-table';
+import {VueGoodTable} from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
 
 export default {
