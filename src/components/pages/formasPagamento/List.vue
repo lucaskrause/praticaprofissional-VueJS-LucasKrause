@@ -89,6 +89,8 @@ export default {
                     } else {
                         notyf.error("Não foi possível excluir a Forma de Pagamento");
                     }
+                }).catch(function (errors){
+                    notyf.error(errors.response.data.message);
                 });
             }
         }
