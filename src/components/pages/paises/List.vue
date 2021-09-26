@@ -99,6 +99,8 @@ export default {
                     } else {
                         notyf.error("Não foi possível excluir o pais");
                     }
+                }).catch(function (errors){
+                    notyf.error(errors.response.data.message);
                 });
             }
         }

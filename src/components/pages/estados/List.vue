@@ -98,6 +98,8 @@ export default {
                     } else {
                         notyf.error("Não foi possivel excluir o estado");
                     }
+                }).catch(function (errors){
+                    notyf.error(errors.response.data.message);
                 });
             }
         }

@@ -99,6 +99,8 @@ export default {
                     } else {
                         notyf.error("Não foi possivel excluir a cidade");
                     }
+                }).catch(function (errors){
+                    notyf.error(errors.response.data.message);
                 });
             }
         }
