@@ -104,14 +104,14 @@
             <div class="col-4">
                 <label>Email</label><span class="isRequired"> *</span>
                 <input id="email" type="text" class="form-control" v-uppercase v-model.lazy="entity.email"
-                    :class="{'is-invalid': $v.entity.email.$error || emailInvalid}"/>
+                    :class="{'is-invalid': $v.entity.email.$error || validaEmail}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.email.required">
                     Email obrigatório
                 </div>
                 <div class="invalid-feedback" v-if="!$v.entity.email.maxLength">
                     Email deve ter no máximo 50 caracteres
                 </div>
-                <div class="invalid-feedback" v-if="emailInvalid">
+                <div class="invalid-feedback" v-if="validaEmail">
                     Email inválido
                 </div>
             </div>
@@ -122,11 +122,11 @@
                 <label>CNPJ</label><span class="isRequired"> *</span>
                 <the-mask id="cnpj" class="form-control" v-model="entity.cnpj"
                     mask="##.###.###/####-##" :masked="false"
-                    :class="{'is-invalid': $v.entity.cnpj.$error || cnpjInvalid}"/>
+                    :class="{'is-invalid': $v.entity.cnpj.$error || validaCNPJ}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.cnpj.required">
                     CNPJ obrigatório
                 </div>
-                <div class="invalid-feedback" v-if="!$v.entity.cnpj.minLength || !$v.entity.cnpj.maxLength || cnpjInvalid">
+                <div class="invalid-feedback" v-if="!$v.entity.cnpj.minLength || !$v.entity.cnpj.maxLength || validaCNPJ">
                     CNPJ inválido
                 </div>
             </div>
@@ -139,11 +139,11 @@
             <div class="col-3">
                 <label>Data de Fundação</label><span class="isRequired"> *</span>
                 <input id="dtFundacao" type="date" class="form-control" v-model="entity.dtFundacao"
-                    :class="{'is-invalid': $v.entity.dtFundacao.$error || dtInvalid}"/>
+                    :class="{'is-invalid': $v.entity.dtFundacao.$error || validaData}"/>
                 <div class="invalid-feedback" v-if="!$v.entity.dtFundacao.required">
                     Data de Fundação obrigatória
                 </div>
-                <div class="invalid-feedback" v-if="dtInvalid">
+                <div class="invalid-feedback" v-if="validaData">
                     Data de Fundação deve ser no máximo a data de hoje
                 </div>
             </div>
@@ -372,6 +372,37 @@ export default {
             });
         }
     },
+    computed: {
+        validaEmail() {
+            if (this.entity.email) {
+                if (!Helper.validadorEmail(this.entity.email)) {
+                    document.getElementById('email').focus();
+                    return true;
+                }
+            }
+            return false;
+        },
+        validaCNPJ() {
+            if (this.entity.cnpj) {
+                if (!Helper.validadorCNPJ(this.entity.cnpj)) {
+                    document.getElementById('cnpj').focus();
+                    return true;
+                }
+            }
+            return false;
+        },
+        validaData() {
+            if (this.entity.dtFundacao) {
+                var dateNow = Date.now();
+                dateNow = Helper.dateToDateString(dateNow);
+                if (this.entity.dtFundacao > dateNow) {
+                    document.getElementById('dtFundacao').focus();
+                    return true;
+                }
+            }
+            return false;
+        },
+    },
     methods: {
         selectCidade(entity) {
             this.cidadeSelecionada = entity.cidade;
@@ -393,8 +424,8 @@ export default {
         searchCidade() {
             this.isLoading = true;
             var vm = this;
-            if (vm.entity.codigoCidade > 0) {
-                CidadesService.getById(vm.entity.codigoCidade).then(function (response) {
+            if (this.entity.codigoCidade > 0) {
+                CidadesService.getById(this.entity.codigoCidade).then(function (response) {
                     vm.cidadeSelecionada = response.data.cidade;
                     vm.isLoading = false;
                 }).catch(function() {
@@ -404,51 +435,31 @@ export default {
                     notyf.error("Cidade não encontrada");
                 });
             } else {
-                vm.cidadeSelecionada = null;
-                vm.isLoading = false;
+                this.cidadeSelecionada = null;
+                this.isLoading = false;
             }
         },
         save() {
             if (this.isSubmiting || this.isLoading) return;
+
             this.isSubmiting = true;
             this.emailInvalid = false;
             this.cnpjInvalid = false;
             this.dtInvalid = false;
             this.$v.$touch();
+
             const vm = this;
 
             if (this.$v.$invalid) {
                 this.isSubmiting = false;
                 return;
             }
-            
-            if (!Helper.validadorEmail(this.entity.email)) {
-                vm.emailInvalid = true;
-                document.getElementById('email').focus();
-                vm.isSubmiting = false;
-                return;
-            }
-            
-            if (!Helper.validadorCNPJ(this.entity.cnpj)) {
-                vm.cnpjInvalid = true;
-                document.getElementById('cnpj').focus();
-                vm.isSubmiting = false;
-                return;
-            }
 
-            var dateNow = Date.now();
-            dateNow = Helper.dateToDateString(dateNow);
-            if (vm.entity.dtFundacao > dateNow) {
-                vm.dtInvalid = true;
-                document.getElementById('dtFundacao').focus();
-                vm.isSubmiting = false;
-                return;
-            }
+            var contasAux = this.contasBancarias.rows;
+            this.contasBancarias.rows = this.clearContasBancarias(this.contasBancarias.rows.concat(this.contaBancariaRemovido));
+            this.entity.contasBancarias = this.contasBancarias.rows;
 
-            var contasAux = vm.contasBancarias.rows;
-            vm.contasBancarias.rows = vm.clearContasBancarias(vm.contasBancarias.rows.concat(vm.contaBancariaRemovido));
-            vm.entity.contasBancarias = vm.contasBancarias.rows;
-            EmpresasService.save(vm.entity).then(function () {
+            EmpresasService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Empresa " + msg + " com sucesso");
                 vm.isSubmiting = false;
