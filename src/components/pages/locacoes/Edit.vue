@@ -7,43 +7,7 @@
                 <label>Código</label>
                 <input id="codigo" type="number" class="form-control" v-model.number="entity.codigo" readonly/>
             </div>
-            
-            <div class="col-3 form-group">
-                <label>Quantidade de Pessoas</label><span class="isRequired"> *</span>
-                <input id="qtdePessoas" type="number" class="form-control" v-model.number="entity.qtdePessoas" @input="calcValor"
-                    :class="{'is-invalid': $v.entity.qtdePessoas.$error}"/>
-                <div class="invalid-feedback" v-if="!$v.entity.qtdePessoas.minValue || !$v.entity.qtdePessoas.maxValue">
-                    Quantidade deve estar entre 1 e 70 Pessoas
-                </div>
-            </div>
 
-            <div class="col-3">
-                <label>Data da Reserva</label><span class="isRequired"> *</span>
-                <div class="input-group">
-                    <input id="dtReserva" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtReserva" disabled
-                        :class="{'is-invalid': $v.entity.dtReserva.$error || dtInvalid}"/>
-                    <div class="input-group-append">
-                        <span class="input-group-btn">
-                            <b-button v-b-modal.modal-agendamento class="btn btn-success ml-1">Selecionar</b-button>
-                        </span>
-                    </div>
-                    <div class="invalid-feedback" v-if="!$v.entity.dtReserva.required">
-                        Data da Reserva obrigatória
-                    </div>
-                    <div class="invalid-feedback" v-if="dtInvalid">
-                        Data da Reserva deve ter no mínimo 3 dias de antecedência
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-2">
-                <label>Valor</label>
-                <money id="valor" class="form-control text-right" v-model="entity.valor" v-model.number="entity.valor" disabled
-                    v-bind="money"></money>
-            </div>
-        </div>
-
-        <div class="row form-group">
             <div class="col-4">
                 <label>Cliente</label><span class="isRequired"> *</span>
                 <div class="input-group">
@@ -76,6 +40,42 @@
                         Selecione uma Condição de Pagamento
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col-3">
+                <label>Data da Reserva</label><span class="isRequired"> *</span>
+                <div class="input-group">
+                    <input id="dtReserva" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtReserva" disabled
+                        :class="{'is-invalid': $v.entity.dtReserva.$error || dtInvalid}"/>
+                    <div class="input-group-append">
+                        <span class="input-group-btn">
+                            <b-button v-b-modal.modal-agendamento class="btn btn-success ml-1">Selecionar</b-button>
+                        </span>
+                    </div>
+                    <div class="invalid-feedback" v-if="!$v.entity.dtReserva.required">
+                        Data da Reserva obrigatória
+                    </div>
+                    <div class="invalid-feedback" v-if="dtInvalid">
+                        Data da Reserva deve ter no mínimo 3 dias de antecedência
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-3 form-group">
+                <label>Quantidade de Pessoas</label><span class="isRequired"> *</span>
+                <input id="qtdePessoas" type="number" class="form-control" v-model.number="entity.qtdePessoas" @input="calcValor"
+                    :class="{'is-invalid': $v.entity.qtdePessoas.$error}"/>
+                <div class="invalid-feedback" v-if="!$v.entity.qtdePessoas.minValue || !$v.entity.qtdePessoas.maxValue">
+                    Quantidade deve estar entre 1 e 70 Pessoas
+                </div>
+            </div>
+
+            <div class="col-2">
+                <label>Valor</label>
+                <money id="valor" class="form-control text-right" v-model="entity.valor" v-model.number="entity.valor" disabled
+                    v-bind="money"></money>
             </div>
         </div>
 
