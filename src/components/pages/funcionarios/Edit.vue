@@ -197,7 +197,7 @@
         </div>
         
         <b-modal id="modal-consult-cidade" size="xl" title="Consultar Cidade" hide-footer>
-            <ConsultaCidade @emit-cidade="selectCidade" />
+            <ConsultaCidade @emit-cidade="selectCidade" :isModal="true"/>
         </b-modal>
     </div>
 </template>

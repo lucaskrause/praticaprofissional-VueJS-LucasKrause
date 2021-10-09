@@ -103,7 +103,7 @@
         </div>
 
         <b-modal id="modal-consult-categoria" size="xl" title="Consultar Categoria" hide-footer>
-            <ConsultaCategoria @emit-categoria="selectCategoria" />
+            <ConsultaCategoria @emit-categoria="selectCategoria" :isModal="true"/>
         </b-modal>
     </div>
 </template>

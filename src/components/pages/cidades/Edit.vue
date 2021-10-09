@@ -74,7 +74,7 @@
         </div>
 
         <b-modal id="modal-consult-estado" size="xl" title="Consultar Estado" hide-footer>
-            <ConsultaEstado @emit-estado="selectEstado" />
+            <ConsultaEstado @emit-estado="selectEstado" :isModal="true"/>
         </b-modal>
     </div>
 </template>

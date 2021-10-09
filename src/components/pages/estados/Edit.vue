@@ -74,7 +74,7 @@
         </div>
 
         <b-modal id="modal-consult-pais" size="xl" title="Consultar País" hide-footer>
-            <ConsultaPais @emit-pais="selectPais" />
+            <ConsultaPais @emit-pais="selectPais" :isModal="true"/>
         </b-modal>
     </div>
 </template>

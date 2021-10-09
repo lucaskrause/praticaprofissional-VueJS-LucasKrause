@@ -85,7 +85,7 @@
         </div>
 
         <b-modal id="modal-consult-cliente" size="xl" title="Consultar Cliente" hide-footer>
-            <ConsultaCliente @emit-cliente="selectCliente" :isCota="true" />
+            <ConsultaCliente @emit-cliente="selectCliente" :isModal="true" :isCota="true" />
         </b-modal>
     </div>
 </template>

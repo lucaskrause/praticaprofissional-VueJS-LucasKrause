@@ -180,7 +180,7 @@
         </div>
         
         <b-modal id="modal-consult-cidade" size="xl" title="Consultar Cidade" hide-footer>
-            <ConsultaCidade @emit-cidade="selectCidade" />
+            <ConsultaCidade @emit-cidade="selectCidade" :isModal="true"/>
         </b-modal>
     </div>
 </template>
@@ -303,6 +303,15 @@ export default {
             });
         }
     },
+    watch: {
+        'entity.tipoPessoa'(value) {
+            if (value == "PF") {
+                this.labels = { cpfCnpj: "CPF", rgIe: "RG", dtNascFundacao: "Data de Nascimento" };
+            } else {
+                this.labels = { cpfCnpj: "CNPJ", rgIe: "Inscrição Estadual", dtNascFundacao: "Data de Fundação" };
+            }
+        }
+    },
     methods: {
         selectCidade(entity) {
             this.cidadeSelecionada = entity.cidade;
@@ -383,24 +392,21 @@ export default {
                 }
             }
             
-            FornecedoresService.save(this.entity).then(function () {
+            FornecedoresService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : 'criado';
                 notyf.success("Fornecedor " + msg + " com sucesso");
                 vm.isSubmiting = false;
-                vm.$router.push('/app/fornecedores');
+                
+                if(!vm.isModal){
+                    vm.$router.push('/app/fornecedores');
+                } else {
+                    vm.entity.codigo = response.data.codigo;
+                    vm.$emit('emit-fornecedor', vm.entity);
+                }
             }).catch(function (errors){
                 notyf.error(errors.response.data.message);
                 vm.isSubmiting = false;
             });
-        }
-    },
-    watch: {
-        'entity.tipoPessoa'(value) {
-            if (value == "PF") {
-                this.labels = { cpfCnpj: "CPF", rgIe: "RG", dtNascFundacao: "Data de Nascimento" };
-            } else {
-                this.labels = { cpfCnpj: "CNPJ", rgIe: "Inscrição Estadual", dtNascFundacao: "Data de Fundação" };
-            }
         }
     }
 }

@@ -189,11 +189,11 @@
         </div>
 
         <b-modal v-if="!isModal" id="modal-consult-cliente" size="xl" title="Consultar Cliente" hide-footer>
-            <ConsultaCliente @emit-cliente="selectCliente" />
+            <ConsultaCliente @emit-cliente="selectCliente" :isModal="true"/>
         </b-modal>
         
         <b-modal id="modal-consult-cidade-dependente" size="xl" title="Consultar Cidade" hide-footer>
-            <ConsultaCidade @emit-cidade="selectCidade" />
+            <ConsultaCidade @emit-cidade="selectCidade" :isModal="true"/>
         </b-modal>
     </div>
 </template>

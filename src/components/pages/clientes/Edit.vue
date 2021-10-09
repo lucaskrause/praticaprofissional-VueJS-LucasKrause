@@ -232,11 +232,11 @@
         </div>
         
         <b-modal id="modal-consult-cidade" size="xl" title="Consultar Cidade" hide-footer>
-            <ConsultaCidade @emit-cidade="selectCidade" />
+            <ConsultaCidade @emit-cidade="selectCidade" :isModal="true"/>
         </b-modal>
         
         <b-modal id="modal-consult-condicaoPagamento" size="xl" title="Consultar Condição de Pagamento" hide-footer>
-            <ConsultaCondicaoPagamento @emit-condicao="selectCondicao" />
+            <ConsultaCondicaoPagamento @emit-condicao="selectCondicao" :isModal="true"/>
         </b-modal>
 
         <b-modal id="modal-new-dependente" size="xl" title="Cadastrar Dependente" hide-footer>

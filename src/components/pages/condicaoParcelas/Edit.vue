@@ -57,7 +57,7 @@
         </div>
         
         <b-modal id="modal-consult-formaPagamento" size="xl" title="Consultar Forma de Pagamento" hide-footer>
-            <ConsultaFormaPagamento @emit-forma="selectForma" />
+            <ConsultaFormaPagamento @emit-forma="selectForma" :isModal="true"/>
         </b-modal>
     </div>
 </template>

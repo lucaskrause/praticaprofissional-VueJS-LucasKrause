@@ -133,11 +133,11 @@
         </b-modal>
 
         <b-modal id="modal-consult-cliente" size="xl" title="Consultar Cliente" hide-footer>
-            <ConsultaCliente @emit-cliente="selectCliente" />
+            <ConsultaCliente @emit-cliente="selectCliente" :isModal="true"/>
         </b-modal>
 
         <b-modal id="modal-consult-condicaoPagamento" size="xl" title="Consultar Condição de Pagamento" hide-footer>
-            <ConsultaCondicaoPagamento @emit-condicao="selectCondicao" />
+            <ConsultaCondicaoPagamento @emit-condicao="selectCondicao" :isModal="true"/>
         </b-modal>
     </div>
 </template>
