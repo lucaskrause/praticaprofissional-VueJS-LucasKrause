@@ -19,8 +19,7 @@
                 >
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'btn'">
-                            <router-link :to="{name: 'EstadosEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Editar</router-link>
-                            <a @click.prevent="remove(props.row.codigo)" class="btn btn-sm btn-danger" href="#">Excluir</a>
+                            <router-link :to="{name: 'ComprasEdit', params: {compra: props.row}}" class="btn btn-sm btn-success mr-3">Ver</router-link>
                         </span>
                     </template>
                 </vue-good-table>
@@ -30,7 +29,7 @@
 </template>
 
 <script>
-//import {ComprasService} from '@/services/compras.service'
+import {ComprasService} from '@/services/compras.service'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table';
 //import {Notyf} from 'notyf';
@@ -43,36 +42,45 @@ export default {
         return {
             columns: [
                 {
-                    label: "Código",
-                    field: "codigo",
-                    type: "number",
-                    width: "100px",
+                    label: "Modelo",
+                    field: "modelo"
                 },
                 {
-                    label: "Estado",
-                    field: "estado"
+                    label: "Série",
+                    field: "serie"
                 },
                 {
-                    label: "UF",
-                    field: "uf",
-                    width: "80px",
+                    label: "Número Nota Fiscal",
+                    field: "numeroNF"
                 },
                 {
-                    label: "País",
-                    field: "pais.pais"
+                    label: "Fornecedor",
+                    field: "fornecedor.nome"
                 },
                 {
                     label:"Ação",
                     sortable: false,
                     field: 'btn',
                     html: true,
-                    width: "160px",
+                    width: "100px",
                 },
             ],
             rows: [],
             page: 1,
             totalRecords: 0
         }
+    },
+    created() {
+        this.loadData();
+    },
+    methods: {
+        loadData() {
+            const vm = this;
+            ComprasService.getAll().then(function (response) {
+                vm.totalRecords = response.data.length;
+                vm.rows = response.data;
+            });
+        },
     }
 }
 </script>

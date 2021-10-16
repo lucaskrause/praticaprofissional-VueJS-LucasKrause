@@ -497,9 +497,10 @@ const routes = [
                 },
             },
             {
-                path: 'compras/editar/:codigo',
+                path: 'compras/ver',
                 name: 'ComprasEdit',
                 component: CompraEdit,
+                props: true,
                 meta: {
                     label: "Compra"
                 },
