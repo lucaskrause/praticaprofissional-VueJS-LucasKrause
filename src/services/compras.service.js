@@ -9,8 +9,12 @@ const instance = new class ComprasService extends Service{
         return this.api.post(this.endpoint + "/getCompra", entity);
     }
 
+    gerarParcelas(entity) {
+        return this.api.post(this.endpoint + "/parcelas", entity);
+    }
+
     cancel(entity) {
-        return this.api.post(this.endpoint + "/cancel", entity);
+        return this.api.post(this.endpoint + "/cancelar", entity);
     }
 };
 

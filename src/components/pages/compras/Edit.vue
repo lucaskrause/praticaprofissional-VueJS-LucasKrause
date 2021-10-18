@@ -51,12 +51,12 @@
             <div class="col-4">
                 <label>Produto</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoProduto" type="number" class="form-control" v-model.number="produtoSelecionado.codigo" @input="searchProduto" :disabled="!verificaDtEmissaoEntrega" :readonly="isEdit"/>
+                    <input id="codigoProduto" type="number" class="form-control" v-model.number="produtoSelecionado.codigoProduto" @input="searchProduto" :disabled="!verificaDtEmissaoEntrega || !condicaoPreenchida" :readonly="isEdit"/>
                     <div class="input-group-append">
                         <input type="text" class="form-control" v-model.lazy="produtoSelecionado.produto" readonly/>
                     </div>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-produto class="btn btn-info ml-1" :disabled="!verificaDtEmissaoEntrega" :readonly="isEdit">Buscar</b-button>
+                        <b-button v-b-modal.modal-consult-produto class="btn btn-info ml-1" :disabled="!verificaDtEmissaoEntrega || !condicaoPreenchida" :readonly="isEdit">Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -65,17 +65,17 @@
         <div v-if="!isEdit" class="row form-group">
             <div class="col-2">
                 <label>Quantidade</label><span class="isRequired"> *</span>
-                <input id="qtde" type="number" class="form-control" v-model.number="produtoSelecionado.quantidade" :disabled="!verificaDtEmissaoEntrega" :readonly="isEdit"/>
+                <input id="qtde" type="number" class="form-control" v-model.number="produtoSelecionado.quantidade" :disabled="!verificaDtEmissaoEntrega || !condicaoPreenchida" :readonly="isEdit"/>
             </div>
 
             <div class="col-2">
                 <label>Valor unitário</label><span class="isRequired"> *</span>
-                <input id="valorUnitario" type="number" class="form-control" v-model.number="produtoSelecionado.valorUnitario" @change="calcTotal" :disabled="!verificaDtEmissaoEntrega" :readonly="isEdit"/>
+                <input id="valorUnitario" type="number" class="form-control" v-model.number="produtoSelecionado.valorUnitario" @change="calcTotal" :disabled="!verificaDtEmissaoEntrega || !condicaoPreenchida" :readonly="isEdit"/>
             </div>
 
             <div class="col-2">
                 <label>Desconto</label> 
-                <input id="desconto" type="number" class="form-control" v-model.number="produtoSelecionado.desconto" @change="calcTotal" :disabled="!verificaDtEmissaoEntrega" :readonly="isEdit"/>
+                <input id="desconto" type="number" class="form-control" v-model.number="produtoSelecionado.desconto" @change="calcTotal" :disabled="!verificaDtEmissaoEntrega || !condicaoPreenchida" :readonly="isEdit"/>
             </div>
 
             <div class="col-2">
@@ -100,11 +100,17 @@
                 >
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'btn'">
-                            <a @click.prevent="editProduto(props.row.codigo)" class="btn btn-sm btn-primary mr-3" href="#">Editar</a>
-                            <a @click.prevent="removeProduto(props.row.codigo)" class="btn btn-sm btn-danger" href="#">Excluir</a>
+                            <a v-if="condicaoPreenchida" @click.prevent="removeProduto(props.row)" class="btn btn-sm btn-danger" href="#">Excluir</a>
                         </span>
                     </template>
                 </vue-good-table>
+            </div>
+        </div>
+
+        <div class="row form-group mt-3">
+            <div class="col-2">
+                <label>Valor Total</label>
+                <input id="valorTotal" class="form-control" v-model="valorTotal" readonly />
             </div>
         </div>
         
@@ -122,6 +128,10 @@
                         </span>
                     </div>
                 </div>
+            </div>
+
+            <div class="col-2">
+                <button v-if="!isEdit" id="gerarParcela" type="button" class="btn btn-success embaixo" @click="gerarParcela()" :disabled="!condicaoSelecionada">Gerar Parcelas</button>
             </div>
         </div>
 
@@ -182,7 +192,8 @@ import ConsultaFornecedor from '@/components/pages/fornecedores/Consult.vue'
 import ConsultaProduto from '@/components/pages/produtos/Consult.vue'
 import ConsultaCondicaoPagamento from '@/components/pages/condicoesPagamento/Consult.vue'
 import 'vue-good-table/dist/vue-good-table.css'
-import {VueGoodTable} from 'vue-good-table';
+import {VueGoodTable} from 'vue-good-table'
+
 import {Notyf} from 'notyf'
 import 'notyf/notyf.min.css'
 
@@ -211,10 +222,11 @@ export default {
             },
             dtCad: null,
             dtAlt: null,
+            valorTotal: 0,
             fornecedorSelecionado: null,
             produtoSelecionado: {
-                codigoProduto: 0,
-                nomeProduto: null,
+                codigo: 0,
+                produto: null,
                 quantidade: 0,
                 valorUnitario: 0,
                 desconto: 0,
@@ -224,7 +236,7 @@ export default {
                 columns: [
                     {
                         label: "Código",
-                        field: "codigo",
+                        field: "codigoProduto",
                         type: "number",
                         width: "100px",
                     },
@@ -261,7 +273,7 @@ export default {
                         sortable: false,
                         field: 'btn',
                         html: true,
-                        width: "160px",
+                        width: "120px",
                     },
                 ],
                 rows: [],
@@ -275,6 +287,12 @@ export default {
                         field: "numeroParcela",
                         type: "number",
                         width: "120px",
+                    },
+                    {
+                        label: "Valor",
+                        field: "valorParcela",
+                        type: "number",
+                        width: "200px",
                     },
                     {
                         label: "Dias",
@@ -307,6 +325,8 @@ export default {
             let vm = this;
             ComprasService.getCompra(this.compra).then(function (response) {
                 vm.entity = response.data;
+
+                vm.produtos.rows = vm.entity.itens;
                 var dateEmissao = Helper.dateToDateString(vm.entity.dtEmissao);
                 var dateEntrega = Helper.dateToDateString(vm.entity.dtEntrega);
                 var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
@@ -318,6 +338,11 @@ export default {
                 vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.fornecedorSelecionado = vm.entity.fornecedor.nome;
                 vm.condicaoSelecionada = vm.entity.condicaoPagamento.descricao;
+
+                for (let i = 0; i < vm.produtos.rows.length; i++) {
+                    vm.valorTotal += vm.produtos.rows[i].total;
+                }
+                console.log(vm.valorTotal);
             });
         }
     },
@@ -327,7 +352,7 @@ export default {
                 var today = new Date(new Date().toDateString());
                 var emissao = new Date(this.entity.dtEmissao.replace(/-/g, '/'));
                 var entrega = new Date(this.entity.dtEntrega.replace(/-/g, '/'));
-
+                
                 if (emissao <= today) {
                     if (entrega >= emissao) {
                         return true;
@@ -350,6 +375,12 @@ export default {
         },
         produtoPreenchido() {
             if (this.produtoSelecionado.codigoProduto > 0 && this.produtoSelecionado.quantidade > 0 && this.produtoSelecionado.valorUnitario > 0) {
+                return false;
+            }
+            return true;
+        },
+        condicaoPreenchida() {
+            if (this.entity.codigoCondicaoPagamento > 0 && this.condicaoSelecionada != null) {
                 return false;
             }
             return true;
@@ -400,24 +431,25 @@ export default {
         },
         searchProduto() {
             this.isLoading = true;
-            var vm = this;
-            if (vm.produtoSelecionado.codigoProduto > 0) {
-                ProdutosService.getById(vm.produtoSelecionado.codigoProduto).then(function (response) {
+            const vm = this;
+
+            if (this.produtoSelecionado.codigoProduto > 0) {
+                ProdutosService.getById(this.produtoSelecionado.codigoProduto).then(function (response) {
                     vm.produtoSelecionado.produto = response.data.produto;
                     vm.isLoading = false;
                 }).catch(function() {
-                    vm.produtoSelecionado.codigo = 0;
+                    vm.produtoSelecionado.codigoProduto = 0;
                     vm.produtoSelecionado.produto = null;
                     vm.isLoading = false;
                     notyf.error("Produto não encontrado");
                 });
             } else {
-                vm.produtoSelecionado = null;
-                vm.isLoading = false;
+                this.produtoSelecionado = null;
+                this.isLoading = false;
             }
         },
         selectProduto(entity) {
-            this.produtoSelecionado.codigo = entity.codigo;
+            this.produtoSelecionado.codigoProduto = entity.codigo;
             this.produtoSelecionado.produto = entity.produto;
             this.$bvModal.hide("modal-new-produto");
             this.$bvModal.hide("modal-consult-produto");
@@ -452,15 +484,35 @@ export default {
             }
         },
         addProduto() {
+            this.valorTotal += this.produtoSelecionado.total;
             this.produtos.rows.push(this.produtoSelecionado);
             this.produtoSelecionado = {
-                codigoProduto: 0,
+                codigo: 0,
                 produto: null,
                 quantidade: 0,
                 valorUnitario: 0,
                 desconto: 0,
                 total: 0
             };
+        },
+        removeProduto(entity) {
+            this.valorTotal -= entity.total;
+            this.produtos.rows.splice(entity.index, 1);
+        },
+        gerarParcela() {
+            const vm = this;
+
+            var params = {
+                codigoCondicaoPagamento: this.entity.codigoCondicaoPagamento,
+                dtEmissao: this.entity.dtEmissao,
+                valorTotal: this.valorTotal
+            };
+
+            ComprasService.gerarParcelas(params).then(function (response) {
+                console.log(response)
+                vm.parcelas.rows = response.data;
+                console.log(vm.parcelas);
+            });
         },
         save() {
             if (this.isSubmiting || this.isLoading) return;
@@ -482,8 +534,8 @@ export default {
             this.isSubmiting = true;
             let vm = this;
 
-            ComprasService.delete(this.entity).then(function () {
-                notyf.success("Compra registrada com sucesso");
+            ComprasService.cancel(this.entity).then(function () {
+                notyf.success("Compra cancelada com sucesso");
                 vm.isSubmiting = false;
                 vm.$router.push('/app/compras');
             }).catch(function (errors){
