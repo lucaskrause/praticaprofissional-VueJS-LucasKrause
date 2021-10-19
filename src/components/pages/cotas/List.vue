@@ -31,11 +31,11 @@
 
 <script>
 import {CotasService} from '@/services/cotas.service'
-import {VueGoodTable} from 'vue-good-table';
+import {VueGoodTable} from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
 import Helper from '@/components/helper'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
 
 const notyf = new Notyf();
 

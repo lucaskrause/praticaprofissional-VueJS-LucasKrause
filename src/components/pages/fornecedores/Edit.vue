@@ -85,7 +85,7 @@
             <div class="col-5">
                 <label>Cidade</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="searchCidade"
+                    <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="onSearchCidade"
                         :class="{'is-invalid': $v.entity.codigoCidade.$error}"/>
                     <div class="input-group-append">
                         <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="cidadeSelecionada" readonly/>
@@ -193,8 +193,10 @@ import Helper from '@/components/helper'
 import {CidadesService} from '@/services/cidades.service'
 import {FornecedoresService} from '@/services/fornecedores.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
+
+var debounce = require('lodash.debounce');
 
 const notyf = new Notyf();
 
@@ -319,9 +321,11 @@ export default {
             this.$bvModal.hide("modal-new-cidade");
             this.$bvModal.hide("modal-consult-cidade");
         },
-        searchCidade() {
-            this.isLoading = true;
-            var vm = this;
+        onSearchCidade() {
+            this.searchCidade(this);
+        },
+        searchCidade: debounce((vm) => { 
+            vm.isLoading = true;
             if (vm.entity.codigoCidade > 0) {
                 CidadesService.getById(vm.entity.codigoCidade).then(function (response) {
                     vm.cidadeSelecionada = response.data.cidade;
@@ -336,7 +340,7 @@ export default {
                 vm.cidadeSelecionada = null;
                 vm.isLoading = false;
             }
-        },
+        }, 350),
         save() {
             if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
@@ -393,7 +397,7 @@ export default {
             }
             
             FornecedoresService.save(this.entity).then(function (response) {
-                const msg = vm.entity.codigo ? "editado" : 'criado';
+                const msg = vm.entity.codigo ? "editado" : "criado";
                 notyf.success("Fornecedor " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 

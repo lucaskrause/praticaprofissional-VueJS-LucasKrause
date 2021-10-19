@@ -31,9 +31,7 @@
 <script>
 import {ComprasService} from '@/services/compras.service'
 import 'vue-good-table/dist/vue-good-table.css'
-import {VueGoodTable} from 'vue-good-table';
-//import {Notyf} from 'notyf';
-//import 'notyf/notyf.min.css';
+import {VueGoodTable} from 'vue-good-table'
 
 export default {
     name: "ComprasList",

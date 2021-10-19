@@ -47,8 +47,8 @@ import {validationMixin} from 'vuelidate'
 import {required, maxLength} from 'vuelidate/lib/validators'
 import {CategoriasService} from '@/services/categorias.service'
 import Helper from '@/components/helper'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
 
 const notyf = new Notyf();
 
@@ -116,7 +116,7 @@ export default {
             }
 
             CategoriasService.save(this.entity).then(function (response) {
-                const msg = vm.entity.codigo ? "editado" : 'criado';
+                const msg = vm.entity.codigo ? "editado" : "criado";
                 notyf.success("Categoria " + msg + " com sucesso");
                 vm.isSubmiting = false;
 

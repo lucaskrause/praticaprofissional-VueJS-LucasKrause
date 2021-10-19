@@ -30,7 +30,7 @@
 <script>
 import {CidadesService} from '@/services/cidades.service'
 import NovaCidade from '@/components/pages/cidades/Edit.vue'
-import {VueGoodTable} from 'vue-good-table';
+import {VueGoodTable} from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
 
 export default {

@@ -39,7 +39,7 @@
             <div class="col-5">
                 <label>Estado</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoEstado" type="number" class="form-control" v-model.number="entity.codigoEstado" @input="searchEstado"
+                    <input id="codigoEstado" type="number" class="form-control" v-model.number="entity.codigoEstado" @input="onSearchEstado"
                         :class="{'is-invalid': $v.entity.codigoEstado.$error}"/>
                     <div class="input-group-append">
                         <input id="estado" type="text" class="form-control" v-model.lazy="estadoSelecionado" readonly/>
@@ -87,8 +87,10 @@ import Helper from '@/components/helper'
 import {EstadosService} from '@/services/estados.service'
 import {CidadesService} from '@/services/cidades.service'
 import ConsultaEstado from '@/components/pages/estados/Consult.vue'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
+
+var debounce = require('lodash.debounce');
 
 const notyf = new Notyf();
 
@@ -162,9 +164,11 @@ export default {
             this.$bvModal.hide("modal-new-estado");
             this.$bvModal.hide("modal-consult-estado");
         },
-        searchEstado() {
-            this.isLoading = true;
-            var vm = this;
+        onSearchEstado() {
+            this.searchEstado(this);
+        },
+        searchEstado: debounce((vm) => {
+            vm.isLoading = true;
             if (vm.entity.codigoEstado > 0) {
                 EstadosService.getById(vm.entity.codigoEstado).then(function (response) {
                     vm.estadoSelecionado = response.data.estado;
@@ -179,7 +183,7 @@ export default {
                 vm.estadoSelecionado = null;
                 vm.isLoading = false;
             }
-        },
+        }, 350),
         save() {
             if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
@@ -192,7 +196,7 @@ export default {
             }
 
             CidadesService.save(this.entity).then(function (response) {
-                const msg = vm.entity.codigo ? "editado" : 'criado';
+                const msg = vm.entity.codigo ? "editado" : "criado";
                 notyf.success("Cidade " + msg + " com sucesso");
                 vm.isSubmiting = false;
 

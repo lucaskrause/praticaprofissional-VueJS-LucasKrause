@@ -61,8 +61,8 @@ import {required, maxLength, minValue, maxValue} from 'vuelidate/lib/validators'
 import {Money} from 'v-money'
 import Helper from '@/components/helper'
 import {AreasLocacaoService} from '@/services/areasLocacao.service'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
 
 const notyf = new Notyf();
 
@@ -144,7 +144,7 @@ export default {
             }
 
             AreasLocacaoService.save(this.entity).then(function (response) {
-                const msg = vm.entity.codigo ? "editada" : 'criada';
+                const msg = vm.entity.codigo ? "editada" : "criada";
                 notyf.success("Área " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 

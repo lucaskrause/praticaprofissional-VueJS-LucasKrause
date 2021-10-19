@@ -61,8 +61,8 @@ import {required, maxLength, minValue, maxValue} from 'vuelidate/lib/validators'
 import {Money} from 'v-money'
 import {ServicosService} from '@/services/servicos.service'
 import Helper from '@/components/helper'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
 
 const notyf = new Notyf();
 
@@ -144,7 +144,7 @@ export default {
             }
 
             ServicosService.save(this.entity).then(function (response) {
-                const msg = vm.entity.codigo ? "editado" : 'criado';
+                const msg = vm.entity.codigo ? "editado" : "criado";
                 notyf.success("Serviço " + msg + " com sucesso");
                 vm.isSubmiting = false;
 

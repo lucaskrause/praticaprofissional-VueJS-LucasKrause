@@ -76,8 +76,8 @@ import {TheMask} from 'vue-the-mask'
 import {Money} from 'v-money'
 import Helper from '@/components/helper'
 import {PrecificacoesService} from '@/services/precificacoes.service'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
 
 const notyf = new Notyf();
 
@@ -160,7 +160,7 @@ export default {
             }
 
             PrecificacoesService.save(this.entity).then(function () {
-                const msg = vm.entity.codigo ? "editado" : 'criado';
+                const msg = vm.entity.codigo ? "editado" : "criado";
                 notyf.success("Preço " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 vm.$router.push('/app/precificacoes');

@@ -30,7 +30,7 @@
 <script>
 import {FormasPagamentoService} from '@/services/formasPagamento.service'
 import NovaFormaPagamento from '@/components/pages/formasPagamento/Edit.vue'
-import {VueGoodTable} from 'vue-good-table';
+import {VueGoodTable} from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
 
 export default {

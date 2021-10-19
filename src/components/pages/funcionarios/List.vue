@@ -30,11 +30,11 @@
 </template>
 
 <script>
-import {FuncionariosService} from '@/services/funcionarios.service';
-import 'vue-good-table/dist/vue-good-table.css';
-import {VueGoodTable} from 'vue-good-table';
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {FuncionariosService} from '@/services/funcionarios.service'
+import 'vue-good-table/dist/vue-good-table.css'
+import {VueGoodTable} from 'vue-good-table'
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
 
 const notyf = new Notyf();
 

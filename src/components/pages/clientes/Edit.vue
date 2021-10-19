@@ -90,7 +90,7 @@
             <div class="col-5">
                 <label>Cidade</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="searchCidade"
+                    <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="onSearchCidade"
                         :class="{'is-invalid': $v.entity.codigoCidade.$error}"/>
                     <div class="input-group-append">
                         <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="cidadeSelecionada" readonly/>
@@ -169,7 +169,7 @@
             <div class="col-5">
                 <label>Condição de Pagamento</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" @input="searchCondicao"
+                    <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" @input="onSearchCondicao"
                         :class="{'is-invalid': $v.entity.codigoCondicaoPagamento.$error}"/>
                     <div class="input-group-append">
                         <input id="condicaoPagamento" type="text" class="form-control" v-uppercase v-model.lazy="condicaoSelecionada" readonly/>
@@ -264,6 +264,8 @@ import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table'
 import {Notyf} from 'notyf'
 import 'notyf/notyf.min.css'
+
+var debounce = require('lodash.debounce');
 
 const notyf = new Notyf();
 
@@ -438,26 +440,11 @@ export default {
             this.$bvModal.hide("modal-new-cidade");
             this.$bvModal.hide("modal-consult-cidade");
         },
-        selectCondicao(entity) {
-            this.condicaoSelecionada = entity.descricao;
-            this.entity.codigoCondicaoPagamento = entity.codigo;
-            this.$bvModal.hide("modal-new-condicaoPagamento");
-            this.$bvModal.hide("modal-consult-condicaoPagamento");
+        onSearchCidade() {
+            this.searchCidade(this);
         },
-        selectDependente(entity) {
-            if (!this.isEdit) {
-                this.dependentes.rows.push(entity);
-                this.$bvModal.hide("modal-new-dependente");
-            } else {
-                this.dependentes.rows[this.indexEdit] = entity;
-                this.indexEdit = -1;
-                this.isEdit = false;
-                this.$bvModal.hide("modal-edit-dependente");
-            }
-        },
-        searchCidade() {
-            this.isLoading = true;
-            var vm = this;
+        searchCidade: debounce((vm) => {
+            vm.isLoading = true;
             if (vm.entity.codigoCidade > 0) {
                 CidadesService.getById(vm.entity.codigoCidade).then(function (response) {
                     vm.cidadeSelecionada = response.data.cidade;
@@ -472,10 +459,18 @@ export default {
                 vm.cidadeSelecionada = null;
                 vm.isLoading = false;
             }
+        }, 350),
+        selectCondicao(entity) {
+            this.condicaoSelecionada = entity.descricao;
+            this.entity.codigoCondicaoPagamento = entity.codigo;
+            this.$bvModal.hide("modal-new-condicaoPagamento");
+            this.$bvModal.hide("modal-consult-condicaoPagamento");
         },
-        searchCondicao() {
-            this.isLoading = true;
-            var vm = this;
+        onSearchCondicao() {
+            this.searchCondicao(this);
+        },
+        searchCondicao: debounce((vm) => {
+            vm.isLoading = true;
             if (vm.entity.codigoCondicaoPagamento > 0) {
                 CondicoesPagamentoService.getById(vm.entity.codigoCondicaoPagamento).then(function (response) {
                     vm.condicaoSelecionada = response.data.descricao;
@@ -489,6 +484,17 @@ export default {
             } else {
                 vm.condicaoSelecionada = null;
                 vm.isLoading = false;
+            }
+        }, 350),
+        selectDependente(entity) {
+            if (!this.isEdit) {
+                this.dependentes.rows.push(entity);
+                this.$bvModal.hide("modal-new-dependente");
+            } else {
+                this.dependentes.rows[this.indexEdit] = entity;
+                this.indexEdit = -1;
+                this.isEdit = false;
+                this.$bvModal.hide("modal-edit-dependente");
             }
         },
         save() {
@@ -548,7 +554,7 @@ export default {
 
             this.entity.dependentes = this.clearDependentes(this.dependentes.rows.concat(this.dependenteRemovido));
             ClientesService.save(this.entity).then(function (response) {
-                const msg = vm.entity.codigo ? "editado" : 'criado';
+                const msg = vm.entity.codigo ? "editado" : "criado";
                 notyf.success("Cliente " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 if(vm.isModal){

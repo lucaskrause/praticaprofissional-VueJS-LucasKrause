@@ -32,10 +32,10 @@
 <script>
 import Helper from '@/components/helper'
 import {PrecificacoesService} from '@/services/precificacoes.service'
-import {VueGoodTable} from 'vue-good-table';
+import {VueGoodTable} from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
 
 const notyf = new Notyf();
 

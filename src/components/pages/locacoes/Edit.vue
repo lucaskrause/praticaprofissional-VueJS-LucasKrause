@@ -11,7 +11,7 @@
             <div class="col-4">
                 <label>Cliente</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                   <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="searchCliente"
+                   <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="onSearchCliente"
                         :class="{'is-invalid': $v.entity.codigoCliente.$error}"/>
                     <div class="input-group-append">
                         <input id="cliente" type="text" class="form-control" v-model.lazy="clienteSelecionado" readonly/>
@@ -28,7 +28,7 @@
             <div class="col-4">
                 <label>Condição de Pagamento</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                   <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" @input="searchCondicao"
+                   <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" @input="onSearchCondicao"
                         :class="{'is-invalid': $v.entity.codigoCondicaoPagamento.$error}"/>
                     <div class="input-group-append">
                         <input id="condicaoPagamento" type="text" class="form-control" v-uppercase v-model.lazy="condicaoSelecionada" readonly/>
@@ -157,8 +157,10 @@ import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
 import ConsultaCondicaoPagamento from '@/components/pages/condicoesPagamento/Consult.vue'
 import {VueGoodTable} from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
+
+var debounce = require('lodash.debounce');
 
 const notyf = new Notyf();
 
@@ -298,15 +300,11 @@ export default {
             this.$bvModal.hide("modal-new-cliente");
             this.$bvModal.hide("modal-consult-cliente");
         },
-        selectCondicao(entity) {
-            this.condicaoSelecionada = entity.descricao;
-            this.entity.codigoCondicaoPagamento = entity.codigo;
-            this.$bvModal.hide("modal-new-condicaoPagamento");
-            this.$bvModal.hide("modal-consult-condicaoPagamento");
+        onSearchCliente() {
+            this.searchCliente(this);
         },
-        searchCliente() {
-            this.isLoading = true;
-            var vm = this;
+        searchCliente: debounce((vm) => {
+            vm.isLoading = true;
             if (vm.entity.codigoCliente > 0) {
                 ClientesService.getById(vm.entity.codigoCliente).then(function (response) {
                     vm.clienteSelecionado = response.data.nome;
@@ -321,10 +319,18 @@ export default {
                 vm.clienteSelecionado = null;
                 vm.isLoading = false;
             }
+        }, 350),
+        selectCondicao(entity) {
+            this.condicaoSelecionada = entity.descricao;
+            this.entity.codigoCondicaoPagamento = entity.codigo;
+            this.$bvModal.hide("modal-new-condicaoPagamento");
+            this.$bvModal.hide("modal-consult-condicaoPagamento");
         },
-        searchCondicao() {
-            this.isLoading = true;
-            var vm = this;
+        onSearchCondicao() {
+            this.searchCondicao(this);
+        },
+        searchCondicao: debounce((vm) => {
+            vm.isLoading = true;
             if (vm.entity.codigoCondicaoPagamento > 0) {
                 CondicoesPagamentoService.getById(vm.entity.codigoCondicaoPagamento).then(function (response) {
                     vm.condicaoSelecionada = response.data.descricao;
@@ -339,7 +345,7 @@ export default {
                 vm.condicaoSelecionada = null;
                 vm.isLoading = false;
             }
-        },
+        }, 350),
         save() {
             if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
@@ -368,7 +374,7 @@ export default {
             }
 
             LocacoesService.save(this.entity).then(function () {
-                const msg = vm.entity.codigo ? "editada" : 'criada';
+                const msg = vm.entity.codigo ? "editada" : "criada";
                 notyf.success("Reserva " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 vm.$router.push('/app/locacoes');

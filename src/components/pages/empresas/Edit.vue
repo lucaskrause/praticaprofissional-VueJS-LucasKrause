@@ -74,7 +74,7 @@
             <div class="col-5">
                 <label>Cidade</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="searchCidade"
+                    <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="onSearchCidade"
                         :class="{'is-invalid': $v.entity.codigoCidade.$error}"/>
                     <div class="input-group-append">
                         <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="cidadeSelecionada" readonly/>
@@ -226,8 +226,10 @@ import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
 import NovaContaBancaria from '@/components/pages/contasBancarias/Edit.vue'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
+
+var debounce = require('lodash.debounce');
 
 const notyf = new Notyf();
 
@@ -410,22 +412,13 @@ export default {
             this.$bvModal.hide("modal-new-cidade");
             this.$bvModal.hide("modal-consult-cidade");
         },
-        selectContaBancaria(entity) {
-            if (!this.isEdit) {
-                this.contasBancarias.rows.push(entity);
-                this.$bvModal.hide("modal-new-contaBancaria");
-            } else {
-                this.contasBancarias.rows[this.indexEdit] = entity;
-                this.indexEdit = -1;
-                this.isEdit = false;
-                this.$bvModal.hide("modal-edit-contaBancaria");
-            }
+        onSearchCidade() {
+            this.searchCidade(this);
         },
-        searchCidade() {
-            this.isLoading = true;
-            var vm = this;
-            if (this.entity.codigoCidade > 0) {
-                CidadesService.getById(this.entity.codigoCidade).then(function (response) {
+        searchCidade: debounce((vm) => {
+            vm.isLoading = true;
+            if (vm.entity.codigoCidade > 0) {
+                CidadesService.getById(vm.entity.codigoCidade).then(function (response) {
                     vm.cidadeSelecionada = response.data.cidade;
                     vm.isLoading = false;
                 }).catch(function() {
@@ -435,8 +428,19 @@ export default {
                     notyf.error("Cidade não encontrada");
                 });
             } else {
-                this.cidadeSelecionada = null;
-                this.isLoading = false;
+                vm.cidadeSelecionada = null;
+                vm.isLoading = false;
+            }
+        }, 350),
+        selectContaBancaria(entity) {
+            if (!this.isEdit) {
+                this.contasBancarias.rows.push(entity);
+                this.$bvModal.hide("modal-new-contaBancaria");
+            } else {
+                this.contasBancarias.rows[this.indexEdit] = entity;
+                this.indexEdit = -1;
+                this.isEdit = false;
+                this.$bvModal.hide("modal-edit-contaBancaria");
             }
         },
         save() {
@@ -460,7 +464,7 @@ export default {
             this.entity.contasBancarias = this.contasBancarias.rows;
 
             EmpresasService.save(this.entity).then(function () {
-                const msg = vm.entity.codigo ? "editado" : 'criado';
+                const msg = vm.entity.codigo ? "editado" : "criado";
                 notyf.success("Empresa " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 vm.$router.push('/app/empresas');

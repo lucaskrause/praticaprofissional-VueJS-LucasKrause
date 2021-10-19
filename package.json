@@ -12,7 +12,6 @@
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.6.5",
-    "debounce": "^1.2.1",
     "lodash.debounce": "^4.0.8",
     "notyf": "^3.9.0",
     "v-calendar": "^2.3.2",

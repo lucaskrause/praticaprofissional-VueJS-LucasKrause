@@ -32,7 +32,7 @@
             <div class="col-5">
                 <label>Forma de Pagamento</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoFormaPagamento" type="number" class="form-control" v-model.number="entity.codigoFormaPagamento" @input="searchForma"
+                    <input id="codigoFormaPagamento" type="number" class="form-control" v-model.number="entity.codigoFormaPagamento" @input="onSearchForma"
                         :class="{'is-invalid': $v.entity.codigoFormaPagamento.$error}"/>
                     <div class="input-group-append">
                         <input id="formaPagamento" type="text" class="form-control" v-uppercase v-model.lazy="entity.formaPagamento.descricao" readonly/>
@@ -67,8 +67,10 @@ import {validationMixin} from 'vuelidate'
 import {required, minValue, maxValue} from 'vuelidate/lib/validators'
 import {FormasPagamentoService} from '@/services/formasPagamento.service'
 import ConsultaFormaPagamento from '@/components/pages/formasPagamento/Consult.vue'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
+
+var debounce = require('lodash.debounce');
 
 const notyf = new Notyf();
 
@@ -150,9 +152,11 @@ export default {
             this.$bvModal.hide("modal-new-formaPagamento");
             this.$bvModal.hide("modal-consult-formaPagamento");
         },
-        searchForma() {
-            this.isLoading = true;
-            var vm = this;
+        onSearchForma() {
+            this.searchForma(this);
+        },
+        searchForma: debounce((vm) => { 
+            vm.isLoading = true;
             if (vm.entity.codigoFormaPagamento > 0) {
                 FormasPagamentoService.getById(vm.entity.codigoFormaPagamento).then(function (response) {
                     vm.entity.formaPagamento.codigo = response.data.codigo;
@@ -169,7 +173,7 @@ export default {
                 vm.entity.formaPagamento.descricao = null;
                 vm.isLoading = false;
             }
-        },
+        }, 350),
         save() {
             if (this.isSubmiting || this.isLoading) return;
             this.$v.$touch();

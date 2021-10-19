@@ -95,8 +95,8 @@ import {TheMask} from 'vue-the-mask'
 import {Money} from 'v-money'
 import {ContasBancariasService} from '@/services/contasBancarias.service'
 import Helper from '@/components/helper'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
 
 const notyf = new Notyf();
 
@@ -216,7 +216,7 @@ export default {
                 const vm = this;
 
                 ContasBancariasService.save(this.entity).then(function () {
-                    const msg = vm.entity.codigo ? "editado" : 'criado';
+                    const msg = vm.entity.codigo ? "editado" : "criado";
                     notyf.success("Conta Bancaria " + msg + " com sucesso");
                     vm.isSubmiting = false;
                     vm.$router.push('/app/contasBancarias');

@@ -30,7 +30,7 @@
 <script>
 import {ContasBancariasService} from '@/services/contasBancarias.service'
 import NovaContaBancaria from '@/components/pages/contasBancarias/Edit.vue'
-import {VueGoodTable} from 'vue-good-table';
+import {VueGoodTable} from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
 
 export default {

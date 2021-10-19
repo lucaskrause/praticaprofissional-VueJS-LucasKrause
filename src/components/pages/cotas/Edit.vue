@@ -11,7 +11,7 @@
             <div class="col-5">
                 <label>Cliente</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="searchCliente"
+                    <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="onSearchCliente"
                         :class="{'is-invalid': $v.entity.codigoCliente.$error}"/>
                     <div class="input-group-append">
                         <input id="cliente" type="text" class="form-control" v-uppercase v-model.lazy="clienteSelecionado" readonly/>
@@ -98,8 +98,10 @@ import {ClientesService} from '@/services/clientes.service'
 import {CotasService} from '@/services/cotas.service'
 import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
 import Helper from '@/components/helper'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
+
+var debounce = require('lodash.debounce');
 
 const notyf = new Notyf();
 
@@ -183,9 +185,11 @@ export default {
             this.$bvModal.hide("modal-new-cliente");
             this.$bvModal.hide("modal-consult-cliente");
         },
-        searchCliente() {
-            this.isLoading = true;
-            var vm = this;
+        onSearchCliente() {
+            this.searchCliente(this);
+        },
+        searchCliente: debounce((vm) => {
+            vm.isLoading = true;
             if (vm.entity.codigoCliente > 0) {
                 ClientesService.getById(vm.entity.codigoCliente).then(function (response) {
                     vm.clienteSelecionado = response.data.nome;
@@ -200,7 +204,7 @@ export default {
                 vm.clienteSelecionado = null;
                 vm.isLoading = false;
             }
-        },
+        }, 350),
         save() {
             if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
@@ -229,7 +233,7 @@ export default {
             }
 
             CotasService.save(this.entity).then(function () {
-                const msg = vm.entity.codigo ? "editado" : 'criado';
+                const msg = vm.entity.codigo ? "editado" : "criado";
                 notyf.success("Cota " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 vm.$router.push('/app/cotas');

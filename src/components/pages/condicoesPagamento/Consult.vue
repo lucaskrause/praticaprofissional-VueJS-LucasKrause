@@ -30,7 +30,7 @@
 <script>
 import {CondicoesPagamentoService} from '@/services/condicoesPagamento.service'
 import NovoCondicaoPagamento from '@/components/pages/condicoesPagamento/Edit.vue'
-import {VueGoodTable} from 'vue-good-table';
+import {VueGoodTable} from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
 
 export default {

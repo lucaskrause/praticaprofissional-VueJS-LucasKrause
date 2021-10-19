@@ -22,7 +22,7 @@
             <div class="col-4">
                 <label>Fornecedor</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoFornecedor" type="number" class="form-control" v-model.number="entity.codigoFornecedor" @input="searchFornecedor" :disabled="verificaListaProdutos" :readonly="isEdit"/>
+                    <input id="codigoFornecedor" type="number" class="form-control" v-model.number="entity.codigoFornecedor" @input="onSearchFornecedor" :disabled="verificaListaProdutos" :readonly="isEdit"/>
                     <div class="input-group-append">
                         <input type="text" class="form-control" v-model.lazy="fornecedorSelecionado" readonly/>
                     </div>
@@ -51,7 +51,7 @@
             <div class="col-4">
                 <label>Produto</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoProduto" type="number" class="form-control" v-model.number="produtoSelecionado.codigoProduto" @input="searchProduto" :disabled="!verificaDtEmissaoEntrega || !condicaoPreenchida" :readonly="isEdit"/>
+                    <input id="codigoProduto" type="number" class="form-control" v-model.number="produtoSelecionado.codigoProduto" @input="onSearchProduto" :disabled="!verificaDtEmissaoEntrega || !condicaoPreenchida" :readonly="isEdit"/>
                     <div class="input-group-append">
                         <input type="text" class="form-control" v-model.lazy="produtoSelecionado.produto" readonly/>
                     </div>
@@ -120,7 +120,7 @@
             <div class="col-4">
                 <label>Condição de Pagamento</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                   <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" @input="searchCondicao" :disabled="!verificaListaProdutos" :readonly="isEdit"/>
+                   <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" @input="onSearchCondicao" :disabled="!verificaListaProdutos" :readonly="isEdit"/>
                     <div class="input-group-append">
                         <input id="condicaoPagamento" type="text" class="form-control" v-uppercase v-model.lazy="condicaoSelecionada" readonly/>
                         <span class="input-group-btn">
@@ -193,9 +193,10 @@ import ConsultaProduto from '@/components/pages/produtos/Consult.vue'
 import ConsultaCondicaoPagamento from '@/components/pages/condicoesPagamento/Consult.vue'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table'
-
 import {Notyf} from 'notyf'
 import 'notyf/notyf.min.css'
+
+var debounce = require('lodash.debounce');
 
 const notyf = new Notyf();
 
@@ -402,9 +403,11 @@ export default {
                 this.isNotaPreenchido = false;
             }
         },
-        searchFornecedor() {
-            this.isLoading = true;
-            var vm = this;
+        onSearchFornecedor() {
+            this.searchFornecedor(this);
+        },
+        searchFornecedor: debounce((vm) => {
+            vm.isLoading = true;
             if (vm.entity.codigoFornecedor > 0) {
                 FornecedoresService.getById(vm.entity.codigoFornecedor).then(function (response) {
                     vm.fornecedorSelecionado = response.data.nome;
@@ -421,7 +424,7 @@ export default {
                 vm.fornecedorSelecionado = null;
                 vm.isLoading = false;
             }
-        },
+        }, 350),
         selectFornecedor(entity) {
             this.entity.codigoFornecedor = entity.codigo;
             this.fornecedorSelecionado = entity.nome;
@@ -429,12 +432,13 @@ export default {
             this.$bvModal.hide("modal-consult-fornecedor");
             this.findCompra();
         },
-        searchProduto() {
-            this.isLoading = true;
-            const vm = this;
-
-            if (this.produtoSelecionado.codigoProduto > 0) {
-                ProdutosService.getById(this.produtoSelecionado.codigoProduto).then(function (response) {
+        onSearchProduto() {
+            this.searchProduto(this);
+        },
+        searchProduto: debounce((vm) => {
+            vm.isLoading = true;
+            if (vm.produtoSelecionado.codigoProduto > 0) {
+                ProdutosService.getById(vm.produtoSelecionado.codigoProduto).then(function (response) {
                     vm.produtoSelecionado.produto = response.data.produto;
                     vm.isLoading = false;
                 }).catch(function() {
@@ -444,19 +448,21 @@ export default {
                     notyf.error("Produto não encontrado");
                 });
             } else {
-                this.produtoSelecionado = null;
-                this.isLoading = false;
+                vm.produtoSelecionado = null;
+                vm.isLoading = false;
             }
-        },
+        }, 350),
         selectProduto(entity) {
             this.produtoSelecionado.codigoProduto = entity.codigo;
             this.produtoSelecionado.produto = entity.produto;
             this.$bvModal.hide("modal-new-produto");
             this.$bvModal.hide("modal-consult-produto");
         },
-        searchCondicao() {
-            this.isLoading = true;
-            var vm = this;
+        onSearchCondicao() {
+            this.searchCondicao(this);
+        },
+        searchCondicao: debounce((vm) => {
+            vm.isLoading = true;
             if (vm.entity.codigoCondicaoPagamento > 0) {
                 CondicoesPagamentoService.getById(vm.entity.codigoCondicaoPagamento).then(function (response) {
                     vm.condicaoSelecionada = response.data.descricao;
@@ -471,7 +477,7 @@ export default {
                 vm.condicaoSelecionada = null;
                 vm.isLoading = false;
             }
-        },
+        }, 350),
         selectCondicao(entity) {
             this.entity.codigoCondicaoPagamento = entity.codigo;
             this.condicaoSelecionada = entity.descricao;

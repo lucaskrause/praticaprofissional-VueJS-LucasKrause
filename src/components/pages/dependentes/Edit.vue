@@ -31,7 +31,7 @@
             <div v-if="!isModal" class="col-5">
                 <label>Sócio</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="searchCliente"
+                    <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="onSearchCliente"
                         :class="{'is-invalid': $v.entity.codigoCliente.$error}"/>
                     <div class="input-group-append">
                         <input id="cliente" type="text" class="form-control" v-model.lazy="socioSelecionado" readonly/>
@@ -94,7 +94,7 @@
             <div class="col-5">
                 <label>Cidade</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="searchCidade"
+                    <input id="codigoCidade" type="number" class="form-control" v-model.number="entity.codigoCidade" @input="onSearchCidade"
                         :class="{'is-invalid': $v.entity.codigoCidade.$error}"/>
                     <div class="input-group-append">
                         <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="cidadeSelecionada" readonly/>
@@ -208,8 +208,10 @@ import {CidadesService} from '@/services/cidades.service'
 import {DependentesService} from '@/services/dependentes.service'
 import ConsultaCidade from '@/components/pages/cidades/Consult.vue'
 import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
+
+var debounce = require('lodash.debounce');
 
 const notyf = new Notyf();
 
@@ -345,15 +347,11 @@ export default {
             this.$bvModal.hide("modal-new-cliente");
             this.$bvModal.hide("modal-consult-cliente");
         },
-        selectCidade(entity) {
-            this.cidadeSelecionada = entity.cidade;
-            this.entity.codigoCidade = entity.codigo;
-            this.$bvModal.hide("modal-new-cidade");
-            this.$bvModal.hide("modal-consult-cidade-dependente");
+        onSearchCliente() {
+            this.searchCliente(this);
         },
-        searchCliente() {
-            this.isLoading = true;
-            var vm = this;
+        searchCliente: debounce((vm) => {
+            vm.isLoading = true;
             if (vm.entity.codigoCliente > 0) {
                 ClientesService.getSocioById(vm.entity.codigoCliente).then(function (response) {
                     vm.socioSelecionado = response.data.nome;
@@ -368,10 +366,18 @@ export default {
                 vm.socioSelecionado = null;
                 vm.isLoading = false;
             }
+        }, 350),
+        selectCidade(entity) {
+            this.cidadeSelecionada = entity.cidade;
+            this.entity.codigoCidade = entity.codigo;
+            this.$bvModal.hide("modal-new-cidade");
+            this.$bvModal.hide("modal-consult-cidade-dependente");
         },
-        searchCidade() {
-            this.isLoading = true;
-            var vm = this;
+        onSearchCidade() {
+            this.searchCidade(this);
+        },
+        searchCidade: debounce((vm) => {
+            vm.isLoading = true;
             if (vm.entity.codigoCidade > 0) {
                 CidadesService.getById(vm.entity.codigoCidade).then(function (response) {
                     vm.cidadeSelecionada = response.data.cidade;
@@ -386,7 +392,7 @@ export default {
                 vm.cidadeSelecionada = null;
                 vm.isLoading = false;
             }
-        },
+        }, 350),
         save() {
             this.emailInvalid = false;
             this.cpfInvalid = false;
@@ -419,7 +425,7 @@ export default {
                 const vm = this;
 
                 DependentesService.save(this.entity).then(function () {
-                    const msg = vm.entity.codigo ? "editado" : 'criado';
+                    const msg = vm.entity.codigo ? "editado" : "criado";
                     notyf.success("Dependente " + msg + " com sucesso");
                     vm.isSubmiting = false;
                     vm.$router.push('/app/dependentes');

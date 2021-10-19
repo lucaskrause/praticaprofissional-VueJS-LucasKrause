@@ -47,8 +47,8 @@ import {validationMixin} from 'vuelidate'
 import {required, maxLength} from 'vuelidate/lib/validators'
 import {FormasPagamentoService} from '@/services/formasPagamento.service'
 import Helper from '@/components/helper'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
 
 const notyf = new Notyf();
 
@@ -115,7 +115,7 @@ export default {
             }
 
             FormasPagamentoService.save(this.entity).then(function (response) {
-                const msg = vm.entity.codigo ? "editado" : 'criado';
+                const msg = vm.entity.codigo ? "editado" : "criado";
                 notyf.success("Forma de Pagamento " + msg + " com sucesso");
                 vm.isSubmiting = false;
 

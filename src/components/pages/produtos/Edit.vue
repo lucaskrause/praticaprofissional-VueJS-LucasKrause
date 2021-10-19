@@ -53,7 +53,7 @@
             <div class="col-5">
                 <label>Categoria</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoCategoria" type="number" class="form-control" v-model.number="entity.codigoCategoria" @input="searchCategoria"
+                    <input id="codigoCategoria" type="number" class="form-control" v-model.number="entity.codigoCategoria" @input="onSearchCategoria"
                         :class="{'is-invalid': $v.entity.codigoCategoria.$error}"/>
                     <div class="input-group-append">
                         <input id="categoria" type="text" class="form-control" v-model.lazy="categoriaSelecionada" readonly/>
@@ -116,8 +116,10 @@ import {CategoriasService} from '@/services/categorias.service'
 import {ProdutosService} from '@/services/produtos.service'
 import ConsultaCategoria from '@/components/pages/categorias/Consult.vue'
 import Helper from '@/components/helper'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
+
+var debounce = require('lodash.debounce');
 
 const notyf = new Notyf();
 
@@ -215,9 +217,11 @@ export default {
             this.$bvModal.hide("modal-new-categoria");
             this.$bvModal.hide("modal-consult-categoria");
         },
-        searchCategoria() {
-            this.isLoading = true;
-            var vm = this;
+        onSearchCategoria() {
+            this.searchCategoria(this);
+        },
+        searchCategoria: debounce((vm) => {
+            vm.isLoading = true;
             if (vm.entity.codigoCategoria > 0) {
                 CategoriasService.getById(vm.entity.codigoCategoria).then(function (response) {
                     vm.categoriaSelecionada = response.data.descricao;
@@ -232,7 +236,7 @@ export default {
                 vm.categoriaSelecionada = null;
                 vm.isLoading = false;
             }
-        },
+        }, 350),
         save() {
             if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
@@ -245,7 +249,7 @@ export default {
             }
 
             ProdutosService.save(this.entity).then(function (response) {
-                const msg = vm.entity.codigo ? "editado" : 'criado';
+                const msg = vm.entity.codigo ? "editado" : "criado";
                 notyf.success("Produto " + msg + " com sucesso");
                 vm.isSubmiting = false;
 

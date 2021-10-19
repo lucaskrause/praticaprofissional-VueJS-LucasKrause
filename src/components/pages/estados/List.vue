@@ -32,9 +32,9 @@
 <script>
 import {EstadosService} from '@/services/estados.service'
 import 'vue-good-table/dist/vue-good-table.css'
-import {VueGoodTable} from 'vue-good-table';
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {VueGoodTable} from 'vue-good-table'
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
 
 const notyf = new Notyf();
 

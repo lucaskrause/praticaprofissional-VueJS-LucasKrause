@@ -39,14 +39,14 @@
             <div class="col-5">
                 <label>País</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoPais" type="number" class="form-control" v-model.number="entity.codigoPais" @input="searchPais"
+                    <input id="codigoPais" type="number" class="form-control" v-model.number="entity.codigoPais" @input="onSearchPais"
                         :class="{'is-invalid': $v.entity.codigoPais.$error}"/>
                     <div class="input-group-append">
                         <input type="text" class="form-control" v-model.lazy="paisSelecionado" readonly/>
+                        <span class="input-group-btn">
+                            <b-button v-b-modal.modal-consult-pais class="btn btn-info ml-1">Buscar</b-button>
+                        </span>
                     </div>
-                    <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-pais class="btn btn-info ml-1">Buscar</b-button>
-                    </span>
                     <div class="invalid-feedback" v-if="!$v.entity.codigoPais.minValue">
                         Selecione um País
                     </div>
@@ -87,8 +87,10 @@ import Helper from '@/components/helper'
 import {PaisesService} from '@/services/paises.service'
 import {EstadosService} from '@/services/estados.service'
 import ConsultaPais from '@/components/pages/paises/Consult.vue'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
+
+var debounce = require('lodash.debounce');
 
 const notyf = new Notyf();
 
@@ -162,7 +164,27 @@ export default {
             this.$bvModal.hide("modal-new-pais");
             this.$bvModal.hide("modal-consult-pais");
         },
-        searchPais() {
+        onSearchPais() {
+            this.searchPais(this);
+        },
+        searchPais: debounce((vm) => {
+            vm.isLoading = true;
+            if (vm.entity.codigoPais > 0) {
+                PaisesService.getById(vm.entity.codigoPais).then(function (response) {
+                    vm.paisSelecionado = response.data.pais;
+                    vm.isLoading = false;
+                }).catch(function() {
+                    vm.entity.codigoPais = 0;
+                    vm.paisSelecionado = null;
+                    vm.isLoading = false;
+                    notyf.error("País não encontrado");
+                });
+            } else {
+                vm.paisSelecionado = null;
+                vm.isLoading = false;
+            }
+        }, 350),
+        searchPais1() {
             this.isLoading = true;
             var vm = this;
             if (vm.entity.codigoPais > 0) {
@@ -192,7 +214,7 @@ export default {
             }
 
             EstadosService.save(this.entity).then(function (response) {
-                const msg = vm.entity.codigo ? "editado" : 'criado';
+                const msg = vm.entity.codigo ? "editado" : "criado";
                 notyf.success("Estado " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 

@@ -76,8 +76,8 @@ import {required, minLength, maxLength} from 'vuelidate/lib/validators'
 import {TheMask} from 'vue-the-mask'
 import Helper from '@/components/helper'
 import {PaisesService} from '@/services/paises.service'
-import {Notyf} from 'notyf';
-import 'notyf/notyf.min.css';
+import {Notyf} from 'notyf'
+import 'notyf/notyf.min.css'
 
 const notyf = new Notyf();
 
@@ -157,7 +157,7 @@ export default {
             }
 
             PaisesService.save(this.entity).then(function (response) {
-                const msg = vm.entity.codigo ? "editado" : 'criado';
+                const msg = vm.entity.codigo ? "editado" : "criado";
                 notyf.success("País " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 
