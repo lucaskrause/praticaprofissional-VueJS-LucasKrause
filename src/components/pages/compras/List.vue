@@ -41,15 +41,18 @@ export default {
             columns: [
                 {
                     label: "Modelo",
-                    field: "modelo"
+                    field: "modelo",
+                    width: "150px",
                 },
                 {
                     label: "Série",
-                    field: "serie"
+                    field: "serie",
+                    width: "150px",
                 },
                 {
                     label: "Número Nota Fiscal",
-                    field: "numeroNF"
+                    field: "numeroNF",
+                    width: "200px",
                 },
                 {
                     label: "Fornecedor",
@@ -60,7 +63,7 @@ export default {
                     sortable: false,
                     field: 'btn',
                     html: true,
-                    width: "100px",
+                    width: "80px",
                 },
             ],
             rows: [],

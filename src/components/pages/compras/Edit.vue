@@ -218,6 +218,7 @@ export default {
                 codigoFornecedor: 0,
                 itens: [],
                 codigoCondicaoPagamento: 0,
+                parcelas: [],
                 dtEmissao: null,
                 dtEntrega: null
             },
@@ -293,18 +294,14 @@ export default {
                         label: "Valor",
                         field: "valorParcela",
                         type: "number",
-                        width: "200px",
+                        width: "150px",
                     },
                     {
-                        label: "Dias",
-                        field: "numeroDias",
-                        type: "number",
-                        width: "120px",
-                    },
-                    {
-                        label: "Porcentagem (%)",
-                        field: "porcentagem",
-                        type: "number",
+                        label: "Data de Vencimento",
+                        field: "dtVencimento",
+                        type: "date",
+                        dateInputFormat: 'yyyy-MM-dd',
+                        dateOutputFormat: 'dd/MM/yyyy',
                         width: "200px",
                     },
                     {
@@ -328,6 +325,14 @@ export default {
                 vm.entity = response.data;
 
                 vm.produtos.rows = vm.entity.itens;
+                vm.parcelas.rows = vm.entity.parcelas;
+                
+                for (let i = 0; i < vm.parcelas.rows.length; i++) {
+                    var dateVencimento = Helper.dateToDateString(vm.parcelas.rows[i].dtVencimento);
+
+                    vm.parcelas.rows[i].dtVencimento = dateVencimento;
+                }
+
                 var dateEmissao = Helper.dateToDateString(vm.entity.dtEmissao);
                 var dateEntrega = Helper.dateToDateString(vm.entity.dtEntrega);
                 var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
@@ -343,8 +348,9 @@ export default {
                 for (let i = 0; i < vm.produtos.rows.length; i++) {
                     vm.valorTotal += vm.produtos.rows[i].total;
                 }
-                console.log(vm.valorTotal);
             });
+        } else {
+            this.$router.push('/app/compras');
         }
     },
     computed: {
@@ -515,9 +521,14 @@ export default {
             };
 
             ComprasService.gerarParcelas(params).then(function (response) {
-                console.log(response)
+                vm.parcelas.totalRecords = response.data.length;
                 vm.parcelas.rows = response.data;
-                console.log(vm.parcelas);
+                
+                for (let i = 0; i < vm.parcelas.totalRecords; i++) {
+                    var dateVencimento = Helper.dateToDateString(vm.parcelas.rows[i].dtVencimento);
+
+                    vm.parcelas.rows[i].dtVencimento = dateVencimento;
+                }
             });
         },
         save() {
@@ -526,6 +537,7 @@ export default {
             let vm = this;
 
             this.entity.itens = this.produtos.rows;
+            this.entity.parcelas = this.parcelas.rows;
             ComprasService.save(this.entity).then(function () {
                 notyf.success("Compra registrada com sucesso");
                 vm.isSubmiting = false;
