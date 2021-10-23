@@ -5,8 +5,6 @@ const Home = () => import("@/components/Home");
 
 const Inicio = () => import("@/components/Inicio");
 
-const NotFound = () => import("@/components/NotFound");
-
 const EmpresaList = () => import("@/components/pages/empresas/List");
 const EmpresaEdit = () => import("@/components/pages/empresas/Edit");
 
@@ -55,6 +53,12 @@ const ProdutoEdit = () => import("@/components/pages/produtos/Edit");
 const CompraList = () => import("@/components/pages/compras/List");
 const CompraEdit = () => import("@/components/pages/compras/Edit");
 
+const ContaPagarList = () => import("@/components/pages/contasPagar/List");
+const ContaPagarEdit = () => import("@/components/pages/contasPagar/Edit");
+
+const ContaReceberList = () => import("@/components/pages/contasReceber/List");
+const ContaReceberEdit = () => import("@/components/pages/contasReceber/Edit");
+
 const PaisList = () => import("@/components/pages/paises/List");
 const PaisEdit = () => import("@/components/pages/paises/Edit");
 
@@ -63,6 +67,8 @@ const EstadoEdit = () => import("@/components/pages/estados/Edit");
 
 const CidadeList = () => import("@/components/pages/cidades/List");
 const CidadeEdit = () => import("@/components/pages/cidades/Edit");
+
+const NotFound = () => import("@/components/NotFound");
 
 Vue.use(VueRouter)
 
@@ -503,6 +509,60 @@ const routes = [
                 props: true,
                 meta: {
                     label: "Compra"
+                },
+            },
+            
+            // CONTAS A PAGAR
+            {
+                path: 'contasPagar',
+                name: 'ContasPagarList',
+                component: ContaPagarList,
+                meta: {
+                    label: "Contas à Pagar"
+                },
+            },
+            {
+                path: 'contasPagar/cadastrar',
+                name: 'ContasPagarCad',
+                component: ContaPagarEdit,
+                meta: {
+                    label: "Conta à Pagar"
+                },
+            },
+            {
+                path: 'contasPagar/ver',
+                name: 'ContasPagarEdit',
+                component: ContaPagarEdit,
+                props: true,
+                meta: {
+                    label: "Conta à Pagar"
+                },
+            },
+            
+            // CONTAS A RECEBER
+            {
+                path: 'contasReceber',
+                name: 'ContasReceberList',
+                component: ContaReceberList,
+                meta: {
+                    label: "Contas à Receber"
+                },
+            },
+            {
+                path: 'contasReceber/cadastrar',
+                name: 'ContasReceberCad',
+                component: ContaReceberEdit,
+                meta: {
+                    label: "Conta a Receber"
+                },
+            },
+            {
+                path: 'contasReceber/ver',
+                name: 'ContasReceberEdit',
+                component: ContaReceberEdit,
+                props: true,
+                meta: {
+                    label: "Conta à Receber"
                 },
             },
             

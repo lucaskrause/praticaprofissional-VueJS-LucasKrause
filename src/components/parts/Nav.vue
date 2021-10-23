@@ -40,18 +40,19 @@
 
 <script>
 
-import {BIconBuilding, BIconCart3, BIconCreditCard, BIconGeoAlt} from 'bootstrap-vue'
+import {BIconBuilding, BIconCart3, BIconCreditCard, BIconGeoAlt, BIconPlusCircle} from 'bootstrap-vue'
 
 export default {
-    components: { BIconBuilding, BIconCart3, BIconCreditCard, BIconGeoAlt },
+    components: { BIconBuilding, BIconCart3, BIconCreditCard, BIconGeoAlt, BIconPlusCircle },
     data () {
         return {
             NameCompany: "SINCOFOZ",
             groups: [
                 {id: 1, label: "Empresa",  icon: "BIconBuilding"},
-                {id: 2, label: "Geral", icon: "BIconCart3"},
-                {id: 3, label: "Pagamentos", icon: "BIconCreditCard"},
-                {id: 4, label: "Regiões", icon: "BIconGeoAlt"},
+                {id: 2, label: "Cadastros",  icon: "BIconPlusCircle"},
+                {id: 3, label: "Geral", icon: "BIconCart3"},
+                {id: 4, label: "Pagamentos", icon: "BIconCreditCard"},
+                {id: 5, label: "Regiões", icon: "BIconGeoAlt"},
             ],
             itemsMenu: [
                 {id: 1, group: 1, label: "Empresas", route: {name: "EmpresasList"}},
@@ -60,22 +61,25 @@ export default {
                 {id: 4, group: 1, label: "Cotas", route: {name: "CotasList"}},
                 {id: 5, group: 1, label: "Clientes", route: {name: "ClientesList"}},
                 {id: 6, group: 1, label: "Dependentes", route: {name: "DependentesList"}},
-                {id: 7, group: 1, label: "Locações", route: {name: "LocacoesList"}},
-                {id: 8, group: 1, label: "Áreas de Locação", route: {name: "AreasLocacaoList"}},
-                {id: 9, group: 1, label: "Preço por Pessoa", route: {name: "PrecificacoesList"}},
+                {id: 7, group: 1, label: "Áreas de Locação", route: {name: "AreasLocacaoList"}},
 
-                {id: 11, group: 2, label: "Compra", route: {name: "ComprasList"}},
-                {id: 12, group: 2, label: "Categoria de Produto", route: {name: "CategoriasList"}},
-                {id: 13, group: 2, label: "Produtos", route: {name: "ProdutosList"}},
-                {id: 14, group: 2, label: "Serviços", route: {name: "ServicosList"}},
-                {id: 15, group: 2, label: "Fornecedores", route: {name: "FornecedoresList"}},
+                {id: 8, group: 2, label: "Categoria de Produto", route: {name: "CategoriasList"}},
+                {id: 9, group: 2, label: "Produtos", route: {name: "ProdutosList"}},
+                {id: 10, group: 2, label: "Serviços", route: {name: "ServicosList"}},
+                {id: 11, group: 2, label: "Fornecedores", route: {name: "FornecedoresList"}},
 
-                {id: 16, group: 3, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
-                {id: 17, group: 3, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
+                {id: 12, group: 3, label: "Locações", route: {name: "LocacoesList"}},
+                {id: 13, group: 3, label: "Preço por Pessoa", route: {name: "PrecificacoesList"}},
+                {id: 14, group: 3, label: "Compra", route: {name: "ComprasList"}},
+                {id: 15, group: 3, label: "Contas à Pagar", route: {name: "ContasPagarList"}},
+                {id: 16, group: 3, label: "Contas à Receber", route: {name: "ContasReceberList"}},
 
-                {id: 18, group: 4, label: "Cidades",  route: {name: "CidadesList"}},
-                {id: 19, group: 4, label: "Estados", route: {name: "EstadosList"}},
-                {id: 20, group: 4, label: "Países", route: {name: "PaisesList"}},
+                {id: 17, group: 4, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
+                {id: 18, group: 4, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
+
+                {id: 19, group: 5, label: "Cidades",  route: {name: "CidadesList"}},
+                {id: 20, group: 5, label: "Estados", route: {name: "EstadosList"}},
+                {id: 21, group: 5, label: "Países", route: {name: "PaisesList"}},
             ],
         }
     },
