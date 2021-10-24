@@ -19,7 +19,7 @@
                 >
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'btn'">
-                            <router-link :to="{name: 'ComprasEdit', params: {compra: props.row}}" class="btn btn-sm btn-success mr-3">Ver</router-link>
+                            <router-link :to="{name: 'ComprasEdit', params: {compra: props.row, isEdit: true}}" class="btn btn-sm btn-success mr-3">Ver</router-link>
                         </span>
                     </template>
                 </vue-good-table>

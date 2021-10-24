@@ -203,6 +203,10 @@ const notyf = new Notyf();
 export default {
     name: "ComprasEdit",
     props: {
+        isEdit: {
+            type: Boolean,
+            default: false
+        },
         compra: {
             type: Object,
             default: null
@@ -224,8 +228,9 @@ export default {
             },
             dtCad: null,
             dtAlt: null,
-            valorTotal: 0,
             fornecedorSelecionado: null,
+            isNotaPreenchido: false,
+            valorTotal: 0,
             produtoSelecionado: {
                 codigo: 0,
                 produto: null,
@@ -313,44 +318,43 @@ export default {
                 totalRecords: 0
             },
             isSubmiting: false,
-            isNotaPreenchido: false,
-            isEdit: false,
         }
     },
     created() {
-        if (this.compra) {
-            this.isEdit = true;
-            let vm = this;
-            ComprasService.getCompra(this.compra).then(function (response) {
-                vm.entity = response.data;
+        if (this.$route.name == "ComprasEdit") {
+            if (this.compra) {
+                let vm = this;
+                ComprasService.getCompra(this.compra).then(function (response) {
+                    vm.entity = response.data;
 
-                vm.produtos.rows = vm.entity.itens;
-                vm.parcelas.rows = vm.entity.parcelas;
-                
-                for (let i = 0; i < vm.parcelas.rows.length; i++) {
-                    var dateVencimento = Helper.dateToDateString(vm.parcelas.rows[i].dtVencimento);
+                    vm.produtos.rows = vm.entity.itens;
+                    vm.parcelas.rows = vm.entity.parcelas;
+                    
+                    for (let i = 0; i < vm.parcelas.rows.length; i++) {
+                        var dateVencimento = Helper.dateToDateString(vm.parcelas.rows[i].dtVencimento);
 
-                    vm.parcelas.rows[i].dtVencimento = dateVencimento;
-                }
+                        vm.parcelas.rows[i].dtVencimento = dateVencimento;
+                    }
 
-                var dateEmissao = Helper.dateToDateString(vm.entity.dtEmissao);
-                var dateEntrega = Helper.dateToDateString(vm.entity.dtEntrega);
-                var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
-                var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
+                    var dateEmissao = Helper.dateToDateString(vm.entity.dtEmissao);
+                    var dateEntrega = Helper.dateToDateString(vm.entity.dtEntrega);
+                    var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
+                    var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
 
-                vm.entity.dtEmissao = dateEmissao;
-                vm.entity.dtEntrega = dateEntrega;
-                vm.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
-                vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
-                vm.fornecedorSelecionado = vm.entity.fornecedor.nome;
-                vm.condicaoSelecionada = vm.entity.condicaoPagamento.descricao;
+                    vm.entity.dtEmissao = dateEmissao;
+                    vm.entity.dtEntrega = dateEntrega;
+                    vm.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
+                    vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
+                    vm.fornecedorSelecionado = vm.entity.fornecedor.nome;
+                    vm.condicaoSelecionada = vm.entity.condicaoPagamento.descricao;
 
-                for (let i = 0; i < vm.produtos.rows.length; i++) {
-                    vm.valorTotal += vm.produtos.rows[i].total;
-                }
-            });
-        } else {
-            this.$router.push('/app/compras');
+                    for (let i = 0; i < vm.produtos.rows.length; i++) {
+                        vm.valorTotal += vm.produtos.rows[i].total;
+                    }
+                });
+            } else {
+                this.$router.push('/app/compras');
+            }
         }
     },
     computed: {

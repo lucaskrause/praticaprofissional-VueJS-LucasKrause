@@ -19,7 +19,8 @@
                 >
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'btn'">
-                            <router-link :to="{name: 'ContasPagarEdit', params: {conta: props.row}}" class="btn btn-sm btn-success mr-3">Ver</router-link>
+                            <router-link :to="{name: 'ContasPagarView', params: {conta: props.row}}" class="btn btn-sm btn-primary mr-3">Ver</router-link>
+                            <router-link :to="{name: 'ContasPagarEdit', params: {conta: props.row}}" class="btn btn-sm btn-success">Editar</router-link>
                         </span>
                     </template>
                 </vue-good-table>
@@ -75,7 +76,7 @@ export default {
                     sortable: false,
                     field: 'btn',
                     html: true,
-                    width: "100px",
+                    width: "140px",
                 },
             ],
             rows: [],

@@ -5,28 +5,28 @@
         <div class="row form-group">
             <div class="col-2">
                 <label>Modelo</label><span class="isRequired"> *</span>
-                <input id="modelo" type="number" class="form-control" v-model="entity.modelo"/>
+                <input id="modelo" type="number" class="form-control" v-model="entity.modelo" readonly/>
             </div>
 
             <div class="col-2">
                 <label>Série</label><span class="isRequired"> *</span>
-                <input id="serie" type="number" class="form-control" v-model="entity.serie"/>
+                <input id="serie" type="number" class="form-control" v-model="entity.serie" readonly/>
             </div>
 
             <div class="col-2">
                 <label>Nº Nota</label><span class="isRequired"> *</span>
-                <input id="numeroNota" type="number" class="form-control" v-model="entity.numeroNF"/>
+                <input id="numeroNota" type="number" class="form-control" v-model="entity.numeroNF" readonly/>
             </div>
 
             <div class="col-4">
                 <label>Fornecedor</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoFornecedor" type="number" class="form-control" v-model.number="entity.codigoFornecedor" @input="onSearchFornecedor"/>
+                    <input id="codigoFornecedor" type="number" class="form-control" v-model.number="entity.codigoFornecedor" @input="onSearchFornecedor" readonly/>
                     <div class="input-group-append">
                         <input type="text" class="form-control" v-model.lazy="fornecedorSelecionado" readonly/>
                     </div>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-fornecedor class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consult-fornecedor class="btn btn-info ml-1" disabled>Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -35,30 +35,30 @@
         <div class="row form-group">
             <div class="col-2">
                 <label>Número Parcela</label><span class="isRequired"> *</span>
-                <input id="numeroParcela" type="number" class="form-control" v-model="entity.numeroParcela"/>
+                <input id="numeroParcela" type="number" class="form-control" v-model="entity.numeroParcela" readonly/>
             </div>
 
             <div class="col-2">
                 <label>Valor Parcela</label><span class="isRequired"> *</span>
-                <input id="valorParcela" type="number" class="form-control" v-model="entity.valorParcela"/>
+                <input id="valorParcela" type="number" class="form-control" v-model="entity.valorParcela" readonly/>
             </div>
 
             <div class="col-4">
                 <label>Forma de Pagamento</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoFormaPagamento" type="number" class="form-control" v-model.number="entity.codigoFormaPagamento" @input="onSearchFormaPagamento"/>
+                    <input id="codigoFormaPagamento" type="number" class="form-control" v-model.number="entity.codigoFormaPagamento" @input="onSearchFormaPagamento" readonly/>
                     <div class="input-group-append">
                         <input type="text" class="form-control" v-model.lazy="formaSelecionada" readonly/>
                     </div>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-forma class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consult-forma class="btn btn-info ml-1" disabled>Buscar</b-button>
                     </span>
                 </div>
             </div>
             
             <div class="col-2">
                 <label>Data de Vencimento</label>
-                <input id="dtVencimento" type="date" class="form-control" v-model="entity.dtVencimento"/>
+                <input id="dtVencimento" type="date" class="form-control" v-model="entity.dtVencimento" readonly/>
             </div>
             
             <div class="col-2">
@@ -76,7 +76,7 @@
             <div class="col-10">
                 <div class="text-right">
                     <router-link :to="{name: 'ContasPagarList'}" class="btn btn-danger mr-3">Voltar</router-link>
-                    <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
+                    <input type="submit" value="Pagar" class="btn btn-success" @click.prevent="pagar()" :class="{'disabled': isSubmiting}">
                 </div>
             </div>
         </div>
@@ -96,7 +96,7 @@ var debounce = require('lodash.debounce');
 const notyf = new Notyf();
 
 export default {
-    name: "ContasPagarEdit",
+    name: "ContasPagarView",
     props: {
         conta: {
             type: Object,
@@ -125,26 +125,23 @@ export default {
         }
     },
     created() {
-        if (this.$route.name != "ContasPagarCad") {
-            if (this.conta) {
-                this.isEdit = true;
-                let vm = this;
-                ContasPagarService.getParcela(this.conta).then(function (response) {
-                    vm.entity = response.data;
+        if (this.conta) {
+            let vm = this;
+            ContasPagarService.getParcela(this.conta).then(function (response) {
+                vm.entity = response.data;
 
-                    var dateEmissao = Helper.dateToDateString(vm.entity.dtEmissao);
-                    var dateVencimento = Helper.dateToDateString(vm.entity.dtVencimento);
-                    var datePagamento = Helper.dateToDateString(vm.entity.dtPagamento);
+                var dateEmissao = Helper.dateToDateString(vm.entity.dtEmissao);
+                var dateVencimento = Helper.dateToDateString(vm.entity.dtVencimento);
+                var datePagamento = Helper.dateToDateString(vm.entity.dtPagamento);
 
-                    vm.entity.dtEmissao = dateEmissao;
-                    vm.entity.dtVencimento = dateVencimento;
-                    vm.entity.dtPagamento = datePagamento;
-                    vm.fornecedorSelecionado = vm.entity.fornecedor.nome;
-                    vm.formaSelecionada = vm.entity.formaPagamento.descricao;
-                });
-            } else {
-                this.$router.push('/app/contasPagar');
-            }
+                vm.entity.dtEmissao = dateEmissao;
+                vm.entity.dtVencimento = dateVencimento;
+                vm.entity.dtPagamento = datePagamento;
+                vm.fornecedorSelecionado = vm.entity.fornecedor.nome;
+                vm.formaSelecionada = vm.entity.formaPagamento.descricao;
+            });
+        } else {
+            this.$router.push('/app/contasPagar');
         }
     },
     methods: {
@@ -206,7 +203,7 @@ export default {
             this.$bvModal.hide("modal-consult-forma");
             this.findCompra();
         },
-        save() {
+        pagar() {
         }
     }
 }

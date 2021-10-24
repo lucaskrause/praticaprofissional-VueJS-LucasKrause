@@ -69,14 +69,14 @@
 
             <div class="col-2">
                 <label>Data da últ. compra</label> 
-                <input id="dtUltimaCompra" type="date" class="form-control" v-model="entity.dtUltimaCompra"/>
+                <input id="dtUltimaCompra" type="date" class="form-control" v-model="entity.dtUltimaCompra" readonly/>
             </div>
 
             <div class="col-2">
                 <label>Valor da últ. compra</label>
                 <money id="valorUltimaCompra" class="form-control text-right" v-model="entity.valorUltimaCompra"
                     v-bind="money"
-                    :class="{'is-invalid': $v.entity.valorUltimaCompra.$error}"></money>
+                    :class="{'is-invalid': $v.entity.valorUltimaCompra.$error}" readonly></money>
                 <div class="invalid-feedback" v-if="!$v.entity.valorCusto.minValue || !$v.entity.valorCusto.maxValue">
                     Valor de custo deve ser no máximo 99.999.999,99
                 </div>

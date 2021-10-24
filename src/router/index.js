@@ -54,6 +54,7 @@ const CompraList = () => import("@/components/pages/compras/List");
 const CompraEdit = () => import("@/components/pages/compras/Edit");
 
 const ContaPagarList = () => import("@/components/pages/contasPagar/List");
+const ContaPagarView = () => import("@/components/pages/contasPagar/View");
 const ContaPagarEdit = () => import("@/components/pages/contasPagar/Edit");
 
 const ContaReceberList = () => import("@/components/pages/contasReceber/List");
@@ -522,6 +523,15 @@ const routes = [
                 },
             },
             {
+                path: 'contasPagar/ver',
+                name: 'ContasPagarView',
+                component: ContaPagarView,
+                props: true,
+                meta: {
+                    label: "Contas à Pagar"
+                },
+            },
+            {
                 path: 'contasPagar/cadastrar',
                 name: 'ContasPagarCad',
                 component: ContaPagarEdit,
@@ -530,7 +540,7 @@ const routes = [
                 },
             },
             {
-                path: 'contasPagar/ver',
+                path: 'contasPagar/editar',
                 name: 'ContasPagarEdit',
                 component: ContaPagarEdit,
                 props: true,

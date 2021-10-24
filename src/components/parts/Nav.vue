@@ -63,14 +63,14 @@ export default {
                 {id: 6, group: 1, label: "Dependentes", route: {name: "DependentesList"}},
                 {id: 7, group: 1, label: "Áreas de Locação", route: {name: "AreasLocacaoList"}},
 
-                {id: 8, group: 2, label: "Categoria de Produto", route: {name: "CategoriasList"}},
-                {id: 9, group: 2, label: "Produtos", route: {name: "ProdutosList"}},
-                {id: 10, group: 2, label: "Serviços", route: {name: "ServicosList"}},
-                {id: 11, group: 2, label: "Fornecedores", route: {name: "FornecedoresList"}},
+                {id: 8, group: 2, label: "Preço por Qtde de Pessoa", route: {name: "PrecificacoesList"}},
+                {id: 9, group: 2, label: "Categoria de Produto", route: {name: "CategoriasList"}},
+                {id: 10, group: 2, label: "Produtos", route: {name: "ProdutosList"}},
+                {id: 11, group: 2, label: "Serviços", route: {name: "ServicosList"}},
+                {id: 12, group: 2, label: "Fornecedores", route: {name: "FornecedoresList"}},
 
-                {id: 12, group: 3, label: "Locações", route: {name: "LocacoesList"}},
-                {id: 13, group: 3, label: "Preço por Pessoa", route: {name: "PrecificacoesList"}},
-                {id: 14, group: 3, label: "Compra", route: {name: "ComprasList"}},
+                {id: 13, group: 3, label: "Locações", route: {name: "LocacoesList"}},
+                {id: 14, group: 3, label: "Compras", route: {name: "ComprasList"}},
                 {id: 15, group: 3, label: "Contas à Pagar", route: {name: "ContasPagarList"}},
                 {id: 16, group: 3, label: "Contas à Receber", route: {name: "ContasReceberList"}},
 
