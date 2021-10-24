@@ -1,11 +1,15 @@
 import {Service} from "@/services/service";
 
 const instance = new class ContasPagarService extends Service{
+    edit(entity) {
+        return this.api.put(this.endpoint + "/editar", entity);
+    }
+    
     getParcela(entity) {
         return this.api.post(this.endpoint + "/getParcela", entity);
     }
 
-    cancel(entity) {
+    pagar(entity) {
         return this.api.post(this.endpoint + "/pagar", entity);
     }
 };

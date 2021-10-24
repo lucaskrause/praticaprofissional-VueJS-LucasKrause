@@ -35,12 +35,12 @@
         <div class="row form-group">
             <div class="col-2">
                 <label>Número Parcela</label><span class="isRequired"> *</span>
-                <input id="numeroParcela" type="number" class="form-control" v-model="entity.numeroParcela"/>
+                <input id="numeroParcela" type="number" class="form-control" v-model.number="entity.numeroParcela"/>
             </div>
 
             <div class="col-2">
                 <label>Valor Parcela</label><span class="isRequired"> *</span>
-                <input id="valorParcela" type="number" class="form-control" v-model="entity.valorParcela"/>
+                <input id="valorParcela" type="number" class="form-control" v-model.number="entity.valorParcela"/>
             </div>
 
             <div class="col-4">
@@ -98,6 +98,10 @@ const notyf = new Notyf();
 export default {
     name: "ContasPagarEdit",
     props: {
+        isEdit: {
+            type: Boolean,
+            default: false
+        },
         conta: {
             type: Object,
             default: null
@@ -157,13 +161,11 @@ export default {
                 FornecedoresService.getById(vm.entity.codigoFornecedor).then(function (response) {
                     vm.fornecedorSelecionado = response.data.nome;
                     vm.isLoading = false;
-                    vm.findCompra();
                 }).catch(function() {
                     vm.entity.codigoFornecedor = 0;
                     vm.fornecedorSelecionado = null;
                     vm.isLoading = false;
                     notyf.error("Fornecedor não encontrada");
-                    vm.findCompra();
                 });
             } else {
                 vm.fornecedorSelecionado = null;
@@ -186,13 +188,11 @@ export default {
                 FormasPagamentoService.getById(vm.entity.codigoFormaPagamento).then(function (response) {
                     vm.formaSelecionada = response.data.descricao;
                     vm.isLoading = false;
-                    vm.findCompra();
                 }).catch(function() {
                     vm.entity.codigoFormaPagamento = 0;
                     vm.formaSelecionada = null;
                     vm.isLoading = false;
                     notyf.error("Forma de Pagamento não encontrada");
-                    vm.findCompra();
                 });
             } else {
                 vm.formaSelecionada = null;
@@ -207,6 +207,31 @@ export default {
             this.findCompra();
         },
         save() {
+            if (this.isSubmiting || this.isLoading) return;
+            this.isSubmiting = true;
+            let vm = this;
+            console.log(this.isEdit);
+            if (this.isEdit) {
+                ContasPagarService.edit(this.entity).then(function () {
+                    notyf.success("Conta registrada com sucesso");
+                    vm.isSubmiting = false;
+                    vm.$router.push('/app/contasPagar');
+                }).catch(function (errors){
+                    notyf.error(errors.response.data.message);
+                    vm.isSubmiting = false;
+                });
+            } else {
+                this.entity.dtEmissao = new Date();
+
+                ContasPagarService.save(this.entity).then(function () {
+                    notyf.success("Conta registrada com sucesso");
+                    vm.isSubmiting = false;
+                    vm.$router.push('/app/contasPagar');
+                }).catch(function (errors){
+                    notyf.error(errors.response.data.message);
+                    vm.isSubmiting = false;
+                });
+            }
         }
     }
 }
