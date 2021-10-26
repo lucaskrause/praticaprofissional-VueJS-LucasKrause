@@ -45,20 +45,20 @@
 
         <div class="row form-group">
             <div class="col-3">
-                <label>Data da Reserva</label><span class="isRequired"> *</span>
+                <label>Data da Locacao</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="dtReserva" type="date" class="form-control" v-uppercase v-model.lazy="entity.dtReserva" disabled
-                        :class="{'is-invalid': $v.entity.dtReserva.$error || dtInvalid}"/>
+                    <input id="dtLocacao" type="date" class="form-control" v-uppercase v-model="entity.dtLocacao" disabled
+                        :class="{'is-invalid': $v.entity.dtLocacao.$error || dtInvalid}"/>
                     <div class="input-group-append">
                         <span class="input-group-btn">
                             <b-button v-b-modal.modal-agendamento class="btn btn-success ml-1">Selecionar</b-button>
                         </span>
                     </div>
-                    <div class="invalid-feedback" v-if="!$v.entity.dtReserva.required">
-                        Data da Reserva obrigatória
+                    <div class="invalid-feedback" v-if="!$v.entity.dtLocacao.required">
+                        Data da Locacao obrigatória
                     </div>
                     <div class="invalid-feedback" v-if="dtInvalid">
-                        Data da Reserva deve ter no mínimo 3 dias de antecedência
+                        Data da Locacao deve ter no mínimo 3 dias de antecedência
                     </div>
                 </div>
             </div>
@@ -143,18 +143,18 @@
 </template>
 
 <script>
-import {validationMixin} from 'vuelidate'
-import {required, minValue, maxValue} from 'vuelidate/lib/validators'
-import {Money} from 'v-money'
-import Helper from '@/components/helper'
+import {LocacoesService} from '@/services/locacoes.service'
 import {ClientesService} from '@/services/clientes.service'
 import {CondicoesPagamentoService} from '@/services/condicoesPagamento.service'
 import {AreasLocacaoService} from '@/services/areasLocacao.service'
 import {PrecificacoesService} from '@/services/precificacoes.service'
-import {LocacoesService} from '@/services/locacoes.service'
 import Agendamento from '@/components/pages/agendamento/Agenda.vue'
 import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
 import ConsultaCondicaoPagamento from '@/components/pages/condicoesPagamento/Consult.vue'
+import {validationMixin} from 'vuelidate'
+import {required, minValue, maxValue} from 'vuelidate/lib/validators'
+import {Money} from 'v-money'
+import Helper from '@/components/helper'
 import {VueGoodTable} from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
 import {Notyf} from 'notyf'
@@ -178,7 +178,7 @@ export default {
                     minValue: minValue(1),
                     maxValue: maxValue(70),
                 },
-                dtReserva: {
+                dtLocacao: {
                     required,
                 },
                 codigoCondicaoPagamento: {
@@ -194,7 +194,7 @@ export default {
                 codigo: 0,
                 codigoCliente: 0,
                 qtdePessoas: 0,
-                dtReserva: null,
+                dtLocacao: null,
                 valor: 0,
                 codigoCondicaoPagamento: 0,
                 areasLocacao: [],
@@ -262,21 +262,21 @@ export default {
             }
 
             if (vm.entity.codigo) {
-                vm.getReserva(vm.entity.codigo);
+                vm.getLocacao(vm.entity.codigo);
             }
         });
     },
     methods: {
-        getReserva(id) {
+        getLocacao(id) {
             var vm = this;
             LocacoesService.getById(id).then(function (response) {
                 vm.entity = response.data;
                 
-                var dateReserva = Helper.dateToDateString(vm.entity.dtReserva);
+                var dateLocacao = Helper.dateToDateString(vm.entity.dtLocacao);
                 var dateTimeCad = Helper.serverDateToDateTimeString(vm.entity.dtCadastro);
                 var dateTimeAlt = Helper.serverDateToDateTimeString(vm.entity.dtAlteracao);
 
-                vm.entity.dtReserva = dateReserva;
+                vm.entity.dtLocacao = dateLocacao;
                 vm.dtCad = dateTimeCad.date + " " + dateTimeCad.hour;
                 vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.clienteSelecionado = vm.entity.cliente.nome;
@@ -291,7 +291,7 @@ export default {
             });
         },
         selectDia(date) {
-            this.entity.dtReserva = date;
+            this.entity.dtLocacao = date;
             this.$bvModal.hide("modal-agendamento");
         },
         selectCliente(entity) {
@@ -360,9 +360,9 @@ export default {
             var dateNow = Date.now();
             dateNow = Helper.addDays(dateNow, 3);
             dateNow = Helper.dateToDateString(dateNow);
-            if (vm.entity.dtReserva < dateNow) {
+            if (vm.entity.dtLocacao < dateNow) {
                 vm.dtInvalid = true;
-                document.getElementById('dtReserva').focus();
+                document.getElementById('dtLocacao').focus();
                 vm.isSubmiting = false;
                 return;
             }
@@ -375,7 +375,7 @@ export default {
 
             LocacoesService.save(this.entity).then(function () {
                 const msg = vm.entity.codigo ? "editada" : "criada";
-                notyf.success("Reserva " + msg + " com sucesso");
+                notyf.success("Locacao " + msg + " com sucesso");
                 vm.isSubmiting = false;
                 vm.$router.push('/app/locacoes');
             }).catch(function (errors){

@@ -62,8 +62,8 @@ export default {
                     width: "150px",
                 },
                 {
-                    label: "Data da Reserva",
-                    field: "dtReserva",
+                    label: "Data da Locacao",
+                    field: "dtLocacao",
                     type: "date",
                     dateInputFormat: 'yyyy-MM-dd',
                     dateOutputFormat: 'dd/MM/yyyy',
@@ -92,8 +92,8 @@ export default {
                 vm.totalRecords = response.data.length;
                 vm.rows = response.data;
                 for (let i = 0; i < vm.totalRecords; i++) {
-                    var dateReserva = Helper.dateToDateString(vm.rows[i].dtReserva);
-                    vm.rows[i].dtReserva = dateReserva;
+                    var dateLocacao = Helper.dateToDateString(vm.rows[i].dtLocacao);
+                    vm.rows[i].dtLocacao = dateLocacao;
                 }
             });
         },

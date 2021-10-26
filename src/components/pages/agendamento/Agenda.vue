@@ -5,13 +5,8 @@
                 <v-calendar
                     class="custom-calendar max-w-full"
                     :masks="masks"
-                    :disabled-dates='[
-                        {
-                            start: "2021-09-18",
-                            end: "2021-09-18" 
-                        }
-                    ]'
-                    :min-date='new Date()'
+                    :disabled-dates='disabledDates'
+                    :min-date="minData"
                     :attributes="attributes"
                     @dayclick="diaSelecionado"
                     is-expanded
@@ -37,35 +32,52 @@
 </template>
 
 <script>
+import {LocacoesService} from '@/services/locacoes.service'
+import Helper from '@/components/helper'
 import PopoverRow from 'v-calendar/lib/components/popover-row.umd.min'
 
 export default {
     components: { PopoverRow },
     data() {
         return {
-            masks: {
-                weekdays: 'WWWW',
-            },
-            attributes: [
-                {
-                    key: 1,
-                    bar: 'red',
-                    popover: {
-                        label: "Sede"
-                    },
-                    dates: new Date('2021-09-18'),
-                },
-                {
-                    key: 2,
-                    bar: 'blue',
-                    popover: {
-                        label: "Campo"
-                    },
-                    dates: new Date('2021-09-18'),
-                },
-            ],
+            colors: ['red', 'blue', 'brown', 'black'],
+            minData: Helper.addDays(new Date(), 4),
+            disabledDates: [],
+            masks: { weekdays: 'WWWW' },
+            attributes: [],
             dateSelected: null
         };
+    },
+    created() {
+        const vm = this;
+        LocacoesService.getAll().then(function (response) {
+            var dateLocacao;
+            var attribute;
+            var disabledDate;
+            var locacao;
+            var area;
+            for (let i = 0; i < response.data.length; i++) {
+                locacao = response.data[i];
+                dateLocacao = Helper.addDays(Helper.dateToDateString(locacao.dtLocacao), 1);
+                for (let j = 0; j < locacao.areasLocacao.length; j++) {
+                    area = locacao.areasLocacao[j];
+                    attribute = {
+                        key: i + 1,
+                        bar: vm.colors[j],
+                        popover: {
+                            label: area.descricao
+                        },
+                        dates: dateLocacao
+                    }
+                    vm.attributes.push(attribute);
+                }
+                disabledDate = {
+                    start: dateLocacao,
+                    end: dateLocacao 
+                };
+                vm.disabledDates.push(disabledDate);
+            }
+        });
     },
     methods: {
         diaSelecionado(data) {
