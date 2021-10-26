@@ -70,17 +70,17 @@
 
             <div class="col-2">
                 <label>Valor unitário</label><span class="isRequired"> *</span>
-                <input id="valorUnitario" type="number" class="form-control" v-model.number="produtoSelecionado.valorUnitario" @change="calcTotal" :disabled="!verificaDtEmissaoEntrega || !condicaoPreenchida" :readonly="isEdit"/>
+                <money id="valorUnitario" class="form-control text-right" v-model="produtoSelecionado.valorUnitario" v-bind="money" @change.native="calculaTotalProdutos" :disabled="!verificaDtEmissaoEntrega || !condicaoPreenchida" :readonly="isEdit"></money>
             </div>
 
             <div class="col-2">
                 <label>Desconto</label> 
-                <input id="desconto" type="number" class="form-control" v-model.number="produtoSelecionado.desconto" @change="calcTotal" :disabled="!verificaDtEmissaoEntrega || !condicaoPreenchida" :readonly="isEdit"/>
+                <money id="desconto" class="form-control text-right" v-model="produtoSelecionado.desconto" v-bind="money" @change.native="calculaTotalProdutos" :disabled="!verificaDtEmissaoEntrega || !condicaoPreenchida" :readonly="isEdit"></money>
             </div>
 
             <div class="col-2">
-                <label>Total</label> 
-                <input id="total" type="number" class="form-control" v-model.number="produtoSelecionado.total" disabled/>
+                <label>Total</label>
+                <money id="total" class="form-control text-right" v-model="produtoSelecionado.total" v-bind="money" disabled></money>
             </div>
 
             <div class="col-2">
@@ -109,8 +109,28 @@
 
         <div class="row form-group mt-3">
             <div class="col-2">
-                <label>Valor Total</label>
-                <input id="valorTotal" class="form-control" v-model="valorTotal" readonly />
+                <label>Valor Total Produtos</label>
+                <money id="valorProdutos" class="form-control text-right" v-model="entity.valorProdutos" v-bind="money" @change.native="calculaTotalNota" readonly></money>
+            </div>
+
+            <div class="col-2">
+                <label>Frete</label>
+                <money id="frete" class="form-control text-right" v-model="entity.frete" v-bind="money" @change.native="calculaTotalNota" :disabled="isEdit"></money>
+            </div>
+
+            <div class="col-2">
+                <label>Seguro</label>
+                <money id="seguro" class="form-control text-right" v-model="entity.seguro" v-bind="money" @change.native="calculaTotalNota" :disabled="isEdit"></money>
+            </div>
+
+            <div class="col-2">
+                <label>Despesas</label>
+                <money id="despesas" class="form-control text-right" v-model="entity.despesas" v-bind="money" @change.native="calculaTotalNota" :disabled="isEdit"></money>
+            </div>
+
+            <div class="col-2">
+                <label>Valor Total da Nota</label>
+                <money id="valorTotal" class="form-control text-right" v-model="entity.valorTotal" v-bind="money" readonly></money>
             </div>
         </div>
         
@@ -188,6 +208,7 @@ import {FornecedoresService} from '@/services/fornecedores.service'
 import {ProdutosService} from '@/services/produtos.service'
 import {CondicoesPagamentoService} from '@/services/condicoesPagamento.service'
 import Helper from '@/components/helper'
+import {Money} from 'v-money'
 import ConsultaFornecedor from '@/components/pages/fornecedores/Consult.vue'
 import ConsultaProduto from '@/components/pages/produtos/Consult.vue'
 import ConsultaCondicaoPagamento from '@/components/pages/condicoesPagamento/Consult.vue'
@@ -212,7 +233,7 @@ export default {
             default: null
         },    
     },
-    components: { ConsultaFornecedor, ConsultaProduto, ConsultaCondicaoPagamento, VueGoodTable },
+    components: { Money, ConsultaFornecedor, ConsultaProduto, ConsultaCondicaoPagamento, VueGoodTable },
     data() {
         return {
             entity: {
@@ -221,6 +242,11 @@ export default {
                 numeroNF: null,
                 codigoFornecedor: 0,
                 itens: [],
+                valorProdutos: 0,
+                frete: 0,
+                seguro: 0,
+                despesas: 0,
+                valorTotal: 0,
                 codigoCondicaoPagamento: 0,
                 parcelas: [],
                 dtEmissao: null,
@@ -318,6 +344,14 @@ export default {
                 totalRecords: 0
             },
             isSubmiting: false,
+            money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: 'R$ ',
+                suffix: '',
+                precision: 2,
+                masked: false
+            },
         }
     },
     created() {
@@ -494,13 +528,18 @@ export default {
             this.$bvModal.hide("modal-new-condicaoPagamento");
             this.$bvModal.hide("modal-consult-condicaoPagamento");
         },
-        calcTotal() {
+        calculaTotalProdutos() {
             if(this.produtoSelecionado.quantidade > 0 && this.produtoSelecionado.valorUnitario > 0) {
                 this.produtoSelecionado.total = this.produtoSelecionado.quantidade * this.produtoSelecionado.valorUnitario - this.produtoSelecionado.desconto;
             }
         },
+        calculaTotalNota() {
+            if(this.entity.frete > 0 || this.entity.seguro > 0 || this.entity.despesas > 0) {
+                this.entity.valorTotal = this.entity.valorProdutos + this.entity.frete + this.entity.seguro + this.entity.despesas;
+            }
+        },
         addProduto() {
-            this.valorTotal += this.produtoSelecionado.total;
+            this.entity.valorProdutos += this.produtoSelecionado.total;
             this.produtos.rows.push(this.produtoSelecionado);
             this.produtoSelecionado = {
                 codigo: 0,
@@ -512,7 +551,7 @@ export default {
             };
         },
         removeProduto(entity) {
-            this.valorTotal -= entity.total;
+            this.entity.valorProdutos -= entity.total;
             this.produtos.rows.splice(entity.index, 1);
         },
         gerarParcela() {
@@ -521,7 +560,7 @@ export default {
             var params = {
                 codigoCondicaoPagamento: this.entity.codigoCondicaoPagamento,
                 dtEmissao: this.entity.dtEmissao,
-                valorTotal: this.valorTotal
+                valorTotal: this.entity.valorTotal
             };
 
             ComprasService.gerarParcelas(params).then(function (response) {

@@ -73,10 +73,15 @@
                 <input id="dataEmissao" type="date" class="form-control" v-model="entity.dtEmissao" readonly/>
             </div>
 
-            <div class="col-10">
+            <div class="col-2">
+                <label>Situação</label>
+                <input id="status" class="form-control" v-model="entity.status" readonly/>
+            </div>
+
+            <div class="col-8">
                 <div class="text-right">
                     <router-link :to="{name: 'ContasPagarList'}" class="btn btn-danger mr-3">Voltar</router-link>
-                    <input type="submit" value="Pagar" class="btn btn-success" @click.prevent="pagar()" :class="{'disabled': isSubmiting}">
+                    <input type="submit" value="Pagar" class="btn btn-success" @click.prevent="pagar()" :class="{'disabled': isSubmiting}" :disabled="entity.status == 'Pago'">
                 </div>
             </div>
         </div>
@@ -204,6 +209,15 @@ export default {
             this.findCompra();
         },
         pagar() {
+            if (this.isSubmiting) return;
+            this.isSubmiting = true;
+            const vm = this;
+            ContasPagarService.pagar(this.entity).then(function () {
+                notyf.success("Conta paga com sucesso");
+                vm.isSubmiting = false;
+                vm.$router.push('/app/contasPagar');
+
+            }).catch((error) => Helper.saveErrorCallBack(error.response));
         }
     }
 }
