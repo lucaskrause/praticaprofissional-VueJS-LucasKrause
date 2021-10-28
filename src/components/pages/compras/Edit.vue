@@ -1,7 +1,7 @@
 <template>
     
     <div class="col-12">
-        <h2>Comprar</h2>
+        <h2>Compra</h2>
         <hr/>
         <div class="row form-group">
             <div class="col-2">
@@ -82,7 +82,7 @@
                 <label>Total</label>
                 <money id="total" class="form-control text-right" v-model="produtoSelecionado.total" v-bind="money" disabled></money>
             </div>
-
+            
             <div class="col-2">
                 <button id="addProduto" type="button" class="btn btn-success embaixo" @click="addProduto" :disabled="!verificaDtEmissaoEntrega || produtoPreenchido || isEdit">Adicionar Produto</button>
             </div>
@@ -258,7 +258,7 @@ export default {
             isNotaPreenchido: false,
             valorTotal: 0,
             produtoSelecionado: {
-                codigo: 0,
+                codigoProduto: 0,
                 produto: null,
                 quantidade: 0,
                 valorUnitario: 0,
@@ -419,6 +419,12 @@ export default {
             return false;
         },
         produtoPreenchido() {
+            console.log("Codigo Produto:");
+            console.log(this.produtoSelecionado.codigoProduto > 0);
+            console.log("Quantidade:");
+            console.log(this.produtoSelecionado.quantidade > 0);
+            console.log("Valor Unitário:");
+            console.log(this.produtoSelecionado.valorUnitario > 0);
             if (this.produtoSelecionado.codigoProduto > 0 && this.produtoSelecionado.quantidade > 0 && this.produtoSelecionado.valorUnitario > 0) {
                 return false;
             }
@@ -448,6 +454,10 @@ export default {
             }
         },
         onSearchFornecedor() {
+            if (this.entity.codigoFornecedor == null || this.entity.codigoFornecedor == "") {
+                this.entity.codigoFornecedor = 0;
+                this.fornecedorSelecionado = null;
+            }
             this.searchFornecedor(this);
         },
         searchFornecedor: debounce((vm) => {
@@ -477,6 +487,11 @@ export default {
             this.findCompra();
         },
         onSearchProduto() {
+            console.log("onSearchProduto");
+            if (this.produtoSelecionado.codigoProduto == null || this.produtoSelecionado.codigoProduto == "") {
+                this.produtoSelecionado.codigoProduto = 0;
+                this.produtoSelecionado.produto = null;
+            }
             this.searchProduto(this);
         },
         searchProduto: debounce((vm) => {
@@ -492,17 +507,21 @@ export default {
                     notyf.error("Produto não encontrado");
                 });
             } else {
-                vm.produtoSelecionado = null;
                 vm.isLoading = false;
             }
         }, 350),
         selectProduto(entity) {
+            console.log(entity);
             this.produtoSelecionado.codigoProduto = entity.codigo;
             this.produtoSelecionado.produto = entity.produto;
             this.$bvModal.hide("modal-new-produto");
             this.$bvModal.hide("modal-consult-produto");
         },
         onSearchCondicao() {
+            if (this.entity.codigoCondicaoPagamento == null || this.entity.codigoCondicaoPagamento == "") {
+                this.entity.codigoCondicaoPagamento = 0;
+                this.condicaoSelecionada = null;
+            }
             this.searchCondicao(this);
         },
         searchCondicao: debounce((vm) => {
@@ -533,9 +552,20 @@ export default {
                 this.produtoSelecionado.total = this.produtoSelecionado.quantidade * this.produtoSelecionado.valorUnitario - this.produtoSelecionado.desconto;
             }
         },
+        calculoSobProduto() {
+            var valorProdutos = 0;
+            var item;
+            for (let i = 0; i < this.itens.length; i++) {
+                item = this.itens[i];
+                console.log(item);
+                valorProdutos = item.valor;
+                console.log(valorProdutos);
+            }
+        },
         calculaTotalNota() {
             if(this.entity.frete > 0 || this.entity.seguro > 0 || this.entity.despesas > 0) {
                 this.entity.valorTotal = this.entity.valorProdutos + this.entity.frete + this.entity.seguro + this.entity.despesas;
+                this.calculoProduto();
             }
         },
         addProduto() {

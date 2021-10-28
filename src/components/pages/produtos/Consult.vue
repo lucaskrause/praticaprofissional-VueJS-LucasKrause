@@ -22,7 +22,7 @@
         </div>
         
 		<b-modal id="modal-new-produto" size="xl" title="Cadastrar Produto" hide-footer>
-			<NovoProduto  @emit-pais="selectProduto" :isModal="true" />
+			<NovoProduto  @emit-produto="selectProduto" :isModal="true" />
 		</b-modal>
     </div>
 </template>
