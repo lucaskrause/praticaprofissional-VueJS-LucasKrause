@@ -553,14 +553,16 @@ export default {
             }
         },
         calculoSobProduto() {
-            var valorProdutos = 0;
-            var item;
-            for (let i = 0; i < this.itens.length; i++) {
-                item = this.itens[i];
-                console.log(item);
-                valorProdutos = item.valor;
-                console.log(valorProdutos);
-            }
+            // TODO recalcular valor dos produtos levando em consideração: Frete, Seguro e Despesas.
+
+            // var valorProdutos = 0;
+            // var item;
+            // for (let i = 0; i < this.itens.length; i++) {
+            //     item = this.itens[i];
+            //     console.log(item);
+            //     valorProdutos = item.valor;
+            //     console.log(valorProdutos);
+            // }
         },
         calculaTotalNota() {
             if(this.entity.frete > 0 || this.entity.seguro > 0 || this.entity.despesas > 0) {

@@ -99,7 +99,7 @@
                     <div class="input-group-append">
                         <input id="cidade" type="text" class="form-control" v-uppercase v-model.lazy="cidadeSelecionada" readonly/>
                         <span class="input-group-btn">
-                            <b-button v-b-modal.modal-consult-cidade class="btn btn-info ml-1">Buscar</b-button>
+                            <b-button v-b-modal.modal-consult-cidade-dependente class="btn btn-info ml-1">Buscar</b-button>
                         </span>
                     </div>
                     <div class="invalid-feedback" v-if="!$v.entity.codigoCidade.minValue">
