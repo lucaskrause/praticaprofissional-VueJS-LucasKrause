@@ -86,6 +86,7 @@
             
             <div class="col-4">
                 <small v-if="entity.areasLocacao.length == '0'" class="invalid">Selecione pelo menos uma área para locação</small>
+                <small v-if="message" class="invalid">{{ message }}</small>
             </div>
         </div>
         <div class="row">
@@ -214,6 +215,7 @@ export default {
                 precision: 2,
                 masked: false
             },
+            message: null,
             areasLocacao: {
                 columns: [
                     {
@@ -265,6 +267,13 @@ export default {
                 vm.getLocacao(vm.entity.codigo);
             }
         });
+    },
+    watch: {
+        'entity.dtLocacao'() {
+            if (this.entity.areasLocacao.length > 0) {
+                this.verificaDisponibilidade();
+            }
+        }
     },
     methods: {
         getLocacao(id) {
@@ -397,6 +406,33 @@ export default {
             }
             this.entity.valor = this.valorPessoas + this.valorAreas;
         },
+        verificaDisponibilidade() {
+            if (this.entity.dtLocacao) {
+                var payload = {
+                    dtLocacao: this.entity.dtLocacao,
+                    areasLocacao: this.entity.areasLocacao
+                };
+
+                const vm = this;
+
+                LocacoesService.verificaDisponibilidade(payload).then(function (response) {
+                    var text = response.data;
+                    var dtLocacao = Helper.usToBrDate(vm.entity.dtLocacao);
+
+                    if (text) {
+                        notyf.error(text + " para o dia " + dtLocacao);
+                        vm.isSubmiting = true;
+                        vm.message = text + " para o dia " + dtLocacao;
+                    } else {
+                        vm.isSubmiting = false;
+                        vm.message = null;
+                    }
+                }).catch(function (error) {
+                    notyf.error(Helper.saveErrorCallBack(error.response));
+                    vm.message = null;
+                });
+            }
+        },
         selecionarAreas(areas) {
             if (!this.isCreate) {
                 var selecionadas = areas.selectedRows;
@@ -409,6 +445,7 @@ export default {
 
                 this.calcValor();
             }
+            this.verificaDisponibilidade();
         }
     }
 }

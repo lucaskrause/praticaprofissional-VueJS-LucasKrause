@@ -3,7 +3,6 @@ import {Notyf} from 'notyf'
 const notyf = new Notyf();
 
 const Helper = {
-
     saveErrorCallBack(response, notify = true) {
         let result = false;
         if ( response.status === 400) {
