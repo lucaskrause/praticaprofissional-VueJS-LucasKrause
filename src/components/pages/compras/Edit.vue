@@ -357,7 +357,7 @@ export default {
     created() {
         if (this.$route.name == "ComprasEdit") {
             if (this.compra) {
-                let vm = this;
+                const vm = this;
                 ComprasService.getCompra(this.compra).then(function (response) {
                     vm.entity = response.data;
 
@@ -419,12 +419,6 @@ export default {
             return false;
         },
         produtoPreenchido() {
-            console.log("Codigo Produto:");
-            console.log(this.produtoSelecionado.codigoProduto > 0);
-            console.log("Quantidade:");
-            console.log(this.produtoSelecionado.quantidade > 0);
-            console.log("Valor Unitário:");
-            console.log(this.produtoSelecionado.valorUnitario > 0);
             if (this.produtoSelecionado.codigoProduto > 0 && this.produtoSelecionado.quantidade > 0 && this.produtoSelecionado.valorUnitario > 0) {
                 return false;
             }
@@ -439,7 +433,7 @@ export default {
     },
     methods: {
         findCompra() {
-            let vm = this;
+            const vm = this;
             if (this.entity.modelo && this.entity.serie && this.entity.numeroNF && this.fornecedorSelecionado != null) {
                 ComprasService.find(this.entity).then(function (response) {
                     vm.isNotaPreenchido = response.data;
@@ -487,7 +481,6 @@ export default {
             this.findCompra();
         },
         onSearchProduto() {
-            console.log("onSearchProduto");
             if (this.produtoSelecionado.codigoProduto == null || this.produtoSelecionado.codigoProduto == "") {
                 this.produtoSelecionado.codigoProduto = 0;
                 this.produtoSelecionado.produto = null;
@@ -511,7 +504,6 @@ export default {
             }
         }, 350),
         selectProduto(entity) {
-            console.log(entity);
             this.produtoSelecionado.codigoProduto = entity.codigo;
             this.produtoSelecionado.produto = entity.produto;
             this.$bvModal.hide("modal-new-produto");
@@ -609,7 +601,7 @@ export default {
         save() {
             if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
-            let vm = this;
+            const vm = this;
 
             this.entity.itens = this.produtos.rows;
             this.entity.parcelas = this.parcelas.rows;
@@ -625,7 +617,7 @@ export default {
         cancel() {
             if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
-            let vm = this;
+            const vm = this;
 
             ComprasService.cancel(this.entity).then(function () {
                 notyf.success("Compra cancelada com sucesso");

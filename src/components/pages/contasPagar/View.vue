@@ -131,7 +131,7 @@ export default {
     },
     created() {
         if (this.conta) {
-            let vm = this;
+            const vm = this;
             ContasPagarService.getParcela(this.conta).then(function (response) {
                 vm.entity = response.data;
 

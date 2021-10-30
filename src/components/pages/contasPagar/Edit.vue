@@ -132,7 +132,7 @@ export default {
         if (this.$route.name != "ContasPagarCad") {
             if (this.conta) {
                 this.isEdit = true;
-                let vm = this;
+                const vm = this;
                 ContasPagarService.getParcela(this.conta).then(function (response) {
                     vm.entity = response.data;
 
@@ -209,8 +209,8 @@ export default {
         save() {
             if (this.isSubmiting || this.isLoading) return;
             this.isSubmiting = true;
-            let vm = this;
-            console.log(this.isEdit);
+            const vm = this;
+            
             if (this.isEdit) {
                 ContasPagarService.edit(this.entity).then(function () {
                     notyf.success("Conta registrada com sucesso");
