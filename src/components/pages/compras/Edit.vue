@@ -110,7 +110,7 @@
         <div class="row form-group mt-3">
             <div class="col-2">
                 <label>Valor Total Produtos</label>
-                <money id="valorProdutos" class="form-control text-right" v-model="entity.valorProdutos" v-bind="money" @change.native="calculaTotalNota" readonly></money>
+                <money id="valorProdutos" class="form-control text-right" v-model="entity.valorProdutos" v-bind="money" readonly></money>
             </div>
 
             <div class="col-2">
@@ -262,6 +262,7 @@ export default {
                 produto: null,
                 quantidade: 0,
                 valorUnitario: 0,
+                valorDespesas: 0,
                 desconto: 0,
                 total: 0
             },
@@ -296,7 +297,13 @@ export default {
                         width: "150px",
                     },
                     {
-                        label: "Total",
+                        label: "Despesas",
+                        field: "valorDespesas",
+                        type: "number",
+                        width: "150px",
+                    },
+                    {
+                        label: "Subtotal",
                         field: "total",
                         type: "number",
                         width: "150px",
@@ -539,28 +546,44 @@ export default {
             this.$bvModal.hide("modal-new-condicaoPagamento");
             this.$bvModal.hide("modal-consult-condicaoPagamento");
         },
-        calculaTotalProdutos() {
+        calculaTotalProdutos() {   
             if(this.produtoSelecionado.quantidade > 0 && this.produtoSelecionado.valorUnitario > 0) {
-                this.produtoSelecionado.total = this.produtoSelecionado.quantidade * this.produtoSelecionado.valorUnitario - this.produtoSelecionado.desconto;
+                this.produtoSelecionado.total = (this.produtoSelecionado.quantidade * this.produtoSelecionado.valorDespesas) + this.produtoSelecionado.quantidade * this.produtoSelecionado.valorUnitario - this.produtoSelecionado.desconto;
             }
         },
         calculoSobProduto() {
-            // TODO recalcular valor dos produtos levando em consideração: Frete, Seguro e Despesas.
+            if (this.produtos.rows.length > 0) {
+                var total = this.produtos.rows.map(item => item.valorUnitario * item.quantidade - item.desconto).reduce((item1, item2) => item1 + item2);
+                var totalDespesas = this.entity.frete + this.entity.seguro + this.entity.despesas;
+                var item;
+                var valorFinal;
+                var valorTotalProdutos = 0;
 
-            // var valorProdutos = 0;
-            // var item;
-            // for (let i = 0; i < this.itens.length; i++) {
-            //     item = this.itens[i];
-            //     console.log(item);
-            //     valorProdutos = item.valor;
-            //     console.log(valorProdutos);
-            // }
+                for (let i = 0; i < this.produtos.rows.length; i++) {
+                    item = this.produtos.rows[i];
+                    valorFinal = 0;
+
+                    // Calcula porcentagem do produto referente ao total
+                    var porcentagemItem = ((item.valorUnitario * item.quantidade) - item.desconto) / total;
+
+                    // Total de despesas do produto 
+                    valorFinal = totalDespesas * porcentagemItem;
+                    valorFinal /= item.quantidade;
+
+                    item.valorDespesas = valorFinal;
+                    item.total = ((item.quantidade * item.valorUnitario) - item.desconto) + (item.quantidade * item.valorDespesas);
+                    console.log(item.total);
+                    valorTotalProdutos += item.total;
+
+                    this.produtos.rows[i] = item;
+                }
+                this.entity.valorProdutos = valorTotalProdutos;
+            }
         },
         calculaTotalNota() {
-            if(this.entity.frete > 0 || this.entity.seguro > 0 || this.entity.despesas > 0) {
-                this.entity.valorTotal = this.entity.valorProdutos + this.entity.frete + this.entity.seguro + this.entity.despesas;
-                this.calculoProduto();
-            }
+            var total = this.produtos.rows.map(item => item.valorUnitario * item.quantidade - item.desconto).reduce((item1, item2) => item1 + item2);
+            this.entity.valorTotal = total + this.entity.frete + this.entity.seguro + this.entity.despesas;
+            this.calculoSobProduto();
         },
         addProduto() {
             this.entity.valorProdutos += this.produtoSelecionado.total;
