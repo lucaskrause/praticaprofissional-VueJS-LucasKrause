@@ -1,6 +1,6 @@
 <template>
     <div class="col-12">
-        <h2>Conta à Pagar</h2>
+        <h2>Conta à Receber</h2>
         <hr/>
         <div class="row form-group">
             <div class="col-2">
@@ -19,14 +19,14 @@
             </div>
 
             <div class="col-4">
-                <label>Fornecedor</label><span class="isRequired"> *</span>
+                <label>Cliente</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoFornecedor" type="number" class="form-control" v-model.number="entity.codigoFornecedor" readonly/>
+                    <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" readonly/>
                     <div class="input-group-append">
-                        <input type="text" class="form-control" v-model.lazy="fornecedorSelecionado" readonly/>
+                        <input type="text" class="form-control" v-model.lazy="clienteSelecionado" readonly/>
                     </div>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-fornecedor class="btn btn-info ml-1" disabled>Buscar</b-button>
+                        <b-button v-b-modal.modal-consult-cliente class="btn btn-info ml-1" disabled>Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -80,7 +80,7 @@
 
             <div class="col-8">
                 <div class="text-right">
-                    <router-link :to="{name: 'ContasPagarList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <router-link :to="{name: 'ContasReceberList'}" class="btn btn-danger mr-3">Voltar</router-link>
                     <input type="submit" value="Pagar" class="btn btn-success" @click.prevent="pagar()" :class="{'disabled': isSubmiting}" :disabled="entity.status == 'Pago'">
                 </div>
             </div>
@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import {ContasPagarService} from '@/services/contasPagar.service'
+import {ContasReceberService} from '@/services/contasReceber.service'
 import Helper from '@/components/helper'
 import {Notyf} from 'notyf'
 import 'notyf/notyf.min.css'
@@ -97,7 +97,7 @@ import 'notyf/notyf.min.css'
 const notyf = new Notyf();
 
 export default {
-    name: "ContasPagarView",
+    name: "ContasReceberView",
     props: {
         conta: {
             type: Object,
@@ -110,7 +110,7 @@ export default {
                 modelo: null,
                 serie: null,
                 numeroNF: null,
-                codigoFornecedor: 0,
+                codigoCliente: 0,
                 numeroParcela: 0,
                 valorParcela: 0,
                 codigoFormaPagamento: 0,
@@ -119,7 +119,7 @@ export default {
             },
             dtCad: null,
             dtAlt: null,
-            fornecedorSelecionado: null,
+            clienteSelecionado: null,
             formaSelecionada: null,
             isLoading: false,
             isSubmiting: false
@@ -128,7 +128,7 @@ export default {
     created() {
         if (this.conta) {
             const vm = this;
-            ContasPagarService.getParcela(this.conta).then(function (response) {
+            ContasReceberService.getParcela(this.conta).then(function (response) {
                 vm.entity = response.data;
 
                 var dateEmissao = Helper.dateToDateString(vm.entity.dtEmissao);
@@ -138,11 +138,11 @@ export default {
                 vm.entity.dtEmissao = dateEmissao;
                 vm.entity.dtVencimento = dateVencimento;
                 vm.entity.dtPagamento = datePagamento;
-                vm.fornecedorSelecionado = vm.entity.fornecedor.nome;
+                vm.clienteSelecionado = vm.entity.cliente.nome;
                 vm.formaSelecionada = vm.entity.formaPagamento.descricao;
             });
         } else {
-            this.$router.push('/app/contasPagar');
+            this.$router.push('/app/contasReceber');
         }
     },
     methods: {
@@ -150,10 +150,10 @@ export default {
             if (this.isSubmiting) return;
             this.isSubmiting = true;
             const vm = this;
-            ContasPagarService.pagar(this.entity).then(function () {
+            ContasReceberService.pagar(this.entity).then(function () {
                 notyf.success("Conta paga com sucesso");
                 vm.isSubmiting = false;
-                vm.$router.push('/app/contasPagar');
+                vm.$router.push('/app/contasReceber');
 
             }).catch((error) => Helper.saveErrorCallBack(error.response));
         }

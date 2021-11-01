@@ -5,28 +5,28 @@
         <div class="row form-group">
             <div class="col-2">
                 <label>Modelo</label><span class="isRequired"> *</span>
-                <input id="modelo" type="number" class="form-control" v-model="entity.modelo" readonly/>
+                <input id="modelo" type="number" class="form-control" v-model="entity.modelo" :disabled="isEdit"/>
             </div>
 
             <div class="col-2">
                 <label>Série</label><span class="isRequired"> *</span>
-                <input id="serie" type="number" class="form-control" v-model="entity.serie" readonly/>
+                <input id="serie" type="number" class="form-control" v-model="entity.serie" :disabled="isEdit"/>
             </div>
 
             <div class="col-2">
                 <label>Nº Nota</label><span class="isRequired"> *</span>
-                <input id="numeroNota" type="number" class="form-control" v-model="entity.numeroNF" readonly/>
+                <input id="numeroNota" type="number" class="form-control" v-model="entity.numeroNF" :disabled="isEdit"/>
             </div>
 
             <div class="col-4">
                 <label>Cliente</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="onSearchCliente" readonly/>
+                    <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="onSearchCliente" :disabled="isEdit"/>
                     <div class="input-group-append">
                         <input type="text" class="form-control" v-model.lazy="clienteSelecionado" readonly/>
                     </div>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-cliente class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consult-cliente class="btn btn-info ml-1" :disabled="isEdit">Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -35,18 +35,18 @@
         <div class="row form-group">
             <div class="col-2">
                 <label>Número Parcela</label><span class="isRequired"> *</span>
-                <input id="numeroParcela" type="number" class="form-control" v-model="entity.numeroParcela" readonly/>
+                <input id="numeroParcela" type="number" class="form-control" v-model.number="entity.numeroParcela" :disabled="isEdit"/>
             </div>
 
             <div class="col-2">
                 <label>Valor Parcela</label><span class="isRequired"> *</span>
-                <input id="valorParcela" type="number" class="form-control" v-model="entity.valorParcela" readonly/>
+                <input id="valorParcela" type="number" class="form-control" v-model.number="entity.valorParcela" :disabled="isEdit"/>
             </div>
 
             <div class="col-4">
                 <label>Forma de Pagamento</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoFormaPagamento" type="number" class="form-control" v-model.number="entity.codigoFormaPagamento" @input="onSearchFormaPagamento" readonly/>
+                    <input id="codigoFormaPagamento" type="number" class="form-control" v-model.number="entity.codigoFormaPagamento" @input="onSearchFormaPagamento"/>
                     <div class="input-group-append">
                         <input type="text" class="form-control" v-model.lazy="formaSelecionada" readonly/>
                     </div>
@@ -58,7 +58,7 @@
             
             <div class="col-2">
                 <label>Data de Vencimento</label>
-                <input id="dtVencimento" type="date" class="form-control" v-model="entity.dtVencimento" readonly/>
+                <input id="dtVencimento" type="date" class="form-control" v-model="entity.dtVencimento"/>
             </div>
             
             <div class="col-2">
@@ -69,30 +69,35 @@
 
         <div class="row form-group align-items-end mt-5">
             <div class="col-2">
-                <label>Data de Cadastro</label>
-                <input id="dataCadastro" type="text" class="form-control" v-model="dtCad" readonly/>
+                <label>Data de Emissão</label>
+                <input id="dataEmissao" type="date" class="form-control" v-model="entity.dtEmissao" readonly/>
             </div>
             
-            <div class="col-2">
-                <label>Data de Alteração</label>
-                <input id="dataAlteracao" type="text" class="form-control" v-model="dtAlt" readonly/>
-            </div>
-
-            <div class="col-8">
+            <div class="col-10">
                 <div class="text-right">
-                    <router-link :to="{name: 'PaisesList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <router-link :to="{name: 'ContasReceberList'}" class="btn btn-danger mr-3">Voltar</router-link>
                     <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
                 </div>
             </div>
         </div>
+
+        <b-modal id="modal-consult-cliente" size="xl" title="Consultar Cliente" hide-footer>
+            <ConsultaCliente @emit-cliente="selectCliente" :isModal="true"/>
+        </b-modal>
+
+        <b-modal id="modal-consult-forma" size="xl" title="Consultar Condição de Pagamento" hide-footer>
+            <ConsultaFormaPagamento @emit-forma="selectFormaPagamento" :isModal="true"/>
+        </b-modal>
     </div>
 </template>
 
 <script>
+import {ContasReceberService} from '@/services/contasReceber.service'
 import {ClientesService} from '@/services/clientes.service'
 import {FormasPagamentoService} from '@/services/formasPagamento.service'
-// import {TheMask} from 'vue-the-mask'
-// import Helper from '@/components/helper'
+import ConsultaCliente from '@/components/pages/clientes/Consult.vue'
+import ConsultaFormaPagamento from '@/components/pages/formasPagamento/Consult.vue'
+import Helper from '@/components/helper'
 import {Notyf} from 'notyf'
 import 'notyf/notyf.min.css'
 
@@ -103,12 +108,16 @@ const notyf = new Notyf();
 export default {
     name: "ContasReceberEdit",
     props: {
+        isEdit: {
+            type: Boolean,
+            default: false
+        },
         conta: {
             type: Object,
             default: null
         },    
     },
-    // components: { TheMask },
+    components: { ConsultaCliente, ConsultaFormaPagamento },
     data() {
         return {
             entity: {
@@ -117,7 +126,7 @@ export default {
                 numeroNF: null,
                 codigoCliente: 0,
                 numeroParcela: 0,
-                valorParcela: null,
+                valorParcela: 0,
                 codigoFormaPagamento: 0,
                 dtVencimento: null,
                 dtPagamento: null,
@@ -131,6 +140,27 @@ export default {
         }
     },
     created() {
+        if (this.$route.name != "ContasReceberCad") {
+            if (this.conta) {
+                this.isEdit = true;
+                const vm = this;
+                ContasReceberService.getParcela(this.conta).then(function (response) {
+                    vm.entity = response.data;
+
+                    var dateEmissao = Helper.dateToDateString(vm.entity.dtEmissao);
+                    var dateVencimento = Helper.dateToDateString(vm.entity.dtVencimento);
+                    var datePagamento = Helper.dateToDateString(vm.entity.dtPagamento);
+
+                    vm.entity.dtEmissao = dateEmissao;
+                    vm.entity.dtVencimento = dateVencimento;
+                    vm.entity.dtPagamento = datePagamento;
+                    vm.clienteSelecionado = vm.entity.cliente.nome;
+                    vm.formaSelecionada = vm.entity.formaPagamento.descricao;
+                });
+            } else {
+                this.$router.push('/app/contasReceber');
+            }
+        }
     },
     methods: {
         onSearchCliente() {
@@ -142,13 +172,11 @@ export default {
                 ClientesService.getById(vm.entity.codigoCliente).then(function (response) {
                     vm.clienteSelecionado = response.data.nome;
                     vm.isLoading = false;
-                    vm.findCompra();
                 }).catch(function() {
                     vm.entity.codigoCliente = 0;
                     vm.clienteSelecionado = null;
                     vm.isLoading = false;
                     notyf.error("Cliente não encontrada");
-                    vm.findCompra();
                 });
             } else {
                 vm.clienteSelecionado = null;
@@ -160,7 +188,6 @@ export default {
             this.clienteSelecionado = entity.nome;
             this.$bvModal.hide("modal-new-cliente");
             this.$bvModal.hide("modal-consult-cliente");
-            this.findCompra();
         },
         onSearchFormaPagamento() {
             this.searchFormaPagamento(this);
@@ -171,13 +198,11 @@ export default {
                 FormasPagamentoService.getById(vm.entity.codigoFormaPagamento).then(function (response) {
                     vm.formaSelecionada = response.data.descricao;
                     vm.isLoading = false;
-                    vm.findCompra();
                 }).catch(function() {
                     vm.entity.codigoFormaPagamento = 0;
                     vm.formaSelecionada = null;
                     vm.isLoading = false;
                     notyf.error("Forma de Pagamento não encontrada");
-                    vm.findCompra();
                 });
             } else {
                 vm.formaSelecionada = null;
@@ -189,9 +214,33 @@ export default {
             this.formaSelecionada = entity.descricao;
             this.$bvModal.hide("modal-new-forma");
             this.$bvModal.hide("modal-consult-forma");
-            this.findCompra();
         },
         save() {
+            if (this.isSubmiting || this.isLoading) return;
+            this.isSubmiting = true;
+            const vm = this;
+            
+            if (this.isEdit) {
+                ContasReceberService.edit(this.entity).then(function () {
+                    notyf.success("Conta registrada com sucesso");
+                    vm.isSubmiting = false;
+                    vm.$router.push('/app/contasReceber');
+                }).catch(function (errors){
+                    notyf.error(errors.response.data.message);
+                    vm.isSubmiting = false;
+                });
+            } else {
+                this.entity.dtEmissao = new Date();
+
+                ContasReceberService.save(this.entity).then(function () {
+                    notyf.success("Conta registrada com sucesso");
+                    vm.isSubmiting = false;
+                    vm.$router.push('/app/contasReceber');
+                }).catch(function (errors){
+                    notyf.error(errors.response.data.message);
+                    vm.isSubmiting = false;
+                });
+            }
         }
     }
 }

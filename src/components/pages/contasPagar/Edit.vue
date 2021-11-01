@@ -5,28 +5,28 @@
         <div class="row form-group">
             <div class="col-2">
                 <label>Modelo</label><span class="isRequired"> *</span>
-                <input id="modelo" type="number" class="form-control" v-model="entity.modelo"/>
+                <input id="modelo" type="number" class="form-control" v-model="entity.modelo" :disabled="isEdit"/>
             </div>
 
             <div class="col-2">
                 <label>Série</label><span class="isRequired"> *</span>
-                <input id="serie" type="number" class="form-control" v-model="entity.serie"/>
+                <input id="serie" type="number" class="form-control" v-model="entity.serie" :disabled="isEdit"/>
             </div>
 
             <div class="col-2">
                 <label>Nº Nota</label><span class="isRequired"> *</span>
-                <input id="numeroNota" type="number" class="form-control" v-model="entity.numeroNF"/>
+                <input id="numeroNota" type="number" class="form-control" v-model="entity.numeroNF" :disabled="isEdit"/>
             </div>
 
             <div class="col-4">
                 <label>Fornecedor</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoFornecedor" type="number" class="form-control" v-model.number="entity.codigoFornecedor" @input="onSearchFornecedor"/>
+                    <input id="codigoFornecedor" type="number" class="form-control" v-model.number="entity.codigoFornecedor" @input="onSearchFornecedor" :disabled="isEdit"/>
                     <div class="input-group-append">
                         <input type="text" class="form-control" v-model.lazy="fornecedorSelecionado" readonly/>
                     </div>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-fornecedor class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consult-fornecedor class="btn btn-info ml-1" :disabled="isEdit">Buscar</b-button>
                     </span>
                 </div>
             </div>
@@ -35,12 +35,12 @@
         <div class="row form-group">
             <div class="col-2">
                 <label>Número Parcela</label><span class="isRequired"> *</span>
-                <input id="numeroParcela" type="number" class="form-control" v-model.number="entity.numeroParcela"/>
+                <input id="numeroParcela" type="number" class="form-control" v-model.number="entity.numeroParcela" :disabled="isEdit"/>
             </div>
 
             <div class="col-2">
                 <label>Valor Parcela</label><span class="isRequired"> *</span>
-                <input id="valorParcela" type="number" class="form-control" v-model.number="entity.valorParcela"/>
+                <input id="valorParcela" type="number" class="form-control" v-model.number="entity.valorParcela" :disabled="isEdit"/>
             </div>
 
             <div class="col-4">
@@ -80,6 +80,14 @@
                 </div>
             </div>
         </div>
+
+        <b-modal id="modal-consult-fornecedor" size="xl" title="Consultar Fornecedor" hide-footer>
+            <ConsultaFornecedor @emit-fornecedor="selectFornecedor" :isModal="true"/>
+        </b-modal>
+
+        <b-modal id="modal-consult-forma" size="xl" title="Consultar Condição de Pagamento" hide-footer>
+            <ConsultaFormaPagamento @emit-forma="selectFormaPagamento" :isModal="true"/>
+        </b-modal>
     </div>
 </template>
 
@@ -87,6 +95,8 @@
 import {ContasPagarService} from '@/services/contasPagar.service'
 import {FornecedoresService} from '@/services/fornecedores.service'
 import {FormasPagamentoService} from '@/services/formasPagamento.service'
+import ConsultaFornecedor from '@/components/pages/fornecedores/Consult.vue'
+import ConsultaFormaPagamento from '@/components/pages/formasPagamento/Consult.vue'
 import Helper from '@/components/helper'
 import {Notyf} from 'notyf'
 import 'notyf/notyf.min.css'
@@ -107,6 +117,7 @@ export default {
             default: null
         },    
     },
+    components: { ConsultaFornecedor, ConsultaFormaPagamento },
     data() {
         return {
             entity: {
@@ -177,7 +188,6 @@ export default {
             this.fornecedorSelecionado = entity.nome;
             this.$bvModal.hide("modal-new-fornecedor");
             this.$bvModal.hide("modal-consult-fornecedor");
-            this.findCompra();
         },
         onSearchFormaPagamento() {
             this.searchFormaPagamento(this);
@@ -204,7 +214,6 @@ export default {
             this.formaSelecionada = entity.descricao;
             this.$bvModal.hide("modal-new-forma");
             this.$bvModal.hide("modal-consult-forma");
-            this.findCompra();
         },
         save() {
             if (this.isSubmiting || this.isLoading) return;

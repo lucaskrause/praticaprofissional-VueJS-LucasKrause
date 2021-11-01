@@ -58,6 +58,7 @@ const ContaPagarView = () => import("@/components/pages/contasPagar/View");
 const ContaPagarEdit = () => import("@/components/pages/contasPagar/Edit");
 
 const ContaReceberList = () => import("@/components/pages/contasReceber/List");
+const ContaReceberView = () => import("@/components/pages/contasReceber/View");
 const ContaReceberEdit = () => import("@/components/pages/contasReceber/Edit");
 
 const PaisList = () => import("@/components/pages/paises/List");
@@ -554,6 +555,15 @@ const routes = [
                 path: 'contasReceber',
                 name: 'ContasReceberList',
                 component: ContaReceberList,
+                meta: {
+                    label: "Contas à Receber"
+                },
+            },
+            {
+                path: 'contasReceber/ver',
+                name: 'ContasReceberView',
+                component: ContaReceberView,
+                props: true,
                 meta: {
                     label: "Contas à Receber"
                 },
