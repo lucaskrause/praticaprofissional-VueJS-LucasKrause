@@ -572,7 +572,6 @@ export default {
 
                     item.valorDespesas = valorFinal;
                     item.total = ((item.quantidade * item.valorUnitario) - item.desconto) + (item.quantidade * item.valorDespesas);
-                    console.log(item.total);
                     valorTotalProdutos += item.total;
 
                     this.produtos.rows[i] = item;

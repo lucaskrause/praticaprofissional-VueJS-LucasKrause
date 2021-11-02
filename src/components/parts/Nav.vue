@@ -71,15 +71,16 @@ export default {
 
                 {id: 13, group: 3, label: "Locações", route: {name: "LocacoesList"}},
                 {id: 14, group: 3, label: "Compras", route: {name: "ComprasList"}},
-                {id: 15, group: 3, label: "Contas à Pagar", route: {name: "ContasPagarList"}},
-                {id: 16, group: 3, label: "Contas à Receber", route: {name: "ContasReceberList"}},
+                {id: 15, group: 3, label: "Consumos", route: {name: "ConsumosList"}},
+                {id: 16, group: 3, label: "Contas à Pagar", route: {name: "ContasPagarList"}},
+                {id: 17, group: 3, label: "Contas à Receber", route: {name: "ContasReceberList"}},
 
-                {id: 17, group: 4, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
-                {id: 18, group: 4, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
+                {id: 18, group: 4, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
+                {id: 19, group: 4, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
 
-                {id: 19, group: 5, label: "Cidades",  route: {name: "CidadesList"}},
-                {id: 20, group: 5, label: "Estados", route: {name: "EstadosList"}},
-                {id: 21, group: 5, label: "Países", route: {name: "PaisesList"}},
+                {id: 20, group: 5, label: "Cidades",  route: {name: "CidadesList"}},
+                {id: 21, group: 5, label: "Estados", route: {name: "EstadosList"}},
+                {id: 22, group: 5, label: "Países", route: {name: "PaisesList"}},
             ],
         }
     },

@@ -53,6 +53,9 @@ const ProdutoEdit = () => import("@/components/pages/produtos/Edit");
 const CompraList = () => import("@/components/pages/compras/List");
 const CompraEdit = () => import("@/components/pages/compras/Edit");
 
+const ConsumoList = () => import("@/components/pages/consumos/List");
+const ConsumoEdit = () => import("@/components/pages/consumos/Edit");
+
 const ContaPagarList = () => import("@/components/pages/contasPagar/List");
 const ContaPagarView = () => import("@/components/pages/contasPagar/View");
 const ContaPagarEdit = () => import("@/components/pages/contasPagar/Edit");
@@ -511,6 +514,32 @@ const routes = [
                 props: true,
                 meta: {
                     label: "Compra"
+                },
+            },
+            
+            // CONSUMOS
+            {
+                path: 'consumos',
+                name: 'ConsumosList',
+                component: ConsumoList,
+                meta: {
+                    label: "Consumos"
+                },
+            },
+            {
+                path: 'consumos/cadastrar',
+                name: 'ConsumosCad',
+                component: ConsumoEdit,
+                meta: {
+                    label: "Consumo"
+                },
+            },
+            {
+                path: 'consumos/editar/:codigo',
+                name: 'ConsumosEdit',
+                component: ConsumoEdit,
+                meta: {
+                    label: "Consumo"
                 },
             },
             

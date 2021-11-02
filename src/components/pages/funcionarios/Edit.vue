@@ -1,7 +1,7 @@
 <template>
     <div class="col-12">
-        <h2>Cadastro de Funcionários</h2>
-        <hr/>
+        <h2 v-if="!isModal">Cadastro de Funcionários</h2>
+        <hr v-if="!isModal"/>
         <div class="row form-group">
             <div class="col-1">
                 <label>Código</label>
@@ -190,7 +190,7 @@
 
             <div class="col-8">
                 <div class="text-right">
-                    <router-link :to="{name: 'FuncionariosList'}" class="btn btn-danger mr-3">Voltar</router-link>
+                    <router-link v-if="!isModal" :to="{name: 'FuncionariosList'}" class="btn btn-danger mr-3">Voltar</router-link>
                     <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
                 </div>
             </div>
@@ -221,6 +221,12 @@ const notyf = new Notyf();
 export default {
     name: "FuncionáriosEdit",
     components: { Money, TheMask, ConsultaCidade },
+    props: {
+        isModal: {
+            type: Boolean,
+            default: false
+        }
+    },
     mixins: [validationMixin],
     validations() {
         let validation = {
@@ -399,11 +405,17 @@ export default {
                 return;
             }
 
-            FuncionariosService.save(this.entity).then(function () {
+            FuncionariosService.save(this.entity).then(function (response) {
                 const msg = vm.entity.codigo ? "editado" : "criado";
                 notyf.success("Funcionário " + msg + " com sucesso");
                 vm.isSubmiting = false;
-                vm.$router.push('/app/funcionarios');
+                
+                if(!vm.isModal){
+                    vm.$router.push('/app/funcionarios');
+                } else {
+                    vm.entity.codigo = response.data.codigo;
+                    vm.$emit('emit-funcionario', vm.entity);
+                }
             }).catch(function (errors){
                 notyf.error(errors.response.data.message);
                 vm.isSubmiting = false;
