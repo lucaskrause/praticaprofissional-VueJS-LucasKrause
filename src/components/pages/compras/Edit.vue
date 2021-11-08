@@ -550,6 +550,7 @@ export default {
             if(this.produtoSelecionado.quantidade > 0 && this.produtoSelecionado.valorUnitario > 0) {
                 this.produtoSelecionado.total = (this.produtoSelecionado.quantidade * this.produtoSelecionado.valorDespesas) + this.produtoSelecionado.quantidade * this.produtoSelecionado.valorUnitario - this.produtoSelecionado.desconto;
             }
+            this.calculaTotalNota();
         },
         calculoSobProduto() {
             if (this.produtos.rows.length > 0) {
