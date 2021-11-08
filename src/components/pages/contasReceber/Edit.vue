@@ -3,19 +3,9 @@
         <h2>Conta à Receber</h2>
         <hr/>
         <div class="row form-group">
-            <div class="col-2">
-                <label>Modelo</label><span class="isRequired"> *</span>
-                <input id="modelo" type="number" class="form-control" v-model="entity.modelo" :disabled="isEdit"/>
-            </div>
-
-            <div class="col-2">
-                <label>Série</label><span class="isRequired"> *</span>
-                <input id="serie" type="number" class="form-control" v-model="entity.serie" :disabled="isEdit"/>
-            </div>
-
-            <div class="col-2">
-                <label>Nº Nota</label><span class="isRequired"> *</span>
-                <input id="numeroNota" type="number" class="form-control" v-model="entity.numeroNF" :disabled="isEdit"/>
+            <div class="col-1">
+                <label>Código</label>
+                <input id="codigo" type="number" class="form-control" v-model.number="entity.codigo" readonly/>
             </div>
 
             <div class="col-4">
@@ -107,23 +97,10 @@ const notyf = new Notyf();
 
 export default {
     name: "ContasReceberEdit",
-    props: {
-        isEdit: {
-            type: Boolean,
-            default: false
-        },
-        conta: {
-            type: Object,
-            default: null
-        },    
-    },
     components: { ConsultaCliente, ConsultaFormaPagamento },
     data() {
         return {
             entity: {
-                modelo: null,
-                serie: null,
-                numeroNF: null,
                 codigoCliente: 0,
                 numeroParcela: 0,
                 valorParcela: 0,
@@ -140,11 +117,13 @@ export default {
         }
     },
     created() {
+        const vm = this;
         if (this.$route.name != "ContasReceberCad") {
-            if (this.conta) {
+            if (this.$route.params.codigo > 0) {
+                this.entity.codigo = parseInt(this.$route.params.codigo);
                 this.isEdit = true;
-                const vm = this;
-                ContasReceberService.getParcela(this.conta).then(function (response) {
+
+                ContasReceberService.getParcela(this.entity).then(function (response) {
                     vm.entity = response.data;
 
                     var dateEmissao = Helper.dateToDateString(vm.entity.dtEmissao);

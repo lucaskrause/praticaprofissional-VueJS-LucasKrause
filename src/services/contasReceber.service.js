@@ -9,8 +9,8 @@ const instance = new class ContasReceberService extends Service{
         return this.api.post(this.endpoint + "/getParcela", entity);
     }
 
-    pagar(entity) {
-        return this.api.post(this.endpoint + "/pagar", entity);
+    receber(entity) {
+        return this.api.post(this.endpoint + "/receber", entity);
     }
 };
 

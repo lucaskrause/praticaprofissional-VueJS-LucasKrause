@@ -3,19 +3,9 @@
         <h2>Conta à Receber</h2>
         <hr/>
         <div class="row form-group">
-            <div class="col-2">
-                <label>Modelo</label><span class="isRequired"> *</span>
-                <input id="modelo" type="number" class="form-control" v-model="entity.modelo" readonly/>
-            </div>
-
-            <div class="col-2">
-                <label>Série</label><span class="isRequired"> *</span>
-                <input id="serie" type="number" class="form-control" v-model="entity.serie" readonly/>
-            </div>
-
-            <div class="col-2">
-                <label>Nº Nota</label><span class="isRequired"> *</span>
-                <input id="numeroNota" type="number" class="form-control" v-model="entity.numeroNF" readonly/>
+            <div class="col-1">
+                <label>Código</label>
+                <input id="codigo" type="number" class="form-control" v-model.number="entity.codigo" readonly/>
             </div>
 
             <div class="col-4">
@@ -81,7 +71,7 @@
             <div class="col-8">
                 <div class="text-right">
                     <router-link :to="{name: 'ContasReceberList'}" class="btn btn-danger mr-3">Voltar</router-link>
-                    <input type="submit" value="Pagar" class="btn btn-success" @click.prevent="pagar()" :class="{'disabled': isSubmiting}" :disabled="entity.status == 'Pago'">
+                    <input type="submit" value="Receber" class="btn btn-success" @click.prevent="receber()" :class="{'disabled': isSubmiting}" :disabled="entity.status == 'Pago'">
                 </div>
             </div>
         </div>
@@ -98,18 +88,10 @@ const notyf = new Notyf();
 
 export default {
     name: "ContasReceberView",
-    props: {
-        conta: {
-            type: Object,
-            default: null
-        },    
-    },
     data() {
         return {
             entity: {
-                modelo: null,
-                serie: null,
-                numeroNF: null,
+                codigo: 0,
                 codigoCliente: 0,
                 numeroParcela: 0,
                 valorParcela: 0,
@@ -126,9 +108,11 @@ export default {
         }
     },
     created() {
-        if (this.conta) {
-            const vm = this;
-            ContasReceberService.getParcela(this.conta).then(function (response) {
+        const vm = this;
+        if (this.$route.params.codigo > 0) {
+            this.entity.codigo = parseInt(this.$route.params.codigo);
+
+            ContasReceberService.getParcela(this.entity).then(function (response) {
                 vm.entity = response.data;
 
                 var dateEmissao = Helper.dateToDateString(vm.entity.dtEmissao);
@@ -146,12 +130,14 @@ export default {
         }
     },
     methods: {
-        pagar() {
+        receber() {
             if (this.isSubmiting) return;
+
             this.isSubmiting = true;
             const vm = this;
-            ContasReceberService.pagar(this.entity).then(function () {
-                notyf.success("Conta paga com sucesso");
+            console.log(this.entity);
+            ContasReceberService.receber(this.entity).then(function () {
+                notyf.success("Conta recebida com sucesso");
                 vm.isSubmiting = false;
                 vm.$router.push('/app/contasReceber');
 

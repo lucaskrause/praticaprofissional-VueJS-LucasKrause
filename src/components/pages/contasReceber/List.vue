@@ -19,8 +19,8 @@
                 >
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'btn'">
-                            <router-link :to="{name: 'ContasReceberView', params: {conta: props.row}}" class="btn btn-sm btn-primary mr-3">Ver</router-link>
-                            <router-link :to="{name: 'ContasReceberEdit', params: {conta: props.row, isEdit: true}}" class="btn btn-sm btn-success">Editar</router-link>
+                            <router-link :to="{name: 'ContasReceberView', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Ver</router-link>
+                            <router-link :to="{name: 'ContasReceberEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-success">Editar</router-link>
                         </span>
                     </template>
                 </vue-good-table>
@@ -41,35 +41,34 @@ export default {
         return {
             columns: [
                 {
-                    label: "Modelo",
-                    field: "modelo",
-                    width: "150px",
-                },
-                {
-                    label: "Série",
-                    field: "serie",
-                    width: "150px",
-                },
-                {
-                    label: "Número Nota Fiscal",
-                    field: "numeroNF",
-                    width: "200px",
-                },
-                {
-                    label: "Cliente",
-                    field: "cliente.nome"
+                    label: "Código",
+                    field: "codigo",
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Nº Parcela",
                     field: "numeroParcela",
                     type: "number",
-                    width: "150px",
+                    width: "130px",
                 },
                 {
                     label: "Valor",
                     field: "valorParcela",
                     type: "number",
                     width: "150px",
+                },
+                {
+                    label: "Forma Pagamento",
+                    field: "formaPagamento.descricao"
+                },
+                {
+                    label: "Cliente",
+                    field: "cliente.nome"
+                },
+                {
+                    label: "Status",
+                    field: "status"
                 },
                 {
                     label:"Ação",

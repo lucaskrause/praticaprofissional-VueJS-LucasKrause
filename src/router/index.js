@@ -589,10 +589,9 @@ const routes = [
                 },
             },
             {
-                path: 'contasReceber/ver',
+                path: 'contasReceber/ver/:codigo',
                 name: 'ContasReceberView',
                 component: ContaReceberView,
-                props: true,
                 meta: {
                     label: "Contas à Receber"
                 },
@@ -606,10 +605,9 @@ const routes = [
                 },
             },
             {
-                path: 'contasReceber/ver',
+                path: 'contasReceber/editar/:codigo',
                 name: 'ContasReceberEdit',
                 component: ContaReceberEdit,
-                props: true,
                 meta: {
                     label: "Conta à Receber"
                 },
