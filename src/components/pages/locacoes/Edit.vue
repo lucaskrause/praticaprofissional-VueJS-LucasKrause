@@ -12,11 +12,11 @@
                 <label>Cliente</label><span class="isRequired"> *</span>
                 <div class="input-group">
                    <input id="codigoCliente" type="number" class="form-control" v-model.number="entity.codigoCliente" @input="onSearchCliente"
-                        :class="{'is-invalid': $v.entity.codigoCliente.$error}"/>
+                        :class="{'is-invalid': $v.entity.codigoCliente.$error}" :readonly="isEdit"/>
                     <div class="input-group-append">
                         <input id="cliente" type="text" class="form-control" v-model.lazy="clienteSelecionado" readonly/>
                         <span class="input-group-btn">
-                            <b-button v-b-modal.modal-consult-cliente class="btn btn-info ml-1">Buscar</b-button>
+                            <b-button v-b-modal.modal-consult-cliente class="btn btn-info ml-1" :disabled="isEdit">Buscar</b-button>
                         </span>
                     </div>
                     <div class="invalid-feedback" v-if="!$v.entity.codigoCliente.minValue">
@@ -29,11 +29,11 @@
                 <label>Condição de Pagamento</label><span class="isRequired"> *</span>
                 <div class="input-group">
                    <input id="codigoCondicaoPagamento" type="number" class="form-control" v-model.number="entity.codigoCondicaoPagamento" @input="onSearchCondicao"
-                        :class="{'is-invalid': $v.entity.codigoCondicaoPagamento.$error}"/>
+                        :class="{'is-invalid': $v.entity.codigoCondicaoPagamento.$error}" :readonly="isEdit"/>
                     <div class="input-group-append">
                         <input id="condicaoPagamento" type="text" class="form-control" v-uppercase v-model.lazy="condicaoSelecionada" readonly/>
                         <span class="input-group-btn">
-                            <b-button v-b-modal.modal-consult-condicaoPagamento class="btn btn-info ml-1">Buscar</b-button>
+                            <b-button v-b-modal.modal-consult-condicaoPagamento class="btn btn-info ml-1" :disabled="isEdit">Buscar</b-button>
                         </span>
                     </div>
                     <div class="invalid-feedback" v-if="!$v.entity.codigoCondicaoPagamento.minValue">
@@ -51,7 +51,7 @@
                         :class="{'is-invalid': $v.entity.dtLocacao.$error || dtInvalid}"/>
                     <div class="input-group-append">
                         <span class="input-group-btn">
-                            <b-button v-b-modal.modal-agendamento class="btn btn-success ml-1">Selecionar</b-button>
+                            <b-button v-b-modal.modal-agendamento class="btn btn-success ml-1" :disabled="isEdit">Selecionar</b-button>
                         </span>
                     </div>
                     <div class="invalid-feedback" v-if="!$v.entity.dtLocacao.required">
@@ -63,10 +63,10 @@
                 </div>
             </div>
 
-            <div class="col-3 form-group">
+            <div class="col-2">
                 <label>Quantidade de Pessoas</label><span class="isRequired"> *</span>
                 <input id="qtdePessoas" type="number" class="form-control" v-model.number="entity.qtdePessoas" @input="calcValor"
-                    :class="{'is-invalid': $v.entity.qtdePessoas.$error}"/>
+                    :class="{'is-invalid': $v.entity.qtdePessoas.$error}" :readonly="isEdit"/>
                 <div class="invalid-feedback" v-if="!$v.entity.qtdePessoas.minValue || !$v.entity.qtdePessoas.maxValue">
                     Quantidade deve estar entre 1 e 70 Pessoas
                 </div>
@@ -85,8 +85,8 @@
             </div>
             
             <div class="col-4">
-                <small v-if="entity.areasLocacao.length == '0'" class="invalid">Selecione pelo menos uma área para locação</small>
-                <small v-if="message" class="invalid">{{ message }}</small>
+                <small v-if="entity.areasLocacao.length == 0" class="invalid">Selecione pelo menos uma área para locação</small>
+                <small v-if="message && !isEdit" class="invalid">{{ message }}</small>
             </div>
         </div>
         <div class="row">
@@ -97,15 +97,33 @@
                     :columns="areasLocacao.columns"
                     :rows="areasLocacao.rows"
                     :search-options="{enabled: false, placeholder: 'Buscar'}"
-                    :select-options="{enabled: true, selectOnCheckboxOnly: true, selectionText: 'Áreas selecionadas', clearSelectionText: 'Limpar',}"
+                    :select-options="{enabled: true, selectOnCheckboxOnly: true, selectionText: 'Áreas selecionadas', clearSelectionText: 'Limpar'}"
                     :pagination-options="{perPage: 10, enabled: false}"
                     styleClass="vgt-table bordered vgt-compact condensed"
                 >
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'select'">
-                            <input type="checkbox" />
+                            <input type="checkbox" :disabled="isEdit"/>
                         </span>
                     </template>
+                </vue-good-table>
+            </div>
+        </div>
+
+        <div v-if="entity.parcelas.length > 0" class="row mt-3">
+            <div class="col-4">
+                <label>Parcelas</label>
+            </div>
+        </div>
+        <div v-if="entity.parcelas.length > 0" class="row">
+            <div class="col-12">
+                <vue-good-table compactMode
+                    :columns="parcelas.columns"
+                    :rows="entity.parcelas"
+                    :search-options="{enabled: false}"
+                    :pagination-options="{perPage: 12, enabled: false}"
+                    styleClass="vgt-table bordered vgt-compact condensed"
+                >
                 </vue-good-table>
             </div>
         </div>
@@ -124,7 +142,8 @@
             <div class="col-8">
                 <div class="text-right">
                     <router-link :to="{name: 'LocacoesList'}" class="btn btn-danger mr-3">Voltar</router-link>
-                    <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
+                    <input v-if="!isEdit" type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
+                    <input v-if="isEdit" type="submit" value="Cancelar" class="btn btn-success" @click.prevent="cancel()" :class="{'disabled': isSubmiting}">
                 </div>
             </div>
         </div>
@@ -199,6 +218,7 @@ export default {
                 valor: 0,
                 codigoCondicaoPagamento: 0,
                 areasLocacao: [],
+                parcelas: [],
                 dtCadastro: null,
                 dtAlteracao: null
             },
@@ -238,18 +258,48 @@ export default {
                 page: 1,
                 totalRecords: 0
             },
-            isCreate: false,
+            parcelas: {
+                columns: [
+                    {
+                        label: "Parcela",
+                        field: "numeroParcela",
+                        type: "number",
+                        width: "120px",
+                    },
+                    {
+                        label: "Valor",
+                        field: "valorParcela",
+                        type: "number",
+                        width: "150px",
+                    },
+                    {
+                        label: "Data de Vencimento",
+                        field: "dtVencimento",
+                        type: "date",
+                        dateInputFormat: 'yyyy-MM-dd',
+                        dateOutputFormat: 'dd/MM/yyyy',
+                        width: "200px",
+                    },
+                    {
+                        label: "Forma de Pagamento",
+                        field: "formaPagamento.descricao"
+                    }
+                ]
+            },
+            isCreateListArea: false,
             precoPessoas: [],
             valorPessoas: 0,
             valorAreas: 0,
             isLoading: false,
-            isSubmiting: false
+            isSubmiting: false,
+            isEdit: false
         }
     },
     created() {
         const vm = this;
         if (this.$route.params.codigo) {
             this.entity.codigo = this.$route.params.codigo;
+            this.isEdit = true;
         }
         
         PrecificacoesService.getAll().then(function (response) {
@@ -258,7 +308,7 @@ export default {
 
         AreasLocacaoService.getAll().then(function (response) {
             vm.areasLocacao.rows = response.data;
-
+            
             for (let i = 0; i < vm.areasLocacao.rows.length; i++) {
                 vm.areasLocacao.rows[i].valorAux = Helper.number_format(vm.areasLocacao.rows[i].valor);
             }
@@ -267,13 +317,6 @@ export default {
                 vm.getLocacao(vm.entity.codigo);
             }
         });
-    },
-    watch: {
-        'entity.dtLocacao'() {
-            if (this.entity.areasLocacao.length > 0) {
-                this.verificaDisponibilidade();
-            }
-        }
     },
     methods: {
         getLocacao(id) {
@@ -290,13 +333,20 @@ export default {
                 vm.dtAlt = dateTimeAlt.date + " " + dateTimeAlt.hour;
                 vm.clienteSelecionado = vm.entity.cliente.nome;
                 vm.condicaoSelecionada = vm.entity.condicaoPagamento.descricao;
+
+                for (let i = 0; i < vm.entity.parcelas.length; i++) {
+                    var dateVencimento = Helper.dateToDateString(vm.entity.parcelas[i].dtVencimento);
+                    vm.entity.parcelas[i].dtVencimento = dateVencimento
+                }
                 
-                vm.isCreate = true;
+                vm.isCreateListArea = true;
+
                 vm.areasLocacao.rows = vm.areasLocacao.rows.map(function (item) {
                     item.vgtSelected = vm.entity.areasLocacao.some((area) => area.codigo == item.codigo);
                     return item;
                 });
-                vm.isCreate = false;
+
+                vm.isCreateListArea = false;
             });
         },
         selectDia(date) {
@@ -393,8 +443,11 @@ export default {
             });
         },
         calcValor() {
+            if (this.isEdit) return;
+
             this.valorPessoas = 0;
             var value = this.entity.qtdePessoas;
+
             for (let i=0; i < this.precoPessoas.length; i++) {
                 var max = this.precoPessoas[i].maxPessoas;
                 if (value > max) {
@@ -405,9 +458,10 @@ export default {
                 }
             }
             this.entity.valor = this.valorPessoas + this.valorAreas;
+            this.gerarParcela();
         },
         verificaDisponibilidade() {
-            if (this.entity.dtLocacao) {
+            if (this.entity.dtLocacao && !this.isEdit) {
                 var payload = {
                     dtLocacao: this.entity.dtLocacao,
                     areasLocacao: this.entity.areasLocacao
@@ -434,7 +488,7 @@ export default {
             }
         },
         selecionarAreas(areas) {
-            if (!this.isCreate) {
+            if (!this.isCreateListArea) {
                 var selecionadas = areas.selectedRows;
                 this.entity.areasLocacao = selecionadas;
                 this.valorAreas = 0;
@@ -444,9 +498,52 @@ export default {
                 }
 
                 this.calcValor();
+                this.verificaDisponibilidade();
             }
-            this.verificaDisponibilidade();
+        },
+        gerarParcela() {
+            if (this.entity.areasLocacao.length <= 0) return;
+            const vm = this;
+
+            var params = {
+                codigoCondicaoPagamento: this.entity.codigoCondicaoPagamento,
+                dtEmissao: Helper.dateToDateString(new Date()),
+                valorTotal: this.entity.valor
+            };
+            
+            LocacoesService.gerarParcelas(params).then(function (response) {
+                vm.entity.parcelas = response.data;
+                
+                for (let i = 0; i < vm.entity.parcelas.length; i++) {
+                    var dateVencimento = Helper.dateToDateString(vm.entity.parcelas[i].dtVencimento);
+                    vm.entity.parcelas[i].dtVencimento = dateVencimento;
+                }
+            });
+        },
+        cancel() {
+            if (this.isSubmiting) return;
+            this.isSubmiting = true;
+            var vm = this;
+            var remove = confirm("Deseja realmente excluir?");
+            if (remove) {
+                LocacoesService.delete(this.entity.codigo).then(function (response) {
+                    if (response.data) {
+                        notyf.success("Locação cancelada com sucesso");
+                        vm.$router.push('/app/locacoes');
+                    } else {
+                        notyf.error("Não foi possível cancelar a locação");
+                    }
+                    this.isSubmiting = false;
+                });
+            }
         }
     }
 }
 </script>
+
+<style>
+.embaixo{
+   position: absolute;
+   bottom: 0px;
+}
+</style>

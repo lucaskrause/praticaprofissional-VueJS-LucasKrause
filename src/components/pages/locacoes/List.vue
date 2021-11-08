@@ -19,8 +19,8 @@
                 >
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'btn'">
-                            <router-link :to="{name: 'LocacoesEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Editar</router-link>
-                            <a @click.prevent="remove(props.row.codigo)" class="btn btn-sm btn-danger" href="#">Excluir</a>
+                            <router-link :to="{name: 'LocacoesEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Ver</router-link>
+                            <!-- <a @click.prevent="remove(props.row.codigo)" class="btn btn-sm btn-danger" href="#">Excluir</a> -->
                         </span>
                     </template>
                 </vue-good-table>
@@ -74,7 +74,7 @@ export default {
                     sortable: false,
                     field: 'btn',
                     html: true,
-                    width: "160px",
+                    width: "80px",
                 },
             ],
             page: 1,
