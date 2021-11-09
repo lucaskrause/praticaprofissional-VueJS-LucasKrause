@@ -42,29 +42,35 @@ export default {
                 {
                     label: "Modelo",
                     field: "modelo",
-                    width: "150px",
+                    width: "120px"
                 },
                 {
                     label: "Série",
                     field: "serie",
-                    width: "150px",
+                    width: "120px"
                 },
                 {
                     label: "Número Nota Fiscal",
                     field: "numeroNF",
-                    width: "200px",
+                    width: "200px"
                 },
                 {
                     label: "Fornecedor",
                     field: "fornecedor.nome"
                 },
                 {
+                    label:"Valor",
+                    field: "valorTotal",
+                    type: "number",
+                    width: "120px"
+                },
+                {
                     label:"Ação",
                     sortable: false,
                     field: 'btn',
                     html: true,
-                    width: "80px",
-                },
+                    width: "80px"
+                }
             ],
             rows: [],
             page: 1,

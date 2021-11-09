@@ -143,7 +143,7 @@
                 <div class="text-right">
                     <router-link :to="{name: 'LocacoesList'}" class="btn btn-danger mr-3">Voltar</router-link>
                     <input v-if="!isEdit" type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
-                    <input v-if="isEdit" type="submit" value="Cancelar" class="btn btn-success" @click.prevent="cancel()" :class="{'disabled': isSubmiting}">
+                    <input v-if="isEdit" type="submit" value="Cancelar" class="btn btn-success" @click.prevent="cancel()" :class="{'disabled': isSubmiting}" :disabled="blockCancel">
                 </div>
             </div>
         </div>
@@ -264,13 +264,13 @@ export default {
                         label: "Parcela",
                         field: "numeroParcela",
                         type: "number",
-                        width: "120px",
+                        width: "120px"
                     },
                     {
                         label: "Valor",
                         field: "valorParcela",
                         type: "number",
-                        width: "150px",
+                        width: "150px"
                     },
                     {
                         label: "Data de Vencimento",
@@ -278,11 +278,16 @@ export default {
                         type: "date",
                         dateInputFormat: 'yyyy-MM-dd',
                         dateOutputFormat: 'dd/MM/yyyy',
-                        width: "200px",
+                        width: "200px"
                     },
                     {
                         label: "Forma de Pagamento",
                         field: "formaPagamento.descricao"
+                    },
+                    {
+                        label: "Status",
+                        field: "status",
+                        width: "150px"
                     }
                 ]
             },
@@ -292,7 +297,8 @@ export default {
             valorAreas: 0,
             isLoading: false,
             isSubmiting: false,
-            isEdit: false
+            isEdit: false,
+            blockCancel: false
         }
     },
     created() {
@@ -334,18 +340,21 @@ export default {
                 vm.clienteSelecionado = vm.entity.cliente.nome;
                 vm.condicaoSelecionada = vm.entity.condicaoPagamento.descricao;
 
+                vm.blockCancel = false;
                 for (let i = 0; i < vm.entity.parcelas.length; i++) {
                     var dateVencimento = Helper.dateToDateString(vm.entity.parcelas[i].dtVencimento);
-                    vm.entity.parcelas[i].dtVencimento = dateVencimento
+                    vm.entity.parcelas[i].dtVencimento = dateVencimento;
+
+                    if (vm.entity.parcelas[i].status == "Pago") {
+                        vm.blockCancel = true;
+                    }
                 }
                 
                 vm.isCreateListArea = true;
-
                 vm.areasLocacao.rows = vm.areasLocacao.rows.map(function (item) {
                     item.vgtSelected = vm.entity.areasLocacao.some((area) => area.codigo == item.codigo);
                     return item;
                 });
-
                 vm.isCreateListArea = false;
             });
         },

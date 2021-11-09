@@ -113,7 +113,8 @@ export default {
             clienteSelecionado: null,
             formaSelecionada: null,
             isLoading: false,
-            isSubmiting: false
+            isSubmiting: false,
+            isEdit: false
         }
     },
     created() {

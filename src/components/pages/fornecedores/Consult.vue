@@ -47,11 +47,11 @@ export default {
                 },
                 {
                     label: "Fornecedor",
-                    field: "fornecedor"
+                    field: "nome"
                 },
                 {
                     label: "CPF / CNPJ",
-                    field: "cpfcnpj",
+                    field: "cpfCnpj",
                     width: "180px",
                 },
                 {
@@ -74,7 +74,7 @@ export default {
         const vm = this;
         FornecedoresService.getAll().then(function (response) {
             vm.totalRecords = response.data.length;
-            vm.rows = response.data; 
+            vm.rows = response.data;
         });
     },
     methods: {

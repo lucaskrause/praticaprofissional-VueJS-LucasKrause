@@ -345,6 +345,11 @@ export default {
                     {
                         label: "Forma de Pagamento",
                         field: "formaPagamento.descricao"
+                    },
+                    {
+                        label: "Status",
+                        field: "status",
+                        width: "120px"
                     }
                 ],
                 rows: [],
@@ -367,7 +372,7 @@ export default {
                 const vm = this;
                 ComprasService.getCompra(this.compra).then(function (response) {
                     vm.entity = response.data;
-
+                    
                     vm.produtos.rows = vm.entity.itens;
                     vm.parcelas.rows = vm.entity.parcelas;
                     

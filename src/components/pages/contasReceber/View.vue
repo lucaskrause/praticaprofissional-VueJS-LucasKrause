@@ -135,7 +135,7 @@ export default {
 
             this.isSubmiting = true;
             const vm = this;
-            console.log(this.entity);
+
             ContasReceberService.receber(this.entity).then(function () {
                 notyf.success("Conta recebida com sucesso");
                 vm.isSubmiting = false;
