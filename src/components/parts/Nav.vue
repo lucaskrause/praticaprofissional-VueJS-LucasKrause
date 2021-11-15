@@ -70,17 +70,18 @@ export default {
                 {id: 12, group: 2, label: "Fornecedores", route: {name: "FornecedoresList"}},
 
                 {id: 13, group: 3, label: "Locações", route: {name: "LocacoesList"}},
-                {id: 14, group: 3, label: "Compras", route: {name: "ComprasList"}},
-                {id: 15, group: 3, label: "Consumos", route: {name: "ConsumosList"}},
-                {id: 16, group: 3, label: "Contas à Pagar", route: {name: "ContasPagarList"}},
-                {id: 17, group: 3, label: "Contas à Receber", route: {name: "ContasReceberList"}},
+                {id: 14, group: 3, label: "Ordens de Serviço", route: {name: "OrdensServicoList"}},
+                {id: 15, group: 3, label: "Compras", route: {name: "ComprasList"}},
+                {id: 16, group: 3, label: "Consumos", route: {name: "ConsumosList"}},
+                {id: 17, group: 3, label: "Contas à Pagar", route: {name: "ContasPagarList"}},
+                {id: 18, group: 3, label: "Contas à Receber", route: {name: "ContasReceberList"}},
 
-                {id: 18, group: 4, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
-                {id: 19, group: 4, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
+                {id: 19, group: 4, label: "Formas de Pagamento", route: {name: "FormasPagamentoList"}},
+                {id: 20, group: 4, label: "Condições de Pagamento", route: {name: "CondicoesPagamentoList"}},
 
-                {id: 20, group: 5, label: "Cidades",  route: {name: "CidadesList"}},
-                {id: 21, group: 5, label: "Estados", route: {name: "EstadosList"}},
-                {id: 22, group: 5, label: "Países", route: {name: "PaisesList"}},
+                {id: 21, group: 5, label: "Cidades",  route: {name: "CidadesList"}},
+                {id: 22, group: 5, label: "Estados", route: {name: "EstadosList"}},
+                {id: 23, group: 5, label: "Países", route: {name: "PaisesList"}},
             ],
         }
     },
