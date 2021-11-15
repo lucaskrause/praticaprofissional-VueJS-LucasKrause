@@ -1,5 +1,4 @@
 <template>
-    
     <div class="col-12">
         <h2>Compra</h2>
         <hr/>
@@ -82,7 +81,7 @@
                 <label>Total</label>
                 <money id="total" class="form-control text-right" v-model="produtoSelecionado.total" v-bind="money" disabled></money>
             </div>
-            
+
             <div class="col-2">
                 <button id="addProduto" type="button" class="btn btn-success embaixo" @click="addProduto" :disabled="!verificaDtEmissaoEntrega || produtoPreenchido || isEdit">Adicionar Produto</button>
             </div>
@@ -128,7 +127,7 @@
                 <money id="despesas" class="form-control text-right" v-model="entity.despesas" v-bind="money" @change.native="calculaTotalNota" :disabled="isEdit"></money>
             </div>
 
-            <div class="col-2">
+            <div class="offset-2 col-2">
                 <label>Valor Total da Nota</label>
                 <money id="valorTotal" class="form-control text-right" v-model="entity.valorTotal" v-bind="money" readonly></money>
             </div>
@@ -256,13 +255,12 @@ export default {
             dtAlt: null,
             fornecedorSelecionado: null,
             isNotaPreenchido: false,
-            valorTotal: 0,
             produtoSelecionado: {
                 codigoProduto: 0,
                 produto: null,
                 quantidade: 0,
                 valorUnitario: 0,
-                valorDespesas: 0,
+                valorCusto: 0,
                 desconto: 0,
                 total: 0
             },
@@ -297,8 +295,8 @@ export default {
                         width: "150px",
                     },
                     {
-                        label: "Despesas",
-                        field: "valorDespesas",
+                        label: "Custo",
+                        field: "valorCusto",
                         type: "number",
                         width: "150px",
                     },
@@ -394,9 +392,7 @@ export default {
                     vm.fornecedorSelecionado = vm.entity.fornecedor.nome;
                     vm.condicaoSelecionada = vm.entity.condicaoPagamento.descricao;
 
-                    for (let i = 0; i < vm.produtos.rows.length; i++) {
-                        vm.valorTotal += vm.produtos.rows[i].total;
-                    }
+                    vm.calculoSobProduto();
                 });
             } else {
                 this.$router.push('/app/compras');
@@ -553,13 +549,13 @@ export default {
         },
         calculaTotalProdutos() {   
             if(this.produtoSelecionado.quantidade > 0 && this.produtoSelecionado.valorUnitario > 0) {
-                this.produtoSelecionado.total = (this.produtoSelecionado.quantidade * this.produtoSelecionado.valorDespesas) + this.produtoSelecionado.quantidade * this.produtoSelecionado.valorUnitario - this.produtoSelecionado.desconto;
+                this.produtoSelecionado.total = (this.produtoSelecionado.quantidade * this.produtoSelecionado.valorCusto) + this.produtoSelecionado.quantidade * (this.produtoSelecionado.valorUnitario - this.produtoSelecionado.desconto);
             }
             this.calculaTotalNota();
         },
         calculoSobProduto() {
             if (this.produtos.rows.length > 0) {
-                var total = this.produtos.rows.map(item => item.valorUnitario * item.quantidade - item.desconto).reduce((item1, item2) => item1 + item2);
+                var total = this.produtos.rows.map(item => item.quantidade * (item.valorUnitario - item.desconto)).reduce((item1, item2) => item1 + item2);
                 var totalDespesas = this.entity.frete + this.entity.seguro + this.entity.despesas;
                 var item;
                 var valorFinal;
@@ -570,14 +566,14 @@ export default {
                     valorFinal = 0;
 
                     // Calcula porcentagem do produto referente ao total
-                    var porcentagemItem = ((item.valorUnitario * item.quantidade) - item.desconto) / total;
+                    var porcentagemItem = (item.quantidade * (item.valorUnitario - item.desconto)) / total;
+                    porcentagemItem = parseFloat(porcentagemItem).toFixed(4);
 
-                    // Total de despesas do produto 
-                    valorFinal = totalDespesas * porcentagemItem;
-                    valorFinal /= item.quantidade;
+                    // Total de despesas do produto
+                    valorFinal = totalDespesas * porcentagemItem / item.quantidade;
 
-                    item.valorDespesas = valorFinal;
-                    item.total = ((item.quantidade * item.valorUnitario) - item.desconto) + (item.quantidade * item.valorDespesas);
+                    item.valorCusto = Number((item.valorUnitario - item.desconto + valorFinal).toFixed(2));
+                    item.total = Number((item.quantidade * item.valorCusto).toFixed(2));
                     valorTotalProdutos += item.total;
 
                     this.produtos.rows[i] = item;
@@ -586,19 +582,23 @@ export default {
             }
         },
         calculaTotalNota() {
-            var total = this.produtos.rows.map(item => item.valorUnitario * item.quantidade - item.desconto).reduce((item1, item2) => item1 + item2);
-            this.entity.valorTotal = total + this.entity.frete + this.entity.seguro + this.entity.despesas;
+            var total = 0;
+            if (this.produtos.rows.length > 0) {
+              total += this.produtos.rows.map(item => item.quantidade * item.valorCusto).reduce((item1, item2) => item1 + item2);
+            }
+            this.entity.valorTotal = total;
             this.calculoSobProduto();
         },
         addProduto() {
             this.entity.valorProdutos += this.produtoSelecionado.total;
             this.produtos.rows.push(this.produtoSelecionado);
             this.produtoSelecionado = {
-                codigo: 0,
+                codigoProduto: 0,
                 produto: null,
                 quantidade: 0,
                 valorUnitario: 0,
                 desconto: 0,
+                valorCusto: 0,
                 total: 0
             };
         },
