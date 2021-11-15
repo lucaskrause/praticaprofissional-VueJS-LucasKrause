@@ -30,13 +30,8 @@
             </div>
 
             <div class="col-2">
-                <label>Valor de Custo</label><span class="isRequired"> *</span>
-                <money id="valorCusto" class="form-control text-right" v-model="entity.valorCusto"
-                    v-bind="money"
-                    :class="{'is-invalid': $v.entity.valorCusto.$error}"></money>
-                <div class="invalid-feedback" v-if="!$v.entity.valorCusto.minValue || !$v.entity.valorCusto.maxValue">
-                    Valor de custo deve ser entre 0,01 e 99.999.999,99
-                </div>
+                <label>Valor de Custo</label>
+                <money id="valorCusto" class="form-control text-right" v-model="entity.valorCusto" v-bind="money" readonly></money>
             </div>
 
             <div class="col-2">
@@ -44,7 +39,7 @@
                 <input id="estoque" type="number" class="form-control" v-model.number="entity.estoque"
                     :class="{'is-invalid': $v.entity.estoque.$error}"/>
                     <div class="invalid-feedback" v-if="!$v.entity.estoque.minValue">
-                        Estoque deve ser no mínimo 1
+                        Estoque deve ser no mínimo 0
                     </div>
             </div>
         </div>
@@ -74,12 +69,7 @@
 
             <div class="col-2">
                 <label>Valor da últ. compra</label>
-                <money id="valorUltimaCompra" class="form-control text-right" v-model="entity.valorUltimaCompra"
-                    v-bind="money"
-                    :class="{'is-invalid': $v.entity.valorUltimaCompra.$error}" readonly></money>
-                <div class="invalid-feedback" v-if="!$v.entity.valorCusto.minValue || !$v.entity.valorCusto.maxValue">
-                    Valor de custo deve ser no máximo 99.999.999,99
-                </div>
+                <money id="valorUltimaCompra" class="form-control text-right" v-model="entity.valorUltimaCompra" v-bind="money" readonly></money>
             </div>
         </div>
 
@@ -110,7 +100,7 @@
 
 <script>
 import {validationMixin} from 'vuelidate'
-import {required, maxLength, minValue, maxValue} from 'vuelidate/lib/validators'
+import {required, maxLength, minValue} from 'vuelidate/lib/validators'
 import {Money} from 'v-money'
 import {CategoriasService} from '@/services/categorias.service'
 import {ProdutosService} from '@/services/produtos.service'
@@ -143,21 +133,12 @@ export default {
                 unidades: {
                     minValue: minValue(1),
                 },
-                valorCusto: {
-                    required,
-                    minValue: minValue(0.01),
-                    maxValue: maxValue(99999999.99),
-                },
                 estoque: {
-                    minValue: minValue(1),
+                    minValue: minValue(0),
                 },
                 codigoCategoria: {
                     minValue: minValue(1),
-                },
-                valorUltimaCompra: {
-                    minValue: minValue(0.00),
-                    maxValue: maxValue(99999999.99),
-                },
+                }
             }
         }
         return validation;
