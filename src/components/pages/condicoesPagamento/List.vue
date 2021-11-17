@@ -47,29 +47,37 @@ export default {
                 {
                     label: "Código",
                     field: "codigo",
-                    type: "number"
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Condição de Pagamento",
                     field: "descricao"
                 },
                 {
-                    label: "Multa",
-                    field: "multa"
+                    label: "Multa (%)",
+                    field: "multa",
+                    type: "number",
+                    width: "110px",
                 },
                 {
-                    label: "Juros",
-                    field: "juros"
+                    label: "Juros (%)",
+                    field: "juros",
+                    type: "number",
+                    width: "110px",
                 },
                 {
-                    label: "Desconto",
-                    field: "desconto"
+                    label: "Desconto (%)",
+                    field: "desconto",
+                    type: "number",
+                    width: "150px",
                 },
                 {
                     label:"Ação",
                     sortable: false,
                     field: 'btn',
-                    html: true
+                    html: true,
+                    width: "150px",
                 },
             ],
             page: 1,

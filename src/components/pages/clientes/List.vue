@@ -31,6 +31,7 @@
 
 <script>
 import {ClientesService} from '@/services/clientes.service'
+import Helper from '@/components/helper'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table'
 import {Notyf} from 'notyf'
@@ -86,6 +87,14 @@ export default {
             ClientesService.getAll().then(function (response) {
                 vm.totalRecords = response.data.length;
                 vm.rows = response.data;
+
+                for (let i = 0; i < vm.rows.length; i++) {
+                    if (vm.rows[i].cpfCnpj.length > 11) {
+                        vm.rows[i].cpfCnpj = Helper.addMaskCNPJ(vm.rows[i].cpfCnpj);
+                    } else {
+                        vm.rows[i].cpfCnpj = Helper.addMaskCPF(vm.rows[i].cpfCnpj);
+                    }
+                }
             });
         },
         remove(codigo) {

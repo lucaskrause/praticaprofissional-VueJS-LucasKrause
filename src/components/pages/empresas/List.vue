@@ -88,7 +88,6 @@ export default {
 
                 for (let i = 0; i < vm.rows.length; i++) {
                     vm.rows[i].cnpj = Helper.addMaskCNPJ(vm.rows[i].cnpj);
-                    
                 }
             });
         },

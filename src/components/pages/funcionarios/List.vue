@@ -31,6 +31,7 @@
 
 <script>
 import {FuncionariosService} from '@/services/funcionarios.service'
+import Helper from '@/components/helper'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table'
 import {Notyf} from 'notyf'
@@ -84,6 +85,10 @@ export default {
             FuncionariosService.getAll().then(function (response) {
                 vm.totalRecords = response.data.length;
                 vm.rows = response.data;
+
+                for (let i = 0; i < vm.rows.length; i++) {
+                    vm.rows[i].cpf = Helper.addMaskCPF(vm.rows[i].cpf);
+                }
             });
         },
         remove(codigo) {
