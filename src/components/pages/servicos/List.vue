@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import Helper from '@/components/helper'
 import {ServicosService} from '@/services/servicos.service'
+import Helper from '@/components/helper'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table'
 import {Notyf} from 'notyf'
@@ -58,6 +58,7 @@ export default {
                 {
                     label: "Valor",
                     field: "valor",
+                    type: "number",
                     width: "150px",
                 },
                 {

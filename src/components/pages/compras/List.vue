@@ -30,6 +30,7 @@
 
 <script>
 import {ComprasService} from '@/services/compras.service'
+import Helper from '@/components/helper'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table'
 
@@ -86,6 +87,10 @@ export default {
             ComprasService.getAll().then(function (response) {
                 vm.totalRecords = response.data.length;
                 vm.rows = response.data;
+
+                for (var i=0; i < vm.rows.length; i++) {
+                    vm.rows[i].valorTotal = Helper.number_format(vm.rows[i].valorTotal);
+                }
             });
         },
     }

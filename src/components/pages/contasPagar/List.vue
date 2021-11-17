@@ -31,6 +31,7 @@
 
 <script>
 import {ContasPagarService} from '@/services/contasPagar.service'
+import Helper from '@/components/helper'
 import 'vue-good-table/dist/vue-good-table.css'
 import {VueGoodTable} from 'vue-good-table'
 
@@ -72,6 +73,11 @@ export default {
                     width: "150px",
                 },
                 {
+                    label: "Status",
+                    field: "status",
+                    width: "150px",
+                },
+                {
                     label:"Ação",
                     sortable: false,
                     field: 'btn',
@@ -93,6 +99,10 @@ export default {
             ContasPagarService.getAll().then(function (response) {
                 vm.totalRecords = response.data.length;
                 vm.rows = response.data;
+
+                for (var i=0; i < vm.rows.length; i++) {
+                    vm.rows[i].valorParcela = Helper.number_format(vm.rows[i].valorParcela);
+                }
             });
         },
     }

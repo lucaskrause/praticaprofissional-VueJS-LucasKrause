@@ -58,6 +58,7 @@ export default {
                 {
                     label: "Valor",
                     field: "valor",
+                    type: "number",
                     width: "150px",
                 },
                 {
@@ -98,6 +99,10 @@ export default {
             CotasService.getAll().then(function (response) {
                 vm.totalRecords = response.data.length;
                 vm.rows = response.data;
+
+                for (var i=0; i < vm.rows.length; i++) {
+                    vm.rows[i].valor = Helper.number_format(vm.rows[i].valor);
+                }
 
                 for (let i = 0; i < vm.totalRecords; i++) {
                     var dateInicio = Helper.dateToDateString(vm.rows[i].dtInicio);

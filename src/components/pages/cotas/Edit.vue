@@ -42,26 +42,12 @@
         <div class="row form-group">
             <div class="col-3">
                 <label>Data de Início</label><span class="isRequired"> *</span>
-                <input id="dtInicio" type="date" class="form-control" v-model="entity.dtInicio"
-                    :class="{'is-invalid': $v.entity.dtInicio.$error || dtInicioInvalid}"/>
-                <div class="invalid-feedback" v-if="!$v.entity.dtInicio.required">
-                    Data de Início obrigatória
-                </div>
-                <div class="invalid-feedback" v-if="dtInicioInvalid">
-                    Data de Início deve ser no minimo o dia de hoje
-                </div>
+                <input id="dtInicio" type="date" class="form-control" v-model="entity.dtInicio" readonly/>
             </div>
 
             <div class="col-3">
                 <label>Data de Término</label><span class="isRequired"> *</span>
-                <input id="dtTermino" type="date" class="form-control" v-model="entity.dtTermino"
-                    :class="{'is-invalid': $v.entity.dtTermino.$error || dtTerminoInvalid}"/>
-                <div class="invalid-feedback" v-if="!$v.entity.dtTermino.required">
-                    Data de Término obrigatória
-                </div>
-                <div class="invalid-feedback" v-if="!dtTerminoInvalid">
-                    Data de Término deve ser maior que a data de inicio
-                </div>
+                <input id="dtTermino" type="date" class="form-control" v-model="entity.dtTermino" readonly/>
             </div>
         </div>
 
@@ -119,12 +105,6 @@ export default {
                     required,
                     minValue: minValue(0.01),
                     maxValue: maxValue(99999999.99)
-                },
-                dtInicio: {
-                    required,
-                },
-                dtTermino: {
-                    required,
                 },
             }
         }

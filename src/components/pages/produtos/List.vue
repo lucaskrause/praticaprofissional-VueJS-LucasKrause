@@ -69,6 +69,7 @@ export default {
                 {
                     label: "Valor de Custo",
                     field: "valorCusto",
+                    type: "number",
                     width: "150px",
                 },
                 {
