@@ -1,6 +1,6 @@
 <template>
     <div class="col-12">
-        <h2>Alocar</h2>
+        <h2>Locação</h2>
         <hr/>
         <div class="row form-group">
             <div class="col-2">

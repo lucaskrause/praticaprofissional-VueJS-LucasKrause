@@ -97,7 +97,7 @@ export default {
             entity: {
                 codigo: 0,
                 descricao: null,
-                valor: null,
+                valor: 0,
                 dtCadastro: null,
                 dtAlteracao: null
             },
