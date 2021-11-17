@@ -3,17 +3,17 @@
         <h2>Conta à Pagar</h2>
         <hr/>
         <div class="row form-group">
-            <div class="col-2">
+            <div class="col-1">
                 <label>Modelo</label><span class="isRequired"> *</span>
                 <input id="modelo" type="number" class="form-control" v-model="entity.modelo" readonly/>
             </div>
 
-            <div class="col-2">
+            <div class="col-1">
                 <label>Série</label><span class="isRequired"> *</span>
                 <input id="serie" type="number" class="form-control" v-model="entity.serie" readonly/>
             </div>
 
-            <div class="col-2">
+            <div class="col-1">
                 <label>Nº Nota</label><span class="isRequired"> *</span>
                 <input id="numeroNota" type="number" class="form-control" v-model="entity.numeroNF" readonly/>
             </div>
@@ -30,19 +30,19 @@
                     </span>
                 </div>
             </div>
-        </div>
 
-        <div class="row form-group">
-            <div class="col-2">
-                <label>Número Parcela</label><span class="isRequired"> *</span>
+            <div class="col-1">
+                <label>Nº Parcela</label><span class="isRequired"> *</span>
                 <input id="numeroParcela" type="number" class="form-control" v-model="entity.numeroParcela" readonly/>
             </div>
 
             <div class="col-2">
                 <label>Valor Parcela</label><span class="isRequired"> *</span>
-                <input id="valorParcela" type="number" class="form-control" v-model="entity.valorParcela" readonly/>
+                <money id="valorParcela" class="form-control text-right" v-model.number="entity.valorParcela" v-bind="money" readonly></money>
             </div>
+        </div>
 
+        <div class="row form-group">
             <div class="col-4">
                 <label>Forma de Pagamento</label><span class="isRequired"> *</span>
                 <div class="input-group">
@@ -60,10 +60,32 @@
                 <label>Data de Vencimento</label>
                 <input id="dtVencimento" type="date" class="form-control" v-model="entity.dtVencimento" readonly/>
             </div>
-            
+        </div>
+
+        <div class="row form-group">
             <div class="col-2">
-                <label>Data de Pagamento</label>
-                <input id="dtPagamento" type="date" class="form-control" v-model="entity.dtPagamento" readonly/>
+                <label>Valor Juros</label>
+                <money id="valorJuros" class="form-control text-right" v-model.number="valorJuros" v-bind="money" readonly></money>
+            </div>
+
+            <div class="col-2">
+                <label>Valor Multa</label>
+                <money id="valorMulta" class="form-control text-right" v-model.number="valorMulta" v-bind="money" readonly></money>
+            </div>
+
+            <div class="col-2">
+                <label>Valor desconto</label>
+                <money id="valorDesconto" class="form-control text-right" v-model.number="valorDesconto" v-bind="money" readonly></money>
+            </div>
+
+            <div class="col-2">
+                <label>Valor a Pagar</label>
+                <money id="valorParcela" class="form-control text-right" v-model.number="entity.valorParcela" v-bind="money" readonly></money>
+            </div>
+
+            <div class="col-2">
+                <label>Valor Pago</label><span class="isRequired"> *</span>
+                <money id="valorPago" class="form-control text-right" v-model.number="entity.valorPago" v-bind="money"></money>
             </div>
         </div>
 
@@ -72,16 +94,21 @@
                 <label>Data de Emissão</label>
                 <input id="dataEmissao" type="date" class="form-control" v-model="entity.dtEmissao" readonly/>
             </div>
+            
+            <div class="col-2">
+                <label>Data de Pagamento</label>
+                <input id="dtPagamento" type="date" class="form-control" v-model="entity.dtPagamento" readonly/>
+            </div>
 
             <div class="col-2">
                 <label>Situação</label>
                 <input id="status" class="form-control" v-model="entity.status" readonly/>
             </div>
 
-            <div class="col-8">
+            <div class="col-6">
                 <div class="text-right">
                     <router-link :to="{name: 'ContasPagarList'}" class="btn btn-danger mr-3">Voltar</router-link>
-                    <input type="submit" value="Pagar" class="btn btn-success" @click.prevent="pagar()" :class="{'disabled': isSubmiting}" :disabled="entity.status == 'Pago'">
+                    <input v-if="entity.status == 'Pendente'" type="submit" value="Pagar" class="btn btn-success" @click.prevent="pagar()" :class="{'disabled': isSubmiting}">
                 </div>
             </div>
         </div>
@@ -91,6 +118,7 @@
 <script>
 import {ContasPagarService} from '@/services/contasPagar.service'
 import Helper from '@/components/helper'
+import {Money} from 'v-money'
 import {Notyf} from 'notyf'
 import 'notyf/notyf.min.css'
 
@@ -104,6 +132,7 @@ export default {
             default: null
         },    
     },
+    components: { Money },
     data() {
         return {
             entity: {
@@ -116,13 +145,25 @@ export default {
                 codigoFormaPagamento: 0,
                 dtVencimento: null,
                 dtPagamento: null,
+                valorPago: 0,
             },
             dtCad: null,
             dtAlt: null,
             fornecedorSelecionado: null,
             formaSelecionada: null,
+            valorJuros: 0,
+            valorMulta: 0,
+            valorDesconto: 0,
             isLoading: false,
-            isSubmiting: false
+            isSubmiting: false,
+            money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: 'R$ ',
+                suffix: '',
+                precision: 2,
+                masked: false
+            },
         }
     },
     created() {

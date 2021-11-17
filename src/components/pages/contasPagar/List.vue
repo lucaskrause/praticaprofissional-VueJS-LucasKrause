@@ -43,17 +43,17 @@ export default {
                 {
                     label: "Modelo",
                     field: "modelo",
-                    width: "150px",
+                    width: "150px"
                 },
                 {
                     label: "Série",
                     field: "serie",
-                    width: "150px",
+                    width: "150px"
                 },
                 {
                     label: "Número Nota Fiscal",
                     field: "numeroNF",
-                    width: "200px",
+                    width: "200px"
                 },
                 {
                     label: "Fornecedor",
@@ -63,20 +63,25 @@ export default {
                     label: "Nº Parcela",
                     field: "numeroParcela",
                     type: "number",
-                    width: "150px",
+                    width: "150px"
                 },
                 {
                     label: "Valor",
                     field: "valorParcela",
                     type: "number",
-                    width: "150px",
+                    width: "150px"
+                },
+                {
+                    label: "Status",
+                    field: "status",
+                    width: "150px"
                 },
                 {
                     label:"Ação",
                     sortable: false,
                     field: 'btn',
                     html: true,
-                    width: "140px",
+                    width: "140px"
                 },
             ],
             rows: [],
