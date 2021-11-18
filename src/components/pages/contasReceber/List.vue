@@ -48,10 +48,18 @@ export default {
                     width: "100px",
                 },
                 {
+                    label: "Cliente",
+                    field: "cliente.nome"
+                },
+                {
                     label: "Nº Parcela",
                     field: "numeroParcela",
                     type: "number",
                     width: "130px",
+                },
+                {
+                    label: "Forma Pagamento",
+                    field: "formaPagamento.descricao"
                 },
                 {
                     label: "Valor",
@@ -60,12 +68,12 @@ export default {
                     width: "150px",
                 },
                 {
-                    label: "Forma Pagamento",
-                    field: "formaPagamento.descricao"
-                },
-                {
-                    label: "Cliente",
-                    field: "cliente.nome"
+                    label: "Vencimento",
+                    field: "dtVencimento",
+                    type: "date",
+                    dateInputFormat: 'yyyy-MM-dd',
+                    dateOutputFormat: 'dd/MM/yyyy',
+                    width: "150px",
                 },
                 {
                     label: "Status",
@@ -96,6 +104,7 @@ export default {
                 vm.rows = response.data;
 
                 for (var i=0; i < vm.rows.length; i++) {
+                    vm.rows[i].dtVencimento = Helper.dateToDateString(vm.rows[i].dtVencimento);
                     vm.rows[i].valorParcela = Helper.number_format(vm.rows[i].valorParcela);
                 }
             });
