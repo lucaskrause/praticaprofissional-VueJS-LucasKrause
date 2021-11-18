@@ -20,7 +20,6 @@
                     <template slot="table-row" slot-scope="props">
                         <span v-if="props.column.field == 'btn'">
                             <router-link :to="{name: 'CotasEdit', params: {codigo: props.row.codigo}}" class="btn btn-sm btn-primary mr-3">Editar</router-link>
-                            <a @click.prevent="remove(props.row.codigo)" class="btn btn-sm btn-danger" href="#">Excluir</a>
                         </span>
                     </template>
                 </vue-good-table>
@@ -34,10 +33,6 @@ import {CotasService} from '@/services/cotas.service'
 import {VueGoodTable} from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
 import Helper from '@/components/helper'
-import {Notyf} from 'notyf'
-import 'notyf/notyf.min.css'
-
-const notyf = new Notyf();
 
 export default {
     name: "CotasList",
@@ -113,20 +108,6 @@ export default {
                 }
             });
         },
-        remove(codigo) {
-            var vm = this;
-            var remove = confirm("Deseja realmente excluir?");
-            if(remove){
-                CotasService.delete(codigo).then(function (response) {
-                    if(response.data){
-                        notyf.success("Cota excluída com sucesso");
-                        vm.loadData();
-                    } else {
-                        notyf.error("Não foi possível excluir a cota");
-                    }
-                });
-            }
-        }
     }
 }
 </script>
