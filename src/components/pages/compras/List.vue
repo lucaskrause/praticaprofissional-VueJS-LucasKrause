@@ -43,26 +43,50 @@ export default {
                 {
                     label: "Modelo",
                     field: "modelo",
-                    width: "120px"
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Série",
                     field: "serie",
-                    width: "120px"
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Número Nota Fiscal",
                     field: "numeroNF",
-                    width: "200px"
+                    type: "number",
+                    width: "200px",
                 },
                 {
                     label: "Fornecedor",
                     field: "fornecedor.nome"
                 },
                 {
+                    label: "Emissão",
+                    field: "dtEmissao",
+                    type: "date",
+                    dateInputFormat: 'yyyy-MM-dd',
+                    dateOutputFormat: 'dd/MM/yyyy',
+                    width: "150px",
+                },
+                {
+                    label: "Entrega",
+                    field: "dtEntrega",
+                    type: "date",
+                    dateInputFormat: 'yyyy-MM-dd',
+                    dateOutputFormat: 'dd/MM/yyyy',
+                    width: "150px",
+                },
+                {
                     label:"Valor",
-                    field: "valorTotal",
+                    field: "valorApresentavel",
                     type: "number",
+                    width: "120px"
+                },
+                {
+                    label:"Situação",
+                    field: "status",
                     width: "120px"
                 },
                 {
@@ -89,7 +113,9 @@ export default {
                 vm.rows = response.data;
 
                 for (var i=0; i < vm.rows.length; i++) {
-                    vm.rows[i].valorTotal = Helper.number_format(vm.rows[i].valorTotal);
+                    vm.rows[i].dtEmissao = Helper.dateToDateString(vm.rows[i].dtEmissao);                        
+                    vm.rows[i].dtEntrega = Helper.dateToDateString(vm.rows[i].dtEntrega);
+                    vm.rows[i].valorApresentavel = Helper.number_format(vm.rows[i].valorTotal);
                 }
             });
         },

@@ -216,9 +216,9 @@ import {VueGoodTable} from 'vue-good-table'
 import {Notyf} from 'notyf'
 import 'notyf/notyf.min.css'
 
-var debounce = require('lodash.debounce');
-
 const notyf = new Notyf();
+
+var debounce = require('lodash.debounce');
 
 export default {
     name: "ComprasEdit",
@@ -328,7 +328,7 @@ export default {
                     },
                     {
                         label: "Valor",
-                        field: "valorParcela",
+                        field: "valorApresentavel",
                         type: "number",
                         width: "150px",
                     },
@@ -378,6 +378,7 @@ export default {
                         var dateVencimento = Helper.dateToDateString(vm.parcelas.rows[i].dtVencimento);
 
                         vm.parcelas.rows[i].dtVencimento = dateVencimento;
+                        vm.parcelas.rows[i].valorApresentavel = Helper.number_format(vm.parcelas.rows[i].valorParcela);
                     }
 
                     var dateEmissao = Helper.dateToDateString(vm.entity.dtEmissao);
@@ -620,9 +621,8 @@ export default {
                 vm.parcelas.rows = response.data;
                 
                 for (let i = 0; i < vm.parcelas.totalRecords; i++) {
-                    var dateVencimento = Helper.dateToDateString(vm.parcelas.rows[i].dtVencimento);
-
-                    vm.parcelas.rows[i].dtVencimento = dateVencimento;
+                    vm.parcelas.rows[i].dtVencimento = Helper.dateToDateString(vm.parcelas.rows[i].dtVencimento);
+                    vm.parcelas.rows[i].valorApresentavel = Helper.number_format(vm.parcelas.rows[i].valorParcela);
                 }
             });
         },
