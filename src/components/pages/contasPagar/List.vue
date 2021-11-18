@@ -44,16 +44,19 @@ export default {
                 {
                     label: "Modelo",
                     field: "modelo",
-                    width: "150px",
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Série",
                     field: "serie",
-                    width: "150px",
+                    type: "number",
+                    width: "100px",
                 },
                 {
                     label: "Número Nota Fiscal",
                     field: "numeroNF",
+                    type: "number",
                     width: "200px",
                 },
                 {
@@ -64,18 +67,26 @@ export default {
                     label: "Nº Parcela",
                     field: "numeroParcela",
                     type: "number",
-                    width: "150px",
+                    width: "120px",
                 },
                 {
                     label: "Valor",
-                    field: "valorParcela",
+                    field: "valorApresentavel",
                     type: "number",
                     width: "150px",
                 },
                 {
+                    label: "Vencimento",
+                    field: "dtVencimento",
+                    type: "date",
+                    dateInputFormat: 'yyyy-MM-dd',
+                    dateOutputFormat: 'dd/MM/yyyy',
+                    width: "130px",
+                },
+                {
                     label: "Status",
                     field: "status",
-                    width: "150px",
+                    width: "120px",
                 },
                 {
                     label:"Ação",
@@ -101,7 +112,8 @@ export default {
                 vm.rows = response.data;
 
                 for (var i=0; i < vm.rows.length; i++) {
-                    vm.rows[i].valorParcela = Helper.number_format(vm.rows[i].valorParcela);
+                    vm.rows[i].dtVencimento = Helper.dateToDateString(vm.rows[i].dtVencimento);
+                    vm.rows[i].valorApresentavel = Helper.number_format(vm.rows[i].valorParcela);
                 }
             });
         },

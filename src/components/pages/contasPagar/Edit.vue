@@ -30,40 +30,35 @@
                     </span>
                 </div>
             </div>
+            
+            <div class="col-1">
+                <label>Nº Parcela</label><span class="isRequired"> *</span>
+                <input id="numeroParcela" type="number" class="form-control" v-model.number="entity.numeroParcela" :disabled="isEdit"/>
+            </div>
         </div>
 
         <div class="row form-group">
             <div class="col-2">
-                <label>Número Parcela</label><span class="isRequired"> *</span>
-                <input id="numeroParcela" type="number" class="form-control" v-model.number="entity.numeroParcela" :disabled="isEdit"/>
-            </div>
-
-            <div class="col-2">
                 <label>Valor Parcela</label><span class="isRequired"> *</span>
-                <input id="valorParcela" type="number" class="form-control" v-model.number="entity.valorParcela" :disabled="isEdit"/>
+                <money id="valorParcela" class="form-control text-right" v-bind="money" v-model.number="entity.valorParcela" :disabled="isEdit"></money>
             </div>
 
             <div class="col-4">
                 <label>Forma de Pagamento</label><span class="isRequired"> *</span>
                 <div class="input-group">
-                    <input id="codigoFormaPagamento" type="number" class="form-control" v-model.number="entity.codigoFormaPagamento" @input="onSearchFormaPagamento"/>
+                    <input id="codigoFormaPagamento" type="number" class="form-control" v-model.number="entity.codigoFormaPagamento" @input="onSearchFormaPagamento" :disabled="entity.status != 'Pendente'"/>
                     <div class="input-group-append">
                         <input type="text" class="form-control" v-model.lazy="formaSelecionada" readonly/>
                     </div>
                     <span class="input-group-btn">
-                        <b-button v-b-modal.modal-consult-forma class="btn btn-info ml-1">Buscar</b-button>
+                        <b-button v-b-modal.modal-consult-forma class="btn btn-info ml-1" :disabled="entity.status != 'Pendente'">Buscar</b-button>
                     </span>
                 </div>
             </div>
             
             <div class="col-2">
                 <label>Data de Vencimento</label>
-                <input id="dtVencimento" type="date" class="form-control" v-model="entity.dtVencimento"/>
-            </div>
-            
-            <div class="col-2">
-                <label>Data de Pagamento</label>
-                <input id="dtPagamento" type="date" class="form-control" v-model="entity.dtPagamento" readonly/>
+                <input id="dtVencimento" type="date" class="form-control" v-model="entity.dtVencimento" :disabled="entity.status != 'Pendente'"/>
             </div>
         </div>
 
@@ -72,11 +67,21 @@
                 <label>Data de Emissão</label>
                 <input id="dataEmissao" type="date" class="form-control" v-model="entity.dtEmissao" readonly/>
             </div>
+            
+            <div class="col-2">
+                <label>Data de Pagamento</label>
+                <input id="dtPagamento" type="date" class="form-control" v-model="entity.dtPagamento" readonly/>
+            </div>
+            
+            <div class="col-2">
+                <label>Situação</label>
+                <input id="status" class="form-control" v-model="entity.status" readonly/>
+            </div>
 
-            <div class="col-10">
+            <div class="col-6">
                 <div class="text-right">
                     <router-link :to="{name: 'ContasPagarList'}" class="btn btn-danger mr-3">Voltar</router-link>
-                    <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}">
+                    <input type="submit" value="Salvar" class="btn btn-success" @click.prevent="save()" :class="{'disabled': isSubmiting}" :disabled="entity.status != 'Pendente'">
                 </div>
             </div>
         </div>
@@ -97,6 +102,7 @@ import {FornecedoresService} from '@/services/fornecedores.service'
 import {FormasPagamentoService} from '@/services/formasPagamento.service'
 import ConsultaFornecedor from '@/components/pages/fornecedores/Consult.vue'
 import ConsultaFormaPagamento from '@/components/pages/formasPagamento/Consult.vue'
+import {Money} from 'v-money'
 import Helper from '@/components/helper'
 import {Notyf} from 'notyf'
 import 'notyf/notyf.min.css'
@@ -117,7 +123,7 @@ export default {
             default: null
         },    
     },
-    components: { ConsultaFornecedor, ConsultaFormaPagamento },
+    components: { ConsultaFornecedor, ConsultaFormaPagamento, Money },
     data() {
         return {
             entity: {
@@ -136,7 +142,15 @@ export default {
             fornecedorSelecionado: null,
             formaSelecionada: null,
             isLoading: false,
-            isSubmiting: false
+            isSubmiting: false,
+            money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: 'R$ ',
+                suffix: '',
+                precision: 2,
+                masked: false
+            },
         }
     },
     created() {
