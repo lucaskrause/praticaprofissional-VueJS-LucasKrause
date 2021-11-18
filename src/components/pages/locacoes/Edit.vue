@@ -268,7 +268,7 @@ export default {
                     },
                     {
                         label: "Valor",
-                        field: "valorParcela",
+                        field: "valorApresentavel",
                         type: "number",
                         width: "150px"
                     },
@@ -342,8 +342,8 @@ export default {
 
                 vm.blockCancel = false;
                 for (let i = 0; i < vm.entity.parcelas.length; i++) {
-                    var dateVencimento = Helper.dateToDateString(vm.entity.parcelas[i].dtVencimento);
-                    vm.entity.parcelas[i].dtVencimento = dateVencimento;
+                    vm.entity.parcelas[i].dtVencimento = Helper.dateToDateString(vm.entity.parcelas[i].dtVencimento);
+                    vm.entity.parcelas[i].valorApresentavel = Helper.number_format(vm.entity.parcelas[i].valorParcela);
 
                     if (vm.entity.parcelas[i].status == "Pago") {
                         vm.blockCancel = true;
@@ -526,6 +526,7 @@ export default {
                 for (let i = 0; i < vm.entity.parcelas.length; i++) {
                     var dateVencimento = Helper.dateToDateString(vm.entity.parcelas[i].dtVencimento);
                     vm.entity.parcelas[i].dtVencimento = dateVencimento;
+                    vm.entity.parcelas[i].valorApresentavel = Helper.number_format(vm.entity.parcelas[i].valorParcela);
                 }
             });
         },
