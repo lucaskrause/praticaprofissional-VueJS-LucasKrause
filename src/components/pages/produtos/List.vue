@@ -106,10 +106,10 @@ export default {
             if(remove) {
                 ProdutosService.delete(codigo).then(function (response) {
                     if(response.data){
-                        notyf.success("Serviço excluido com sucesso");
+                        notyf.success("Produto excluido com sucesso");
                         vm.loadData();
                     } else {
-                        notyf.error("Não foi possivel excluir o serviço");
+                        notyf.error("Não foi possivel excluir o produto");
                     }
                 });
             }

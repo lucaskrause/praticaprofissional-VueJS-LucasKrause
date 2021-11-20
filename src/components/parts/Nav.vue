@@ -19,7 +19,7 @@
                                     <component :is="group.icon" font-scale="1.4"/>
                                     {{group.label}}
                                 </a>
-                                <b-collapse :id="'accord-menu-'+group.id" class="mt-3">
+                                <b-collapse :id="'accord-menu-'+group.id" class="mt-3" accordion="myMenu">
                                     <ul class="pl-4">
                                         <li v-for="item in getItemByCat(group.id)" :key="item.id">
                                             <router-link :to="item.route" class="itemMenu" @click="changePageTitle(item.name)">
